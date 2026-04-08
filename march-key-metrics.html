@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Int'l Growth — March 2026 Key Metrics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --surface-2: #f0ede8;
+    --ink: #1a1814;
+    --ink-muted: #6b6660;
+    --ink-faint: #b5b0aa;
+    --accent: #1d6b4f;
+    --accent-light: #e8f3ee;
+    --warn: #c45c2a;
+    --warn-light: #fdf0e8;
+    --neutral: #8a6f5c;
+    --border: #e2ded8;
+    --up: #1d6b4f;
+    --down: #c45c2a;
+    --blue: #2d5fa6;
+    --blue-light: #e8eef8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 32px 24px 48px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .report-header {
+    margin-bottom: 32px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .report-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .report-sub { color: var(--ink-muted); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* KPI cards */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 16px 14px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+    cursor: default;
+  }
+  .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .kpi-card.pipeline::before { background: var(--blue); }
+  .kpi-card.new-arr::before { background: var(--accent); }
+  .kpi-card.churn-arr::before { background: var(--warn); }
+  .kpi-card.churn-rate::before { background: var(--neutral); }
+  .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 8px; }
+  .kpi-value { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; line-height: 1; }
+  .kpi-delta { font-size: 11px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .delta-pill { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 500; }
+  .delta-pill.up { background: var(--accent-light); color: var(--up); }
+  .delta-pill.down { background: var(--warn-light); color: var(--down); }
+  .delta-pill.na { background: var(--surface-2); color: var(--ink-muted); }
+
+  /* Section header */
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Summary table */
+  .summary-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .summary-table th { background: var(--ink); color: #fff; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 14px; font-weight: 500; text-align: left; }
+  .summary-table th.right { text-align: right; }
+  .summary-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .summary-table td.right { text-align: right; }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:hover td { background: var(--surface-2); }
+
+  /* Accordion */
+  .accordion { margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .accordion-trigger {
+    width: 100%;
+    background: var(--surface);
+    border: none;
+    text-align: left;
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: background 0.15s;
+  }
+  .accordion-trigger:hover { background: var(--surface-2); }
+  .accordion-trigger .trigger-left { display: flex; align-items: center; gap: 10px; }
+  .trigger-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .trigger-dot.blue { background: var(--blue); }
+  .trigger-dot.green { background: var(--accent); }
+  .trigger-dot.orange { background: var(--warn); }
+  .trigger-meta { font-size: 10px; color: var(--ink-muted); font-weight: 400; }
+  .trigger-chevron { font-size: 10px; color: var(--ink-muted); transition: transform 0.2s; }
+  .accordion.open .trigger-chevron { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 20px; background: var(--surface); border-top: 1px solid var(--border); }
+  .accordion.open .accordion-body { display: block; }
+
+  /* Chart grid inside accordion */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .chart-panel { }
+  .chart-panel-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 4px; }
+  .chart-panel-total { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin-bottom: 14px; }
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* Data table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); padding: 6px 8px; border-bottom: 1px solid var(--border); font-weight: 500; }
+  .data-table th.right { text-align: right; }
+  .data-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td.right { text-align: right; }
+  .data-table tr.total td { font-weight: 500; background: var(--surface-2); font-family: 'Fraunces', serif; font-size: 13px; }
+  .data-table tr:not(.total):hover td { background: var(--surface-2); }
+
+  .yoy-badge { font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+  .yoy-badge.up { background: var(--accent-light); color: var(--up); }
+  .yoy-badge.down { background: var(--warn-light); color: var(--down); }
+  .yoy-badge.na { background: var(--surface-2); color: var(--ink-muted); }
+
+  .val-pos { color: var(--up); font-weight: 500; }
+  .val-neg { color: var(--down); font-weight: 500; }
+
+  /* Bar inline */
+  .bar-row { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { width: 60px; height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-fill.blue { background: var(--blue); }
+  .bar-fill.green { background: var(--accent); }
+  .bar-fill.orange { background: var(--warn); }
+
+  /* Churn note */
+  .churn-note {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    border-left: 3px solid var(--neutral);
+  }
+
+  .footnote { font-size: 10px; color: var(--ink-faint); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="report-title">International Growth — Key Metrics</div>
+  <div class="report-sub">March 2026 &nbsp;·&nbsp; Reporting Period: 1 Mar – 31 Mar 2026 &nbsp;·&nbsp; Submitted by: Yonis Brander</div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-row">
+  <div class="kpi-card pipeline">
+    <div class="kpi-label">MKT Generated Pipeline ARR</div>
+    <div class="kpi-value">$457k</div>
+    <div class="kpi-delta">
+      <span class="delta-pill up">↑ +52% MoM</span>
+      <span class="delta-pill up">↑ +1,470% YoY</span>
+    </div>
+  </div>
+  <div class="kpi-card new-arr">
+    <div class="kpi-label">New ARR</div>
+    <div class="kpi-value">$56k</div>
+    <div class="kpi-delta">
+      <span class="delta-pill up">↑ +70% MoM</span>
+      <span class="delta-pill up">↑ +53% YoY</span>
+    </div>
+  </div>
+  <div class="kpi-card churn-arr">
+    <div class="kpi-label">Churned ARR</div>
+    <div class="kpi-value">$14k</div>
+    <div class="kpi-delta">
+      <span class="delta-pill up">↓ −17% MoM</span>
+      <span class="delta-pill na">YoY N/A</span>
+    </div>
+  </div>
+  <div class="kpi-card churn-rate">
+    <div class="kpi-label">Monthly ARR Churn Rate</div>
+    <div class="kpi-value">1.9%</div>
+    <div class="kpi-delta">
+      <span class="delta-pill up">↓ from 2.3% Feb</span>
+      <span class="delta-pill na">YoY N/A</span>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Table -->
+<div class="section-label mb-12">Summary</div>
+<div class="summary-wrap mb-24">
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th class="right">Feb '26</th>
+        <th class="right">Mar '26</th>
+        <th class="right">Mar '25 (YoY)</th>
+        <th class="right">MoM Δ</th>
+        <th class="right">YoY Δ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>MKT Generated Pipeline ARR</td>
+        <td class="right">$301,006</td>
+        <td class="right">$456,656</td>
+        <td class="right">$29,064</td>
+        <td class="right"><span class="val-pos">+52%</span></td>
+        <td class="right"><span class="val-pos">+1,470%</span></td>
+      </tr>
+      <tr>
+        <td>New ARR</td>
+        <td class="right">$32,713</td>
+        <td class="right">$55,616</td>
+        <td class="right">$36,265</td>
+        <td class="right"><span class="val-pos">+70%</span></td>
+        <td class="right"><span class="val-pos">+53%</span></td>
+      </tr>
+      <tr>
+        <td>Churned ARR</td>
+        <td class="right">$16,862</td>
+        <td class="right">$14,037</td>
+        <td class="right">N/A</td>
+        <td class="right"><span class="val-pos">−17%</span></td>
+        <td class="right"><span class="yoy-badge na">N/A</span></td>
+      </tr>
+      <tr>
+        <td>Monthly ARR Churn Rate</td>
+        <td class="right">2.3%</td>
+        <td class="right">1.9%</td>
+        <td class="right">N/A</td>
+        <td class="right"><span class="val-pos">−0.4pp</span></td>
+        <td class="right"><span class="yoy-badge na">N/A</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Breakdowns label -->
+<div class="section-label mb-12">Country Breakdowns</div>
+
+<!-- MARKETING accordion -->
+<div class="accordion open" id="acc-mkt">
+  <button class="accordion-trigger" onclick="toggleAccordion('acc-mkt')">
+    <div class="trigger-left">
+      <span class="trigger-dot blue"></span>
+      <span>Marketing — MKT Generated Pipeline ARR</span>
+      <span class="trigger-meta">$456,656 total &nbsp;·&nbsp; Mar '26</span>
+    </div>
+    <span class="trigger-chevron">▼</span>
+  </button>
+  <div class="accordion-body">
+    <div class="chart-grid">
+      <div class="chart-panel">
+        <div class="chart-panel-title">Pipeline by Country — March 2026</div>
+        <div class="chart-panel-total">$456,656</div>
+        <div class="chart-wrap">
+          <canvas id="chartPipeline"></canvas>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-panel-title">Country breakdown &amp; YoY</div>
+        <div class="chart-panel-total" style="visibility:hidden">-</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th class="right">Mar '26</th>
+              <th class="right">Mar '25</th>
+              <th class="right">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>🇬🇧 United Kingdom</td><td class="right">$107,832</td><td class="right">$7,482</td><td class="right"><span class="yoy-badge up">+1,341%</span></td></tr>
+            <tr><td>🇦🇺 Australia</td><td class="right">$66,766</td><td class="right">$16,627</td><td class="right"><span class="yoy-badge up">+302%</span></td></tr>
+            <tr><td>🇷🇴 Romania</td><td class="right">$51,735</td><td class="right">$1,600</td><td class="right"><span class="yoy-badge up">+3,233%</span></td></tr>
+            <tr><td>🇫🇷 France</td><td class="right">$48,918</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr><td>🇧🇷 Brazil</td><td class="right">$40,000</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr><td>🇯🇵 Japan</td><td class="right">$40,000</td><td class="right">$751</td><td class="right"><span class="yoy-badge up">+5,224%</span></td></tr>
+            <tr><td>🇵🇹 Portugal</td><td class="right">$37,600</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr><td>🇮🇹 Italy</td><td class="right">$24,800</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr><td>🇨🇭 Switzerland</td><td class="right">$20,000</td><td class="right">$671</td><td class="right"><span class="yoy-badge up">+2,880%</span></td></tr>
+            <tr><td>🇦🇹 Austria</td><td class="right">—</td><td class="right">$1,933</td><td class="right">—</td></tr>
+            <tr><td>🇪🇸 Spain</td><td class="right">$8,000</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr class="total"><td>Total</td><td class="right">$456,656</td><td class="right">$29,064</td><td class="right"><span class="val-pos">+1,470%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SALES accordion -->
+<div class="accordion open" id="acc-sales">
+  <button class="accordion-trigger" onclick="toggleAccordion('acc-sales')">
+    <div class="trigger-left">
+      <span class="trigger-dot green"></span>
+      <span>Sales — New ARR</span>
+      <span class="trigger-meta">$55,616 total &nbsp;·&nbsp; Mar '26</span>
+    </div>
+    <span class="trigger-chevron">▼</span>
+  </button>
+  <div class="accordion-body">
+    <div class="chart-grid">
+      <div class="chart-panel">
+        <div class="chart-panel-title">New ARR by Country — March 2026</div>
+        <div class="chart-panel-total">$55,616</div>
+        <div class="chart-wrap">
+          <canvas id="chartNewArr"></canvas>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-panel-title">Country breakdown &amp; YoY</div>
+        <div class="chart-panel-total" style="visibility:hidden">-</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th class="right">Mar '26</th>
+              <th class="right">Mar '25</th>
+              <th class="right">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>🇷🇴 Romania</td><td class="right">$25,024</td><td class="right">$3,226</td><td class="right"><span class="yoy-badge up">+676%</span></td></tr>
+            <tr><td>🇦🇺 Australia</td><td class="right">$15,021</td><td class="right">$10,207</td><td class="right"><span class="yoy-badge up">+47%</span></td></tr>
+            <tr><td>🇦🇹 Austria</td><td class="right">$7,385</td><td class="right">$1,933</td><td class="right"><span class="yoy-badge up">+282%</span></td></tr>
+            <tr><td>🇩🇪 Germany</td><td class="right">$6,470</td><td class="right">$4,448</td><td class="right"><span class="yoy-badge up">+45%</span></td></tr>
+            <tr><td>🇫🇷 France</td><td class="right">$918</td><td class="right">—</td><td class="right"><span class="yoy-badge na">New</span></td></tr>
+            <tr><td>🇬🇧 United Kingdom</td><td class="right">$799</td><td class="right">$9,234</td><td class="right"><span class="yoy-badge down">−91%</span></td></tr>
+            <tr><td>🇨🇭 Switzerland</td><td class="right">—</td><td class="right">$4,013</td><td class="right">—</td></tr>
+            <tr><td>🇮🇹 Italy</td><td class="right">—</td><td class="right">$3,204</td><td class="right">—</td></tr>
+            <tr class="total"><td>Total</td><td class="right">$55,616</td><td class="right">$36,265</td><td class="right"><span class="val-pos">+53%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CS accordion -->
+<div class="accordion open" id="acc-cs">
+  <button class="accordion-trigger" onclick="toggleAccordion('acc-cs')">
+    <div class="trigger-left">
+      <span class="trigger-dot orange"></span>
+      <span>Customer Success — Churned ARR</span>
+      <span class="trigger-meta">$14,037 total &nbsp;·&nbsp; 1.9% monthly churn &nbsp;·&nbsp; Mar '26</span>
+    </div>
+    <span class="trigger-chevron">▼</span>
+  </button>
+  <div class="accordion-body">
+    <div class="chart-grid">
+      <div class="chart-panel">
+        <div class="chart-panel-title">Churned ARR by Country — March 2026</div>
+        <div class="chart-panel-total">$14,037</div>
+        <div class="chart-wrap">
+          <canvas id="chartChurn"></canvas>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-panel-title">Country breakdown</div>
+        <div class="chart-panel-total" style="visibility:hidden">-</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th class="right">Mar '26</th>
+              <th class="right">% Share</th>
+              <th>Bar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🇮🇹 Italy</td>
+              <td class="right val-neg">$6,557</td>
+              <td class="right">46.7%</td>
+              <td><div class="bar-row"><div class="bar-bg"><div class="bar-fill orange" style="width:100%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td>🇩🇪 Germany</td>
+              <td class="right val-neg">$3,708</td>
+              <td class="right">26.4%</td>
+              <td><div class="bar-row"><div class="bar-bg"><div class="bar-fill orange" style="width:57%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td>🇦🇺 Australia</td>
+              <td class="right val-neg">$2,968</td>
+              <td class="right">21.1%</td>
+              <td><div class="bar-row"><div class="bar-bg"><div class="bar-fill orange" style="width:45%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td>🇬🇧 United Kingdom</td>
+              <td class="right val-neg">$804</td>
+              <td class="right">5.7%</td>
+              <td><div class="bar-row"><div class="bar-bg"><div class="bar-fill orange" style="width:12%"></div></div></div></td>
+            </tr>
+            <tr class="total"><td>Total</td><td class="right">$14,037</td><td class="right">100%</td><td></td></tr>
+          </tbody>
+        </table>
+        <div class="churn-note">
+          <strong>Churn rate:</strong> $14,037 churned ÷ $744,578 starting ARR = <strong>1.9%</strong> monthly churn &nbsp;·&nbsp; No YoY comparison available
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footnote">
+  Data source: HubSpot &nbsp;·&nbsp; Reporting period: March 1–31, 2026 &nbsp;·&nbsp; Starting ARR basis (Jan 1 2026): $744,578 &nbsp;·&nbsp; YoY: March 2025
+</div>
+
+<script>
+  function toggleAccordion(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  const chartDefaults = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a1814',
+        titleFont: { family: 'DM Mono', size: 11 },
+        bodyFont: { family: 'DM Mono', size: 11 },
+        padding: 10,
+        callbacks: {
+          label: ctx => ` $${ctx.raw.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#e2ded8' },
+        ticks: {
+          font: { family: 'DM Mono', size: 10 },
+          color: '#6b6660',
+          callback: v => '$' + (v >= 1000 ? Math.round(v/1000) + 'k' : v)
+        },
+        border: { display: false }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { family: 'DM Mono', size: 11 }, color: '#1a1814' },
+        border: { display: false }
+      }
+    }
+  };
+
+  new Chart(document.getElementById('chartPipeline'), {
+    type: 'bar',
+    data: {
+      labels: ['UK', 'AU', 'RO', 'FR', 'BR', 'JP', 'PT', 'IT', 'CH', 'ES'],
+      datasets: [{
+        data: [107832, 66766, 51735, 48918, 40000, 40000, 37600, 24800, 20000, 8000],
+        backgroundColor: '#2d5fa6',
+        borderRadius: 3,
+        barThickness: 16
+      }]
+    },
+    options: JSON.parse(JSON.stringify(chartDefaults))
+  });
+
+  new Chart(document.getElementById('chartNewArr'), {
+    type: 'bar',
+    data: {
+      labels: ['RO', 'AU', 'AT', 'DE', 'FR', 'UK'],
+      datasets: [{
+        data: [25024, 15021, 7385, 6470, 918, 799],
+        backgroundColor: '#1d6b4f',
+        borderRadius: 3,
+        barThickness: 16
+      }]
+    },
+    options: JSON.parse(JSON.stringify(chartDefaults))
+  });
+
+  new Chart(document.getElementById('chartChurn'), {
+    type: 'bar',
+    data: {
+      labels: ['IT', 'DE', 'AU', 'UK'],
+      datasets: [{
+        data: [6557, 3708, 2968, 804],
+        backgroundColor: '#c45c2a',
+        borderRadius: 3,
+        barThickness: 16
+      }]
+    },
+    options: JSON.parse(JSON.stringify(chartDefaults))
+  });
+</script>
+</body>
+</html>
