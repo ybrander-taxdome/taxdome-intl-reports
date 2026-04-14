@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales: WoW Report W15 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1F2D5C;
+    --blue: #4B9CD3;
+    --blue-light: #e8f4fd;
+    --green: #27AE60;
+    --green-light: #e8f8f0;
+    --amber: #E67E22;
+    --amber-light: #fef3e8;
+    --red: #C0392B;
+    --red-light: #fce8e6;
+    --bg: #F4F6FB;
+    --surface: #ffffff;
+    --border: #e2e8f4;
+    --text: #1a2340;
+    --muted: #7a8aaa;
+    --dach: #4B9CD3;
+    --ro: #9B59B6;
+    --anz: #27AE60;
+    --uk: #E67E22;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; }
+
+  .report-header { background: var(--navy); padding: 26px 36px 20px; }
+  .header-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .header-title { font-size: 22px; font-weight: 700; color: white; }
+  .header-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; margin-bottom: 16px; }
+  .period-legend { display: flex; gap: 20px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .period-pill { display: flex; align-items: center; gap: 7px; }
+  .period-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .period-label { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .period-label strong { color: white; font-weight: 600; }
+
+  .body { padding: 24px 36px; max-width: 1200px; }
+  .section-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; margin-top: 28px; }
+  .section-header:first-child { margin-top: 0; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); white-space: nowrap; }
+  .section-rule { flex: 1; height: 1px; background: var(--border); }
+
+  /* METRIC BLOCK: core component */
+  .metric-block { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 12px; }
+  .metric-block-header { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #f8faff; }
+  .metric-block-title { font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.07em; }
+  .metric-block-note { font-size: 10px; color: var(--muted); }
+
+  /* THREE-PERIOD ROW */
+  .three-period { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .tp-cell { padding: 16px 18px; border-right: 1px solid var(--border); }
+  .tp-cell:last-child { border-right: none; }
+  .tp-period { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .tp-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .tp-value { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 5px; }
+  .tp-value.muted { color: var(--muted); font-size: 20px; }
+  .tp-delta { font-size: 11px; font-weight: 600; margin-bottom: 3px; }
+  .tp-delta.up   { color: var(--green); }
+  .tp-delta.down { color: var(--red); }
+  .tp-delta.flat { color: var(--amber); }
+  .tp-sub { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  /* CM TABLE */
+  .cm-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .cm-table th { background: #f4f6fb; color: var(--muted); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border); border-top: 1px solid var(--border); }
+  .cm-table th.r { text-align: right; }
+  .cm-table td { padding: 8px 14px; border-bottom: 1px solid #f0f3fa; }
+  .cm-table td.r { text-align: right; }
+  .cm-table tr:last-child td { border-bottom: none; font-weight: 700; background: #f8faff; }
+
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+  .badge.g    { background: var(--green-light); color: #1a7a42; }
+  .badge.a    { background: var(--amber-light); color: #a05a10; }
+  .badge.r    { background: var(--red-light);   color: #922010; }
+  .badge.b    { background: var(--blue-light);  color: #1a5a8a; }
+  .badge.grey { background: #f0f0f0; color: #888; }
+
+  .cm { display: inline-flex; align-items: center; gap: 6px; }
+  .cm-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  .alert { border-radius: 8px; padding: 11px 14px; margin-bottom: 12px; border-left: 3px solid; font-size: 12px; line-height: 1.6; }
+  .alert.amber { background: var(--amber-light); border-color: var(--amber); }
+  .alert.red   { background: var(--red-light);   border-color: var(--red); }
+  .alert.blue  { background: var(--blue-light);  border-color: var(--blue); }
+  .alert-title { font-weight: 700; color: var(--navy); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+
+  .quota-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 12px; }
+  .quota-name { width: 110px; font-weight: 500; flex-shrink: 0; font-size: 11px; }
+  .quota-bar-wrap { flex: 1; height: 8px; background: #eef1f9; border-radius: 99px; overflow: hidden; }
+  .quota-bar { height: 100%; border-radius: 99px; }
+  .quota-val { width: 58px; text-align: right; font-weight: 600; color: var(--navy); font-size: 11px; }
+  .quota-pct { width: 42px; text-align: right; font-size: 11px; font-weight: 700; }
+
+  .report-footer { padding: 14px 36px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="header-eyebrow">TaxDome · International Growth · GTM Bowtie · Sales Segment</div>
+  <div class="header-title">Sales: WoW Report</div>
+  <div class="header-sub">Week 15 · 7-13 Apr 2026 · Data pulled 14 Apr 2026</div>
+  <div class="period-legend">
+    <div class="period-pill">
+      <div class="period-dot" style="background:#1F2D5C;"></div>
+      <div class="period-label"><strong>Last week</strong> w/c 7 Apr 2026</div>
+    </div>
+    <div class="period-pill">
+      <div class="period-dot" style="background:#4B9CD3;"></div>
+      <div class="period-label"><strong>Week prior</strong> w/c 31 Mar 2026</div>
+    </div>
+    <div class="period-pill">
+      <div class="period-dot" style="background:rgba(200,200,200,0.6);"></div>
+      <div class="period-label"><strong>Same week last year</strong> w/c 7 Apr 2025</div>
+    </div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- PIPELINE WORKED -->
+  <div class="section-header" style="margin-top:24px;">
+    <div class="section-title">Pipeline Worked (ARR)</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="alert blue">
+    <div class="alert-title">What this measures</div>
+    Pipeline is generated by SDRs and Marketing. CMs work the demos booked for them. This metric tracks the total ARR value of those deals each week.
+  </div>
+
+  <div class="metric-block">
+    <div class="three-period">
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#1F2D5C;"></div>Last week: w/c 7 Apr 2026</div>
+        <div class="tp-value">$34,400</div>
+        <div class="tp-delta down">↓ 85% vs week prior</div>
+        <div class="tp-sub">Joanne $28K · Ajla $5.6K · Alina $0.8K · Samuel $0</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#4B9CD3;"></div>Week prior: w/c 31 Mar 2026</div>
+        <div class="tp-value">$235,200</div>
+        <div class="tp-delta flat">Outlier high</div>
+        <div class="tp-sub">Alina $136K · Samuel $57.6K · Joanne $41.6K</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:rgba(180,180,180,0.6);"></div>Same week LY: w/c 7 Apr 2025</div>
+        <div class="tp-value">$9,074</div>
+        <div class="tp-delta up">↑ 279% YoY</div>
+        <div class="tp-sub">Joanne $4,631 · Samuel $3,152 · Alina $1,311</div>
+      </div>
+    </div>
+    <table class="cm-table">
+      <thead>
+        <tr>
+          <th>CM</th>
+          <th class="r">Last week (7 Apr)</th>
+          <th class="r">Week prior (31 Mar)</th>
+          <th class="r">WoW</th>
+          <th class="r">Same week LY (7 Apr 25)</th>
+          <th class="r">YoY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--dach)"></span>Ajla (DACH)</span></td>
+          <td class="r">$5,600</td><td class="r">$0</td>
+          <td class="r"><span class="badge g">+$5,600</span></td>
+          <td class="r">$0</td><td class="r"><span class="badge grey">n/a</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--ro)"></span>Alina (Romania)</span></td>
+          <td class="r">$800</td><td class="r">$136,000</td>
+          <td class="r"><span class="badge r">-99%</span></td>
+          <td class="r">$1,311</td><td class="r"><span class="badge r">-39%</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--anz)"></span>Joanne (ANZ)</span></td>
+          <td class="r">$28,000</td><td class="r">$41,600</td>
+          <td class="r"><span class="badge r">-33%</span></td>
+          <td class="r">$4,631</td><td class="r"><span class="badge g">+505%</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--uk)"></span>Samuel (UK)</span></td>
+          <td class="r">$0</td><td class="r">$57,600</td>
+          <td class="r"><span class="badge r">-100%</span></td>
+          <td class="r">$3,152</td><td class="r"><span class="badge r">-100%</span></td>
+        </tr>
+        <tr>
+          <td>Team Total</td>
+          <td class="r">$34,400</td><td class="r">$235,200</td>
+          <td class="r"><span class="badge r">-85%</span></td>
+          <td class="r">$9,074</td><td class="r"><span class="badge g">+279%</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SHOW RATE -->
+  <div class="section-header">
+    <div class="section-title">Show Rate</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="alert blue">
+    <div class="alert-title">Last week is partial data</div>
+    Only 2 demos booked with 0 held as of 14 Apr. The week is not yet closed. Use the week prior (w/c 31 Mar) as the current read.
+  </div>
+
+  <div class="metric-block">
+    <div class="three-period">
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#1F2D5C;"></div>Last week: w/c 7 Apr 2026</div>
+        <div class="tp-value muted">Partial</div>
+        <div class="tp-delta flat">0/2 demos · week not closed</div>
+        <div class="tp-sub">Not a valid signal</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#4B9CD3;"></div>Week prior: w/c 31 Mar 2026</div>
+        <div class="tp-value">51.4%</div>
+        <div class="tp-delta flat">19 held / 37 booked</div>
+        <div class="tp-sub">Alina 43.8% · Joanne 58.3% · Samuel 55.6%</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:rgba(180,180,180,0.6);"></div>Same week LY: w/c 7 Apr 2025</div>
+        <div class="tp-value">72.7%</div>
+        <div class="tp-delta down">↓ 21pp vs week prior 2026</div>
+        <div class="tp-sub">24 held / 33 booked · Alina 100% · Joanne 66.7% · Samuel 70.9%</div>
+      </div>
+    </div>
+    <table class="cm-table">
+      <thead>
+        <tr>
+          <th>CM</th>
+          <th class="r">Last week (partial)</th>
+          <th class="r">Week prior (31 Mar)</th>
+          <th class="r">Same week LY (7 Apr 25)</th>
+          <th class="r">YoY vs week prior</th>
+          <th class="r">YTD 2026</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--dach)"></span>Ajla (DACH)</span></td>
+          <td class="r"><span class="badge grey">0/1: partial</span></td>
+          <td class="r"><span class="badge grey">0/0: n/a</span></td>
+          <td class="r"><span class="badge grey">0/0 · n/a</span></td>
+          <td class="r">-</td>
+          <td class="r"><span class="badge g">83.3%</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--ro)"></span>Alina (Romania)</span></td>
+          <td class="r"><span class="badge grey">0/0: partial</span></td>
+          <td class="r"><span class="badge r">7/16 · 43.8%</span></td>
+          <td class="r"><span class="badge g">3/3 · 100%</span></td>
+          <td class="r"><span class="badge r">↓ vs 100%</span></td>
+          <td class="r"><span class="badge r">47.2%</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--anz)"></span>Joanne (ANZ)</span></td>
+          <td class="r"><span class="badge grey">0/1: partial</span></td>
+          <td class="r"><span class="badge a">7/12 · 58.3%</span></td>
+          <td class="r"><span class="badge g">4/6 · 66.7%</span></td>
+          <td class="r"><span class="badge r">↓ vs 66.7%</span></td>
+          <td class="r"><span class="badge a">71.7%</span></td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--uk)"></span>Samuel (UK)</span></td>
+          <td class="r"><span class="badge grey">0/0: partial</span></td>
+          <td class="r"><span class="badge a">5/9 · 55.6%</span></td>
+          <td class="r"><span class="badge g">17/24 · 70.9%</span></td>
+          <td class="r"><span class="badge r">↓ vs 70.9%</span></td>
+          <td class="r"><span class="badge a">61.2%</span></td>
+        </tr>
+        <tr>
+          <td>Team Total</td>
+          <td class="r">0/2: partial</td>
+          <td class="r">51.4%</td>
+          <td class="r">72.7%</td>
+          <td class="r"><span class="badge r">↓ 21pp YoY</span></td>
+          <td class="r">62.4%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WIN RATE + ARR -->
+  <div class="section-header">
+    <div class="section-title">Closed Won / Lost and ARR</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="metric-block" style="margin-bottom:10px;">
+    <div class="metric-block-header">
+      <div class="metric-block-title">ARR Closed</div>
+      <div class="metric-block-note">From HubSpot revenue reports</div>
+    </div>
+    <div class="three-period">
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#1F2D5C;"></div>Last week: w/c 7 Apr 2026</div>
+        <div class="tp-value">$3,477</div>
+        <div class="tp-delta down">↓ 60% vs week prior</div>
+        <div class="tp-sub">Alina $1,866 · Samuel $1,611</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#4B9CD3;"></div>Week prior: w/c 31 Mar 2026</div>
+        <div class="tp-value">$8,642</div>
+        <div class="tp-delta flat">5 deals</div>
+        <div class="tp-sub">Joanne $4,947 (4 deals) · Alina $3,694</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:rgba(180,180,180,0.6);"></div>Same week LY: w/c 7 Apr 2025</div>
+        <div class="tp-value">~$6,472</div>
+        <div class="tp-delta down">↓ ~46% YoY</div>
+        <div class="tp-sub">4 deals · estimated at 2025 avg ASP</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-block">
+    <div class="metric-block-header">
+      <div class="metric-block-title">Win Rate</div>
+      <div class="metric-block-note">Closed Won vs Closed Lost</div>
+    </div>
+    <div class="three-period">
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#1F2D5C;"></div>Last week: w/c 7 Apr 2026</div>
+        <div class="tp-value">14.3%</div>
+        <div class="tp-delta flat">1 won · 6 lost · 7 total</div>
+        <div class="tp-sub">Joanne 1 won · Ajla 0 · Samuel 0</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:#4B9CD3;"></div>Week prior: w/c 31 Mar 2026</div>
+        <div class="tp-value">16.7%</div>
+        <div class="tp-delta flat">1 won · 5 lost · 6 total</div>
+        <div class="tp-sub">Alina 1 won · others 0</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period"><div class="tp-dot" style="background:rgba(180,180,180,0.6);"></div>Same week LY: w/c 14 Apr 2025</div>
+        <div class="tp-value">16.7%</div>
+        <div class="tp-delta flat">1 won · 5 lost · 6 total</div>
+        <div class="tp-sub">Joanne 1 won · others 0</div>
+      </div>
+    </div>
+    <table class="cm-table">
+      <thead>
+        <tr>
+          <th>CM</th>
+          <th class="r">Last week Won/Lost</th>
+          <th class="r">Week prior Won/Lost</th>
+          <th class="r">Same week LY Won/Lost</th>
+          <th class="r">YTD 2026 win rate</th>
+          <th class="r">2025 full year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--dach)"></span>Ajla (DACH)</span></td>
+          <td class="r">0 / 1</td><td class="r">0 / 0</td><td class="r">0 / 0</td>
+          <td class="r"><span class="badge g">55.4%</span></td><td class="r">31.5%</td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--ro)"></span>Alina (Romania)</span></td>
+          <td class="r">0 / 0</td><td class="r">1 / 1</td><td class="r">0 / 0</td>
+          <td class="r"><span class="badge a">26.7%</span></td><td class="r">56.5%</td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--anz)"></span>Joanne (ANZ)</span></td>
+          <td class="r">1 / 4</td><td class="r">0 / 1</td><td class="r">0 / 2</td>
+          <td class="r"><span class="badge a">34.0%</span></td><td class="r">31.7%</td>
+        </tr>
+        <tr>
+          <td><span class="cm"><span class="cm-dot" style="background:var(--uk)"></span>Samuel (UK)</span></td>
+          <td class="r">0 / 1</td><td class="r">0 / 3</td><td class="r">2 / 4</td>
+          <td class="r"><span class="badge a">21.4%</span></td><td class="r">14.7%</td>
+        </tr>
+        <tr>
+          <td>Team Total</td>
+          <td class="r">1 won · 6 lost</td>
+          <td class="r">1 won · 5 lost</td>
+          <td class="r">4 won · 7 lost</td>
+          <td class="r">30.5%</td><td class="r">28.5%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- QUOTA -->
+  <div class="section-header">
+    <div class="section-title">Quota Attainment and Pace: April MTD</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="alert red">
+    <div class="alert-title">Alina: SEPA payment failure on $13,905 deal</div>
+    Deal 56614213743 closed last week but the SEPA payment failed this week. The $13,905 is in reported MTD bookings but should not be counted as collected. Adjusted team pacing drops from 89% to ~34%.
+  </div>
+
+  <div class="metric-block">
+    <div class="three-period">
+      <div class="tp-cell">
+        <div class="tp-period">Team quota (April)</div>
+        <div class="tp-value">$70,000</div>
+        <div class="tp-sub">14 of 30 days elapsed (47%)</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period">MTD bookings (reported)</div>
+        <div class="tp-value">$22,713</div>
+        <div class="tp-delta flat">32% attainment · pacing 89%</div>
+        <div class="tp-sub">Includes $13,905 SEPA deal</div>
+      </div>
+      <div class="tp-cell">
+        <div class="tp-period">MTD bookings (adjusted)</div>
+        <div class="tp-value" style="color:var(--red);">$8,808</div>
+        <div class="tp-delta down">12.6% attainment · pacing ~34%</div>
+        <div class="tp-sub">Ex. $13,905 SEPA failure</div>
+      </div>
+    </div>
+    <div style="padding:16px 16px 14px; border-top:1px solid var(--border);">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Reported pacing by CM: April MTD</div>
+      <div class="quota-row">
+        <div class="quota-name"><span class="cm"><span class="cm-dot" style="background:var(--ro)"></span>Alina</span></div>
+        <div class="quota-bar-wrap"><div class="quota-bar" style="width:88.5%;background:var(--ro);"></div></div>
+        <div class="quota-val">$19,465</div>
+        <div class="quota-pct" style="color:var(--ro);">243%*</div>
+      </div>
+      <div class="quota-row">
+        <div class="quota-name"><span class="cm"><span class="cm-dot" style="background:var(--uk)"></span>Samuel</span></div>
+        <div class="quota-bar-wrap"><div class="quota-bar" style="width:18.6%;background:var(--uk);"></div></div>
+        <div class="quota-val">$2,419</div>
+        <div class="quota-pct" style="color:var(--amber);">51%</div>
+      </div>
+      <div class="quota-row">
+        <div class="quota-name"><span class="cm"><span class="cm-dot" style="background:var(--anz)"></span>Joanne</span></div>
+        <div class="quota-bar-wrap"><div class="quota-bar" style="width:4.6%;background:var(--anz);"></div></div>
+        <div class="quota-val">$829</div>
+        <div class="quota-pct" style="color:var(--red);">13%</div>
+      </div>
+      <div class="quota-row">
+        <div class="quota-name"><span class="cm"><span class="cm-dot" style="background:var(--dach)"></span>Ajla</span></div>
+        <div class="quota-bar-wrap"><div class="quota-bar" style="width:0%;background:var(--dach);"></div></div>
+        <div class="quota-val">$0</div>
+        <div class="quota-pct" style="color:var(--red);">0%</div>
+      </div>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px;">* Pacing projected to month-end based on MTD run rate. Alina's 243% includes the $13,905 SEPA deal pending resolution.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="report-footer">
+  <span>TaxDome · International Growth · Sales WoW · Week 15 · 7-13 Apr 2026</span>
+  <span>Data: HubSpot · Prepared 14 Apr 2026</span>
+</div>
+
+</body>
+</html>
