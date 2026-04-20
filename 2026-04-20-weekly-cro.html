@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly CRO Report — April 13–19, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1F2D5C;
+    --blue: #4B9CD3;
+    --green: #2ECC71;
+    --amber: #F39C12;
+    --red: #E74C3C;
+    --bg: #F0F2F7;
+    --card: #ffffff;
+    --border: #E2E6F0;
+    --muted: #8B95AE;
+    --text: #1A2240;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+    min-width: 680px;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────────── */
+  .report-header {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .report-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .report-header .period {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+  .report-badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ─── SECTION LABELS ────────────────────────────────── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px 2px;
+  }
+
+  /* ─── KPI GRID ───────────────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+  .kpi-card.blue::before  { background: var(--blue); }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.amber::before { background: var(--amber); }
+  .kpi-card.navy::before  { background: var(--navy); }
+  .kpi-card.teal::before  { background: #00BCD4; }
+  .kpi-card.purple::before { background: #9B59B6; }
+
+  .kpi-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .kpi-delta {
+    font-size: 11.5px;
+    font-weight: 600;
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+  .kpi-delta.up   { color: var(--green); }
+  .kpi-delta.down { color: var(--red); }
+  .kpi-delta.flat { color: var(--amber); }
+  .kpi-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ─── CHART GRID ────────────────────────────────────── */
+  .charts-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .charts-grid-1 {
+    margin-bottom: 14px;
+  }
+  @media (max-width: 860px) {
+    .charts-grid-2 { grid-template-columns: 1fr; }
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 20px 16px;
+  }
+  .chart-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .chart-card .chart-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .chart-wrap {
+    position: relative;
+  }
+
+  /* ─── WIN RATE + CM TABLE ───────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 860px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  .stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .stat-table th {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-table td {
+    padding: 9px 0 0;
+    color: var(--text);
+    vertical-align: top;
+  }
+  .stat-table td.num {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+  .stat-table td.delta-col {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+  }
+  .tag.region-anz  { background: #E8F4FD; color: #2471A3; }
+  .tag.region-ro   { background: #FDFBE7; color: #B7950B; }
+  .tag.region-dach { background: #EAF7EF; color: #1E8449; }
+  .tag.region-uk   { background: #F5EEF8; color: #7D3C98; }
+
+  /* ─── PACE INDICATOR ────────────────────────────────── */
+  .pace-bar-wrap {
+    margin-top: 6px;
+  }
+  .pace-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .pace-bar-label {
+    font-size: 11px;
+    color: var(--muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+  .pace-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .pace-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 1s ease;
+  }
+  .pace-bar-val {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--navy);
+    width: 52px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  .report-footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="report-header">
+  <div>
+    <h1>International Growth — Weekly CRO Report</h1>
+    <div class="period">Reporting period: April 13–19, 2026</div>
+  </div>
+  <div class="report-badge">Live Data</div>
+</div>
+
+<!-- KPI Cards -->
+<div class="section-label">This Week</div>
+<div class="kpi-grid">
+  <div class="kpi-card blue">
+    <div class="kpi-label">Closed ARR</div>
+    <div class="kpi-value">$9.9k</div>
+    <div class="kpi-delta up">▲ +186% WoW</div>
+    <div class="kpi-sub">vs $3.5k prior week</div>
+  </div>
+  <div class="kpi-card navy">
+    <div class="kpi-label">Deals Won</div>
+    <div class="kpi-value">6</div>
+    <div class="kpi-delta up">▲ +200% WoW</div>
+    <div class="kpi-sub">vs 2 prior week</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kpi-label">ASP</div>
+    <div class="kpi-value">$1.7k</div>
+    <div class="kpi-delta down">▼ -5% WoW</div>
+    <div class="kpi-sub">vs $1.7k prior week</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">MTD ARR</div>
+    <div class="kpi-value">$17.9k</div>
+    <div class="kpi-delta up">▲ +7% YoY</div>
+    <div class="kpi-sub">vs $16.7k Apr 2025</div>
+  </div>
+  <div class="kpi-card teal">
+    <div class="kpi-label">YTD ARR</div>
+    <div class="kpi-value">$160.9k</div>
+    <div class="kpi-delta up">▲ +74% YoY</div>
+    <div class="kpi-sub">vs $92.4k same period 2025</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Quota Pace</div>
+    <div class="kpi-value">54%</div>
+    <div class="kpi-delta down">▼ $137.7k behind</div>
+    <div class="kpi-sub">$160.9k of $298.6k expected</div>
+  </div>
+</div>
+
+<!-- Charts Row 1: Weekly trend + MTD YoY -->
+<div class="charts-grid-2">
+  <div class="chart-card">
+    <h3>Weekly Closed ARR — Last 4 Weeks</h3>
+    <div class="chart-sub">Int'l Sales pipeline — won deals by week</div>
+    <div class="chart-wrap" style="height:190px">
+      <canvas id="weeklyChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <h3>April MTD — Year-over-Year</h3>
+    <div class="chart-sub">April 1–19 cumulative ARR: 2025 vs 2026</div>
+    <div class="chart-wrap" style="height:190px">
+      <canvas id="mtdChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- YTD Progress Chart -->
+<div class="charts-grid-1">
+  <div class="chart-card">
+    <h3>YTD Closed ARR — 2025 vs 2026 vs Annual Target Pace</h3>
+    <div class="chart-sub">January 1 – April 19 cumulative. Annual target $1,000,000.</div>
+    <div class="chart-wrap" style="height:180px">
+      <canvas id="ytdChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Row: CM breakdown + Quota pace bars -->
+<div class="two-col">
+  <div class="chart-card">
+    <h3>ARR by CM — This Week</h3>
+    <div class="chart-sub">April 13–19 won deals</div>
+    <div class="chart-wrap" style="height:190px">
+      <canvas id="cmChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Closed ARR by Region — This Week</h3>
+    <div class="chart-sub">April 13–19 deal breakdown</div>
+    <table class="stat-table">
+      <thead>
+        <tr>
+          <th>Deal</th>
+          <th>CM</th>
+          <th class="num">ARR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sabau &amp; Asociatii</td>
+          <td><span class="tag region-ro">RO</span></td>
+          <td class="num">$3,771</td>
+        </tr>
+        <tr>
+          <td>Simplified tax pty</td>
+          <td><span class="tag region-anz">ANZ</span></td>
+          <td class="num">$3,229</td>
+        </tr>
+        <tr>
+          <td>ICAM Training</td>
+          <td><span class="tag region-anz">ANZ</span></td>
+          <td class="num">$1,075</td>
+        </tr>
+        <tr>
+          <td>Small Biz SW</td>
+          <td><span class="tag region-anz">ANZ</span></td>
+          <td class="num">$1,065</td>
+        </tr>
+        <tr>
+          <td>Breeze Accounting</td>
+          <td><span class="tag region-anz">ANZ</span></td>
+          <td class="num">$800</td>
+        </tr>
+        <tr>
+          <td>Bedrock Tax</td>
+          <td><span class="tag region-anz">ANZ</span></td>
+          <td class="num">$800</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px;">
+      <div class="section-label" style="margin-bottom: 10px;">YTD quota pace tracker</div>
+      <div class="pace-bar-wrap">
+        <div class="pace-bar-row">
+          <div class="pace-bar-label">YTD 2026</div>
+          <div class="pace-bar-track">
+            <div class="pace-bar-fill" style="width:16.1%; background: var(--blue);"></div>
+          </div>
+          <div class="pace-bar-val">$160.9k</div>
+        </div>
+        <div class="pace-bar-row">
+          <div class="pace-bar-label">Expected pace</div>
+          <div class="pace-bar-track">
+            <div class="pace-bar-fill" style="width:29.9%; background: var(--muted);"></div>
+          </div>
+          <div class="pace-bar-val">$298.6k</div>
+        </div>
+        <div class="pace-bar-row">
+          <div class="pace-bar-label">Annual target</div>
+          <div class="pace-bar-track">
+            <div class="pace-bar-fill" style="width:100%; background: var(--border);"></div>
+          </div>
+          <div class="pace-bar-val">$1,000k</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="report-footer">
+  Source: HubSpot · Int'l Sales Pipeline · Data as of April 20, 2026 · Submitted by Yonis Brander
+</div>
+
+<script>
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
+  Chart.defaults.color = '#8B95AE';
+
+  const navy = '#1F2D5C';
+  const blue = '#4B9CD3';
+  const green = '#2ECC71';
+  const amber = '#F39C12';
+  const red = '#E74C3C';
+  const muted = '#8B95AE';
+  const teal = '#00BCD4';
+
+  /* ── Weekly ARR trend ── */
+  new Chart(document.getElementById('weeklyChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Mar 16–22', 'Mar 23–29', 'Apr 6–12', 'Apr 13–19'],
+      datasets: [{
+        label: 'Closed ARR',
+        data: [1836, 22375, 3477, 9940],
+        backgroundColor: [
+          'rgba(75,156,211,0.35)',
+          'rgba(75,156,211,0.35)',
+          'rgba(75,156,211,0.35)',
+          navy
+        ],
+        borderColor: [
+          blue, blue, blue, navy
+        ],
+        borderWidth: 1.5,
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            font: { size: 10, family: "'DM Mono', monospace" },
+            callback: v => v >= 1000 ? `$${(v/1000).toFixed(0)}k` : `$${v}`
+          }
+        }
+      }
+    }
+  });
+
+  /* ── MTD YoY ── */
+  new Chart(document.getElementById('mtdChart'), {
+    type: 'bar',
+    data: {
+      labels: ['April MTD\n(Apr 1–19)'],
+      datasets: [
+        {
+          label: '2025',
+          data: [16713],
+          backgroundColor: 'rgba(139,149,174,0.35)',
+          borderColor: muted,
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+        },
+        {
+          label: '2026',
+          data: [17940],
+          backgroundColor: teal,
+          borderColor: '#00A0B8',
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            font: { size: 10, family: "'DM Mono', monospace" },
+            callback: v => `$${(v/1000).toFixed(0)}k`
+          }
+        }
+      }
+    }
+  });
+
+  /* ── YTD 3-bar ── */
+  new Chart(document.getElementById('ytdChart'), {
+    type: 'bar',
+    data: {
+      labels: ['YTD Jan–Apr 19'],
+      datasets: [
+        {
+          label: '2025 Actual',
+          data: [92391],
+          backgroundColor: 'rgba(139,149,174,0.35)',
+          borderColor: muted,
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+        },
+        {
+          label: '2026 Actual',
+          data: [160968],
+          backgroundColor: blue,
+          borderColor: '#3A8DC2',
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+        },
+        {
+          label: 'Target Pace',
+          data: [298630],
+          backgroundColor: 'rgba(231,76,60,0.15)',
+          borderColor: red,
+          borderWidth: 1.5,
+          borderRadius: 5,
+          borderSkipped: false,
+          borderDash: [4, 4],
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        x: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: {
+            font: { size: 10, family: "'DM Mono', monospace" },
+            callback: v => `$${(v/1000).toFixed(0)}k`
+          }
+        }
+      }
+    }
+  });
+
+  /* ── CM Pie ── */
+  new Chart(document.getElementById('cmChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Joanne (ANZ)', 'Alina (RO)'],
+      datasets: [{
+        data: [6169, 3771],
+        backgroundColor: [blue, amber],
+        borderColor: '#fff',
+        borderWidth: 3,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8, padding: 14 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.raw.toLocaleString()} (${Math.round(ctx.raw/9940*100)}%)`
+          }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
