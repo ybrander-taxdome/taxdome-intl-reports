@@ -760,11 +760,14 @@
         },
         tooltip: {
           callbacks: {
-            label: ctx => ` $${ctx.raw.toLocaleString()} (${Math.round(ctx.raw/9940*100)}%)`
+            label: function(ctx) {
+              return ' $' + ctx.raw.toLocaleString() + ' (' + Math.round(ctx.raw/9940*100) + '%)';
+            }
           }
         }
       }
     }
+  });
 
   /* -- Show Rate YoY + Delta -- */
   new Chart(document.getElementById('showRateChart'), {
