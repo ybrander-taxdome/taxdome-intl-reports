@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Report — Opening Snapshot — 21 April 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1F2D5C;
+    --blue: #4B9CD3;
+    --green: #2ECC71;
+    --amber: #F39C12;
+    --red: #E74C3C;
+    --bg: #F7F9FC;
+    --card: #FFFFFF;
+    --border: #E4E9F2;
+    --text: #1F2D5C;
+    --muted: #6B7A99;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, #2A3B7A 100%);
+    color: #fff;
+    padding: 32px 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  header .sub { opacity: 0.85; font-size: 15px; }
+  header .meta { margin-top: 12px; font-size: 13px; opacity: 0.75; }
+  .banner {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .banner.red { background: #FDECEA; border-left: 5px solid var(--red); }
+  .banner.amber { background: #FEF5E6; border-left: 5px solid var(--amber); }
+  .banner .icon { font-size: 28px; }
+  .banner .content h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+  .banner .content p { margin: 0; font-size: 14px; color: var(--muted); }
+  .grid { display: grid; gap: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: 2fr 1fr; gap: 24px; }
+  @media (max-width: 900px) {
+    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .kpi .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .kpi .value {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .kpi .delta {
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .delta.pos { color: var(--green); }
+  .delta.neg { color: var(--red); }
+  .delta.flat { color: var(--muted); }
+  h2 {
+    font-size: 20px;
+    margin: 32px 0 14px;
+    font-weight: 600;
+  }
+  h2 .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 10px;
+    margin-left: 10px;
+    border-radius: 12px;
+    background: #E8F0FA;
+    color: var(--navy);
+    vertical-align: middle;
+  }
+  .segment-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    background: #F5F7FB;
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  .chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .chip.green { background: #E6F9EF; color: var(--green); }
+  .chip.amber { background: #FEF5E6; color: var(--amber); }
+  .chip.red { background: #FDECEA; color: var(--red); }
+  .chart-box { position: relative; height: 320px; }
+  .notes {
+    background: #FAFBFD;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 24px;
+  }
+  .notes b { color: var(--text); }
+  footer {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Weekly Report — Opening Snapshot</h1>
+    <div class="sub">International Growth · Year-to-date through 20 April 2026</div>
+    <div class="meta">Published 21 April 2026 · YTD 1 Jan → 20 April 2026 · Intl-only (excludes US/Canada)</div>
+  </header>
+
+  <div class="banner red">
+    <div class="icon">🔺</div>
+    <div class="content">
+      <h3>YTD bowtie break: CR1 Awareness (22.1%)</h3>
+      <p>Lead → MQL is the weakest stage in the intl YTD bowtie — only ~22% of leads qualify. CR4 Win at 24.3% is a very close secondary pinch. Marketing side of the bowtie is the dominant drag on YTD pipeline build.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card kpi">
+      <div class="label">YTD ARR Closed</div>
+      <div class="value">$163.0K</div>
+      <div class="delta flat">81 deals · ASP $2,012</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">YTD Leads (intl)</div>
+      <div class="value">2,742</div>
+      <div class="delta flat">606 MQLs · 22.1% CR1</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Active Intl Customers</div>
+      <div class="value">338</div>
+      <div class="delta flat">$873K retained ARR on file</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">YTD Churn Rate</div>
+      <div class="value">3.4%</div>
+      <div class="delta pos">12 churned · ~11% annualized</div>
+    </div>
+  </div>
+
+  <h2>Marketing <span class="tag">YTD</span></h2>
+  <div class="grid grid-4">
+    <div class="card kpi">
+      <div class="label">VM1 Leads (intl)</div>
+      <div class="value">2,742</div>
+      <div class="delta flat">New leads YTD</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">VM2 MQLs (intl)</div>
+      <div class="value">606</div>
+      <div class="delta flat">MQLs YTD</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">CR1 Awareness</div>
+      <div class="value" style="color:var(--red)">22.1%</div>
+      <div class="delta neg">Lead → MQL · bowtie break</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">CR2 Education</div>
+      <div class="value">68.0%</div>
+      <div class="delta flat">MQL → Demo booked</div>
+    </div>
+  </div>
+
+  <h2>Sales <span class="tag">YTD</span></h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="chart-box"><canvas id="funnelChart"></canvas></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Stage</th><th class="num">YTD</th><th class="num">Rate</th></tr></thead>
+        <tbody>
+          <tr><td>VM3 Demos Booked</td><td class="num">412</td><td class="num">—</td></tr>
+          <tr><td>CR3 Show → Held</td><td class="num"></td><td class="num">80.8%</td></tr>
+          <tr><td>VM4 Demos Held</td><td class="num">333</td><td class="num">—</td></tr>
+          <tr><td>CR4 Held → Won</td><td class="num"></td><td class="num" style="color:var(--amber);font-weight:600">24.3%</td></tr>
+          <tr><td>VM5 Closed-Won</td><td class="num">81</td><td class="num">—</td></tr>
+          <tr><td>CR5 ASP</td><td class="num"></td><td class="num">$2,012</td></tr>
+          <tr><td><b>VM6 ARR</b></td><td class="num"><b>$163.0K</b></td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>Customer Success <span class="tag">YTD</span></h2>
+  <div class="grid grid-4">
+    <div class="card kpi">
+      <div class="label">Active Customers (intl)</div>
+      <div class="value">338</div>
+      <div class="delta flat">Paying customers on file</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Churned YTD</div>
+      <div class="value">12</div>
+      <div class="delta flat">1 Jan → 20 Apr</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Retained ARR</div>
+      <div class="value">$873K</div>
+      <div class="delta flat">ASP $2,598 across active base</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">YTD Churn Rate</div>
+      <div class="value">3.4%</div>
+      <div class="delta flat">~11.1% annualized</div>
+    </div>
+  </div>
+
+  <h2>Regional breakdown — Sales <span class="tag">YTD</span></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>Region</th><th>Country Manager</th>
+          <th class="num">VM3 YTD</th><th class="num">VM4 YTD</th>
+          <th class="num">VM5 YTD</th><th class="num">VM6 YTD</th>
+          <th class="num">CR3</th><th class="num">CR4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>UK</td><td>Samuel George</td><td class="num">138</td><td class="num">130</td><td class="num">18</td><td class="num">$21.5K</td><td class="num">94.2%</td><td class="num" style="color:var(--red)">13.8%</td></tr>
+        <tr><td>DACH</td><td>Ajla Ahmetspahic</td><td class="num">41</td><td class="num">39</td><td class="num">21</td><td class="num">$45.4K</td><td class="num">95.1%</td><td class="num" style="color:var(--green)">53.8%</td></tr>
+        <tr><td>RO</td><td>Alina Goldenberg</td><td class="num">85</td><td class="num">76</td><td class="num">19</td><td class="num">$63.8K</td><td class="num">89.4%</td><td class="num">25.0%</td></tr>
+        <tr><td>ANZ</td><td>Joanne Dakay</td><td class="num">100</td><td class="num">88</td><td class="num">22</td><td class="num">$31.3K</td><td class="num">88.0%</td><td class="num">25.0%</td></tr>
+        <tr style="background:#F5F7FB;font-weight:600;">
+          <td colspan="2">Total International</td>
+          <td class="num">412</td><td class="num">333</td><td class="num">81</td>
+          <td class="num">$163.0K</td><td class="num">80.8%</td><td class="num">24.3%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Regional breakdown — Customer Success <span class="tag">YTD</span></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>Region</th><th>Country Manager</th>
+          <th class="num">Active</th>
+          <th class="num">Churned YTD</th>
+          <th class="num">Churn Rate</th>
+          <th class="num">Retained ARR</th>
+          <th class="num">ASP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>UK</td><td>Samuel George</td><td class="num">73</td><td class="num">7</td><td class="num" style="color:var(--amber)">8.75%</td><td class="num">$188K</td><td class="num">$2,575</td></tr>
+        <tr><td>DACH</td><td>Ajla Ahmetspahic</td><td class="num">70</td><td class="num">1</td><td class="num" style="color:var(--green)">1.41%</td><td class="num">$144K</td><td class="num">$2,118</td></tr>
+        <tr><td>RO</td><td>Alina Goldenberg</td><td class="num">78</td><td class="num">2</td><td class="num" style="color:var(--green)">2.50%</td><td class="num">$300K</td><td class="num">$3,896</td></tr>
+        <tr><td>ANZ</td><td>Joanne Dakay</td><td class="num">117</td><td class="num">2</td><td class="num" style="color:var(--green)">1.68%</td><td class="num">$241K</td><td class="num">$2,042</td></tr>
+        <tr style="background:#F5F7FB;font-weight:600;">
+          <td colspan="2">Total International</td>
+          <td class="num">338</td><td class="num">12</td>
+          <td class="num">3.43%</td><td class="num">$873K</td><td class="num">$2,598</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notes">
+    <b>YTD-only view.</b> All figures cover 1 Jan → 20 April 2026 for international markets only (US/Canada excluded via country-field token filter on <code>companies</code>; CM-owned records below VM3). <b>Marketing:</b> VM1/VM2 from lifecyclestage transitions into lead / marketingqualifiedlead respectively. <b>Sales:</b> VM3 = demos booked (HubSpot meeting type "demo"), VM4 = demos held (outcome attended/completed), VM5 = closed-won deals, VM6 = sum of <code>total_subscription_value</code>. CR5 ASP = VM6 ÷ VM5. <b>CS:</b> active customers = <code>lifecyclestage = customer</code> owned by the 4 CMs; churned YTD = <code>lifecyclestage = 998672486 (Churned Customer)</code> with <code>churn_date ≥ 2026-01-01</code>; retained ARR = sum of <code>total_subscription_value</code> on the active base; churn rate = churned ÷ (active + churned). Caveats: Samuel (UK) YTD churn rate of 8.75% is elevated vs. DACH/RO/ANZ (1.4–2.5%) — drill-down worthwhile. ~5–8% residual US contamination possible on dirty country fields (e.g. "OR" / "CA"). NRR 0.95 and LTV $6.4K are global benchmarks, not re-derived from this cohort.
+  </div>
+
+  <footer>Generated 21 April 2026 · TaxDome International Growth · Source: HubSpot CRM · Revision 3 (YTD high-level + regional across Marketing / Sales / CS)</footer>
+</div>
+
+<script>
+const ctx = document.getElementById('funnelChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['VM1 Leads', 'VM2 MQLs', 'VM3 Booked', 'VM4 Held', 'VM5 Won'],
+    datasets: [{
+      label: 'YTD Count (Intl)',
+      data: [2742, 606, 412, 333, 81],
+      backgroundColor: ['#1F2D5C', '#4B9CD3', '#4B9CD3', '#2ECC71', '#2ECC71'],
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: (c) => c.parsed.x.toLocaleString() } }
+    },
+    scales: {
+      x: { type: 'logarithmic', ticks: { color: '#6B7A99' } },
+      y: { ticks: { color: '#1F2D5C', font: { weight: '600' } } }
+    }
+  }
+});
+</script>
+</body>
+</html>

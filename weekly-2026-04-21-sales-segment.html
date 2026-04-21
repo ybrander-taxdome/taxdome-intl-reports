@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Report — Sales Segment — 21 April 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1F2D5C;
+    --blue: #4B9CD3;
+    --green: #2ECC71;
+    --amber: #F39C12;
+    --red: #E74C3C;
+    --bg: #F7F9FC;
+    --card: #FFFFFF;
+    --border: #E4E9F2;
+    --text: #1F2D5C;
+    --muted: #6B7A99;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, #2A3B7A 100%);
+    color: #fff;
+    padding: 32px 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  header .sub { opacity: 0.85; font-size: 15px; }
+  header .meta { margin-top: 12px; font-size: 13px; opacity: 0.75; }
+  .banner {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .banner.red { background: #FDECEA; border-left: 5px solid var(--red); }
+  .banner.amber { background: #FEF5E6; border-left: 5px solid var(--amber); }
+  .banner .icon { font-size: 28px; }
+  .banner .content h3 { margin: 0 0 6px; font-size: 17px; font-weight: 700; }
+  .banner .content p { margin: 0 0 6px; font-size: 14px; color: var(--muted); }
+  .banner .content .action { font-size: 14px; color: var(--text); font-weight: 500; }
+  .banner .content .action b { color: var(--red); }
+  .grid { display: grid; gap: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) {
+    .grid-4, .grid-3 { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .kpi .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .kpi .value {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .kpi .delta {
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .delta.pos { color: var(--green); }
+  .delta.neg { color: var(--red); }
+  .delta.flat { color: var(--muted); }
+  h2 {
+    font-size: 20px;
+    margin: 32px 0 14px;
+    font-weight: 600;
+  }
+  h2 .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 10px;
+    margin-left: 10px;
+    border-radius: 12px;
+    background: #E8F0FA;
+    color: var(--navy);
+    vertical-align: middle;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    background: #F5F7FB;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .chip.green { background: #E6F9EF; color: var(--green); }
+  .chip.amber { background: #FEF5E6; color: var(--amber); }
+  .chip.red { background: #FDECEA; color: var(--red); }
+  .progress {
+    height: 8px;
+    background: #EDF1F7;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+    width: 120px;
+  }
+  .progress .bar {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .chart-box { position: relative; height: 320px; }
+  .notes {
+    background: #FAFBFD;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 24px;
+  }
+  .notes b { color: var(--text); }
+  footer {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Weekly Report — Sales Segment</h1>
+    <div class="sub">International Growth · Week ending 19 April 2026</div>
+    <div class="meta">Published 21 April 2026 · MTD April day 21 of 30 · WoW: 13–19 Apr vs 6–12 Apr</div>
+  </header>
+
+  <div class="banner red">
+    <div class="icon">🚨</div>
+    <div class="content">
+      <h3>Biggest WoW blocker — CR3 Show Rate (−55.0%)</h3>
+      <p>Show rate fell from 130.8% to 58.8% week-on-week — more demos scheduled but fewer held. CR2 Education also dropped −56.2% (45.6% → 20.0%) despite MQL volume rising, so funnel drag compounded at both the top and the demo handoff.</p>
+      <div class="action"><b>Action:</b> Review no-show follow-up process and demo prep confirmation steps. Pull this week's no-show list and re-book before month-end to protect May MTD.</div>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card kpi">
+      <div class="label">ARR Last Week</div>
+      <div class="value">$12.0K</div>
+      <div class="delta pos">▲ +243.7% vs week prior ($3.5K)</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">ARR MTD (April)</div>
+      <div class="value">$20.0K</div>
+      <div class="delta flat">12 deals · day 21 of 30 · ASP $1.7K</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Team Quota Attainment (MTD)</div>
+      <div class="value">28.5%</div>
+      <div class="delta neg">Day 21 of 30 · pace projects 41%</div>
+    </div>
+    <div class="card kpi">
+      <div class="label">Closable Coverage (MTD)</div>
+      <div class="value">6.6×</div>
+      <div class="delta flat">$462K open pipe ÷ $70K quota</div>
+    </div>
+  </div>
+
+  <h2>Country Manager — Quota &amp; Coverage <span class="tag">MTD · April 2026</span></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th>
+          <th class="num">Monthly Quota</th>
+          <th class="num">MTD ARR</th>
+          <th class="num">Attainment</th>
+          <th class="num">Pace (proj)</th>
+          <th class="num">Required Pipeline</th>
+          <th class="num">Actual Pipeline</th>
+          <th class="num">Coverage</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Samuel George</b></td><td>UK</td>
+          <td class="num">$13,000</td><td class="num">$2,419</td>
+          <td class="num">18.6%<div class="progress"><div class="bar" style="width:18.6%;background:var(--red)"></div></div></td>
+          <td class="num">26.6%</td>
+          <td class="num">$99,667</td><td class="num">$125,600</td>
+          <td class="num">1.26×</td><td><span class="chip red">RED</span></td>
+        </tr>
+        <tr>
+          <td><b>Alina Goldenberg</b></td><td>RO</td>
+          <td class="num">$22,000</td><td class="num">$9,331</td>
+          <td class="num">42.4%<div class="progress"><div class="bar" style="width:42.4%;background:var(--amber)"></div></div></td>
+          <td class="num">60.6%</td>
+          <td class="num">$98,421</td><td class="num">$126,750</td>
+          <td class="num">1.29×</td><td><span class="chip red">RED</span></td>
+        </tr>
+        <tr>
+          <td><b>Joanne Dakay</b></td><td>ANZ</td>
+          <td class="num">$18,000</td><td class="num">$8,201</td>
+          <td class="num">45.6%<div class="progress"><div class="bar" style="width:45.6%;background:var(--amber)"></div></div></td>
+          <td class="num">65.1%</td>
+          <td class="num">$81,818</td><td class="num">$111,200</td>
+          <td class="num">1.36×</td><td><span class="chip red">RED</span></td>
+        </tr>
+        <tr>
+          <td><b>Ajla Ahmetspahic</b></td><td>DACH</td>
+          <td class="num">$17,000</td><td class="num">$0</td>
+          <td class="num">0.0%<div class="progress"><div class="bar" style="width:0%;background:var(--red)"></div></div></td>
+          <td class="num">0.0%</td>
+          <td class="num">$33,190</td><td class="num">$49,600</td>
+          <td class="num">1.49×</td><td><span class="chip red">RED</span></td>
+        </tr>
+        <tr style="background:#F5F7FB;font-weight:600;">
+          <td colspan="2">Team Total</td>
+          <td class="num">$70,000</td><td class="num">$19,951</td>
+          <td class="num">28.5%</td><td class="num">40.7%</td>
+          <td class="num">$313,097</td><td class="num">$413,150</td>
+          <td class="num">1.32×</td><td><span class="chip red">RED</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Show rate &amp; Win rate <span class="tag">WoW · last week vs week prior</span></h2>
+  <div class="grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <div class="chart-box"><canvas id="rateChart"></canvas></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th class="num">Last Week (13–19 Apr)</th>
+            <th class="num">Week Prior (6–12 Apr)</th>
+            <th class="num">Δ WoW</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>VM3 Demos Booked</td><td class="num">17</td><td class="num">26</td><td class="num" style="color:var(--red)">−34.6%</td></tr>
+          <tr><td>VM4 Demos Held</td><td class="num">10</td><td class="num">34</td><td class="num" style="color:var(--red)">−70.6%</td></tr>
+          <tr><td>VM5 Closed-Won</td><td class="num">7</td><td class="num">2</td><td class="num" style="color:var(--green)">+250%</td></tr>
+          <tr><td>CR3 Show Rate</td><td class="num">58.8%</td><td class="num">130.8%</td><td class="num" style="color:var(--red)">−55.0%</td></tr>
+          <tr><td>CR4 Win Rate</td><td class="num">70.0%</td><td class="num">5.9%</td><td class="num" style="color:var(--green)">+1,090%</td></tr>
+          <tr><td>VM6 ARR</td><td class="num">$11,951</td><td class="num">$3,477</td><td class="num" style="color:var(--green)">+243.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>Deal activity by CM <span class="tag">WoW · last week vs week prior</span></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th>
+          <th class="num">VM5 LW</th>
+          <th class="num">VM5 WP</th>
+          <th class="num">VM6 LW</th>
+          <th class="num">VM6 WP</th>
+          <th class="num">Δ VM6 WoW</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Samuel George (UK)</td><td class="num">1</td><td class="num">1</td><td class="num">$808</td><td class="num">$1,611</td><td class="num" style="color:var(--red)">−49.9%</td></tr>
+        <tr><td>Alina Goldenberg (RO)</td><td class="num">1</td><td class="num">1</td><td class="num">$3,771</td><td class="num">$1,866</td><td class="num" style="color:var(--green)">+102.1%</td></tr>
+        <tr><td>Joanne Dakay (ANZ)</td><td class="num">5</td><td class="num">0</td><td class="num">$7,373</td><td class="num">$0</td><td class="num" style="color:var(--green)">—</td></tr>
+        <tr><td>Ajla Ahmetspahic (DACH)</td><td class="num">0</td><td class="num">0</td><td class="num">$0</td><td class="num">$0</td><td class="num">—</td></tr>
+        <tr style="background:#F5F7FB;font-weight:600;">
+          <td>Team</td><td class="num">7</td><td class="num">2</td>
+          <td class="num">$11,951</td><td class="num">$3,477</td>
+          <td class="num" style="color:var(--green)">+243.7%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>MTD deal mix by CM <span class="tag">MTD · April 2026</span></h2>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th>
+          <th class="num">VM5 MTD</th>
+          <th class="num">VM6 MTD</th>
+          <th class="num">ASP MTD</th>
+          <th class="num">Open pipe</th>
+          <th class="num">MTD → Month-end gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Samuel George (UK)</td><td class="num">2</td><td class="num">$2,419</td><td class="num">$1,209</td><td class="num">$125,600</td><td class="num" style="color:var(--red)">−$10,581</td></tr>
+        <tr><td>Alina Goldenberg (RO)</td><td class="num">3</td><td class="num">$9,331</td><td class="num">$3,110</td><td class="num">$126,750</td><td class="num" style="color:var(--red)">−$12,669</td></tr>
+        <tr><td>Joanne Dakay (ANZ)</td><td class="num">7</td><td class="num">$8,201</td><td class="num">$1,172</td><td class="num">$111,200</td><td class="num" style="color:var(--red)">−$9,799</td></tr>
+        <tr><td>Ajla Ahmetspahic (DACH)</td><td class="num">0</td><td class="num">$0</td><td class="num">—</td><td class="num">$49,600</td><td class="num" style="color:var(--red)">−$17,000</td></tr>
+        <tr style="background:#F5F7FB;font-weight:600;">
+          <td>Team</td><td class="num">12</td><td class="num">$19,951</td><td class="num">$1,663</td>
+          <td class="num">$413,150</td><td class="num" style="color:var(--red)">−$50,049</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notes">
+    <b>Working notes.</b> MTD window = 1–20 April 2026 (day 21 of 30). WoW: last week = 13–19 Apr, week prior = 6–12 Apr. Required pipeline per CM = monthly quota ÷ (CR3 × CR4) using the CM's YTD rates where VM3 ≥ 10, else the team-blended CR3 × CR4. Coverage = Actual open pipeline closable this month ÷ Required pipeline. Thresholds: &lt;1.5 RED, 1.5–2.9 AMBER, ≥3.0 GREEN. ASP MTD = VM6 MTD ÷ VM5 MTD. Month-end gap = MTD ARR − monthly quota. CR3 week-prior exceeds 100% because demos held draw from bookings made in earlier weeks — timing artefact of the weekly cohort. Ajla (DACH) shows $0 MTD and is the primary at-risk CM this week; pipe is small but coverage to quota is there (1.49×) if at least 1–2 deals close before 30 Apr.
+  </div>
+
+  <footer>Generated 21 April 2026 · TaxDome International Growth · Source: HubSpot CRM · Revision 2 (WoW + MTD focus, YTD removed)</footer>
+</div>
+
+<script>
+const rctx = document.getElementById('rateChart').getContext('2d');
+new Chart(rctx, {
+  type: 'bar',
+  data: {
+    labels: ['CR3 Show', 'CR4 Win'],
+    datasets: [
+      { label: 'Last Week (13–19 Apr)', data: [58.8, 70.0], backgroundColor: '#4B9CD3', borderRadius: 4 },
+      { label: 'Week Prior (6–12 Apr)', data: [130.8, 5.9], backgroundColor: '#BFD3E6', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%' } }
+    },
+    scales: {
+      x: { ticks: { color: '#1F2D5C', font: { weight: '600' } } },
+      y: { beginAtZero: true, ticks: { color: '#6B7A99', callback: (v) => v + '%' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
