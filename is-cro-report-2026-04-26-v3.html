@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Sales Report — Week of 20 Apr 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f12; --surface: #16161c; --surface2: #1e1e28;
+    --border: #2a2a38; --text: #e8e8f0; --muted: #7c7c96;
+    --accent: #4f8ef7; --accent2: #7c5cbf;
+    --green: #2dce7a; --amber: #f5a623; --red: #f05555;
+    --green-bg: rgba(45,206,122,0.08); --amber-bg: rgba(245,166,35,0.08);
+    --red-bg: rgba(240,85,85,0.10); --navy-border: #2a4a8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .header{border-bottom:1px solid var(--border);padding:32px 0 24px}
+  .header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+  .header-title{font-family:'Instrument Serif',serif;font-size:28px;letter-spacing:-.5px}
+  .header-title em{font-style:italic;color:var(--accent)}
+  .header-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.8}
+  .header-sub{margin-top:4px;font-size:13px;color:var(--muted)}
+  .alert-banner{background:var(--red-bg);border:1px solid rgba(240,85,85,0.3);border-radius:8px;padding:16px 20px;margin:20px 0}
+  .alert-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--red);margin-bottom:4px}
+  .alert-title{font-weight:600;font-size:15px}
+  .alert-body{font-size:13px;color:var(--muted);margin-top:6px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px}
+  .kpi-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+  .kpi-value{font-family:'Instrument Serif',serif;font-size:26px;letter-spacing:-.5px}
+  .kpi-delta{font-family:'DM Mono',monospace;font-size:11px;margin-top:4px}
+  .kpi-delta.up{color:var(--green)} .kpi-delta.down{color:var(--red)} .kpi-delta.neutral{color:var(--muted)}
+  .kpi-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin-top:6px}
+  .badge-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(240,85,85,.3)}
+  .badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+  .badge-green{background:var(--green-bg);color:var(--green);border:1px solid rgba(45,206,122,.3)}
+  section{padding:32px 0;border-top:1px solid var(--border)}
+  .section-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+  .section-title{font-family:'Instrument Serif',serif;font-size:20px;letter-spacing:-.3px;margin-bottom:20px}
+  .narrative{border-left:3px solid var(--navy-border);padding:16px 20px;background:var(--surface);border-radius:0 8px 8px 0;margin:16px 0}
+  .narrative-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+  .narrative p{font-size:13px;color:var(--text);margin-bottom:8px}
+  .narrative p:last-child{margin-bottom:0}
+  .narrative strong{color:var(--text);font-weight:600}
+  .tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)}
+  th:first-child{text-align:left}
+  td{padding:10px 12px;text-align:right;border-bottom:1px solid rgba(255,255,255,.04)}
+  td:first-child{text-align:left}
+  tr:last-child td{border-bottom:none}
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;overflow-x:auto;margin:16px 0}
+  .dp{color:var(--green);font-family:'DM Mono',monospace;font-size:12px}
+  .dn{color:var(--red);font-family:'DM Mono',monospace;font-size:12px}
+  .dna{color:var(--muted);font-family:'DM Mono',monospace;font-size:12px}
+  .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0}
+  .chart-title{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:16px}
+  .tabs{margin-top:8px}
+  .tab-nav{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+  .tab-btn{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:8px 16px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab-btn:hover:not(.active){color:var(--text)}
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
+  .cm-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+  .cm-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px}
+  .cm-name{font-weight:600;font-size:13px;margin-bottom:2px}
+  .cm-region{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+  .cm-stat{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+  .cm-stat:last-child{border-bottom:none}
+  .cm-stat-label{color:var(--muted)}
+  .cm-stat-value{font-family:'DM Mono',monospace}
+  .progress-wrap{background:var(--border);border-radius:4px;height:5px;margin:6px 0;position:relative;overflow:visible}
+  .progress-bar{height:100%;border-radius:4px}
+  .progress-pacing{position:absolute;top:-3px;width:2px;height:11px;background:var(--muted);border-radius:1px}
+  footer{border-top:1px solid var(--border);padding:24px 0 40px}
+  .footer-attr{font-family:'Instrument Serif',serif;font-size:16px;margin-bottom:16px}
+  .footer-section{margin-bottom:16px}
+  .footer-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px}
+  .footer-text{font-size:12px;color:var(--muted);line-height:1.7}
+  .footer-flag{background:var(--amber-bg);border:1px solid rgba(245,166,35,.2);border-radius:4px;padding:8px 12px;font-size:12px;color:var(--amber);margin-bottom:6px;font-family:'DM Mono',monospace}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.cm-grid-2{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}
+  @media(max-width:640px){.header-title{font-size:22px}.kpi-value{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">International Sales <em>Weekly Review</em></div>
+      <div class="header-sub">Week of 20&#8211;26 April 2026 &nbsp;&middot;&nbsp; Generated 27 April 2026</div>
+    </div>
+    <div class="header-meta">Submitted by: Yonis Brander<br>Head of International Growth, TaxDome<br>April 2026 Quota: $70,000</div>
+  </div>
+
+  <div class="alert-banner">
+    <div class="alert-label">&#9888; Priority Risk</div>
+    <div class="alert-title">Team projected to land at ~$27k (39% attainment) against a $70k April quota. Three days remain. DACH has zero closed revenue all month; the $17k is structurally lost.</div>
+    <div class="alert-body">Joanne is the only CM tracking above 50% attainment. The gap will not close without executing on Samuel and Joanne's late-stage deals before April 30, and accelerating Alina's $115k late-stage conversion pipeline. DACH campaign lead quality becomes the primary focus from today.</div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Won ARR Last Week</div>
+      <div class="kpi-value">$3,773</div>
+      <div class="kpi-delta down">&#9660; -68.4% WoW</div>
+      <div class="kpi-delta up" style="margin-top:2px">&#9650; +52.8% YoY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MTD Won ARR</div>
+      <div class="kpi-value">$24,649</div>
+      <div class="kpi-delta neutral">15 deals closed</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MTD Attainment</div>
+      <div class="kpi-value">35.2%</div>
+      <div class="kpi-delta down">Proj. EOM: ~$27k (39%)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MTD Show Rate</div>
+      <div class="kpi-value">50.6%</div>
+      <div class="kpi-delta down">&#9660; vs 72.5% Apr-25 YoY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MTD Win Rate</div>
+      <div class="kpi-value">35.7%</div>
+      <div class="kpi-delta up">&#9650; vs 21.6% Apr-25 YoY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Open Pipeline</div>
+      <div class="kpi-value">$1.33M</div>
+      <div class="kpi-delta neutral">Early $970k / Late $362k</div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY METRICS TABLE -->
+<section>
+  <div class="section-num">Key Metrics</div>
+  <div class="section-title">Snapshot: Last Week vs Prior Periods</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Show Rate, Win Rate and Sales Cycle show MTD April figures (sourced from HubSpot dashboard screenshots). Pipeline segments use current open-pipeline state; WoW segment delta unavailable (first run, no prior snapshot).</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>MTD Apr-26</th>
+          <th>MTD Mar-26</th>
+          <th>&#916; MoM</th>
+          <th>MTD Apr-25 (YoY)</th>
+          <th>&#916; YoY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Early Stage Pipeline</strong></td><td>$970,400</td><td colspan="4" style="color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;text-align:left;padding-left:12px">No prior snapshot. Open pipeline shown as current-state. WoW segment delta available from next run.</td></tr>
+        <tr><td><strong>Late Stage Pipeline</strong></td><td>$361,725</td><td colspan="4" style="color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;text-align:left;padding-left:12px">&#8212;</td></tr>
+        <tr><td><strong>Won ARR (closed)</strong></td><td>$24,649</td><td>$55,616</td><td class="dn">&#9660; -57.3%</td><td>$11,075</td><td class="dp">&#9650; +114%</td></tr>
+        <tr><td><strong>ASP</strong></td><td>$1,643</td><td>&#8212;</td><td class="dna">&#8212;</td><td>&#8212;</td><td class="dna">&#8212;</td></tr>
+        <tr><td><strong>Show Rate</strong></td><td>50.6%</td><td>61.4%</td><td class="dn">&#9660; -17.9%</td><td>72.5%</td><td class="dn">&#9660; -30.2%</td></tr>
+        <tr><td><strong>Win Rate</strong></td><td>35.7%</td><td>17.4%</td><td class="dp">&#9650; +94.3%</td><td>21.6%</td><td class="dp">&#9650; +56.3%</td></tr>
+        <tr><td><strong>Sales Cycle (avg)</strong></td><td>128d</td><td>82d</td><td class="dn">&#9650; +56.1%</td><td>38d</td><td class="dn">&#9650; +237%</td></tr>
+        <tr><td><strong>Sales Cycle (median)</strong></td><td>26d</td><td>21d</td><td class="dn">&#9650; +23.8%</td><td>24d</td><td class="dn">&#9650; +8.3%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:11px;margin-top:8px;font-family:'DM Mono',monospace">ASP = Won ARR / Won deal count. Won ARR MoM and YoY compare full-month actuals. Median cycle is the more reliable signal given outlier-prone deal counts this month.</p>
+</section>
+
+<!-- SECTION 1: REVENUE & QUOTA -->
+<section>
+  <div class="section-num">Section 1</div>
+  <div class="section-title">Revenue &amp; Quota Pacing</div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">MTD Won ARR vs April Quota &mdash; CM breakdown through 27 April 2026</div>
+    <canvas id="mtdChart" height="80"></canvas>
+  </div>
+
+  <div class="narrative">
+    <div class="narrative-label">Revenue &amp; Quota</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>April is structurally lost at team level. The projected EOM of ~$26k is 38% of the $70k quota. Even a perfect final three days cannot close a $44k gap. The damage is concentrated in DACH ($17k at risk) and an Alina conversion gap that 4.6x coverage could not solve.</strong></p>
+    <p><span class="tag">Why &mdash;</span> Ajla has no closed revenue and $21k in total pipeline &mdash; pipeline starvation, not conversion failure, is the root cause. Alina has $731k of open pipeline and has converted only $9.3k; her 43% show rate is the bottleneck. Joanne is the only CM generating consistent output at 57% attainment, with Alina's $9.3k second. March was a strong month ($55.6k) so April's $23.7k MTD is a genuine step down, not a continuation of a trend.</p>
+    <p><span class="tag">Evidence &mdash;</span> Team MTD: $24,649 vs $70,000 (35%). Projected EOM at current run rate: $27,388 (39%). Won ARR is down 55% MoM from March ($55.6k) but up 122% YoY from April 2025 ($11.1k). The YoY improvement confirms the team is stronger than a year ago; the MoM drop is the signal to examine.</p>
+    <p><span class="tag">Action &mdash;</span> Emergency late-stage deal review today: identify every deal in Demo Completed or Negotiation across Samuel and Joanne that can realistically reach signature by April 30. For Alina, the late-stage $115k is the primary target &mdash; a single conversion at typical ASP recovers $1.5&#8211;2k; five would materially change the month. DACH: accept April as lost, redirect Ajla to qualifying campaign leads today.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th><th>Apr Quota</th><th>MTD ARR</th>
+          <th>Attainment</th><th>Proj. EOM</th><th>Gap</th><th>Coverage</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Samuel George</strong></td><td style="color:var(--muted)">UK</td><td>$13,000</td><td>$4,039</td><td>31%</td>
+          <td style="color:var(--amber)">~$4,488 (35%)</td><td style="color:var(--red)">-$8,961</td><td>2.7x</td>
+          <td><span class="kpi-badge badge-amber">AMBER</span></td>
+        </tr>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td style="color:var(--muted)">RO</td><td>$22,000</td><td>$9,331</td><td>42%</td>
+          <td style="color:var(--amber)">~$10,368 (47%)</td><td style="color:var(--red)">-$12,669</td><td>4.6x</td>
+          <td><span class="kpi-badge badge-green">GREEN</span></td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td style="color:var(--muted)">ANZ</td><td>$18,000</td><td>$11,279</td><td>63%</td>
+          <td style="color:var(--amber)">~$12,532 (70%)</td><td style="color:var(--red)">-$6,721</td><td>2.8x</td>
+          <td><span class="kpi-badge badge-amber">AMBER</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td style="color:var(--muted)">DACH</td><td>$17,000</td><td>$0</td><td>0%</td>
+          <td style="color:var(--red)">$0 (0%)</td><td style="color:var(--red)">-$17,000</td><td>0.1x</td>
+          <td><span class="kpi-badge badge-red">RED</span></td>
+        </tr>
+        <tr style="border-top:1px solid var(--border)">
+          <td><strong>Team</strong></td><td></td><td><strong>$70,000</strong></td><td><strong>$24,649</strong></td><td><strong>35.2%</strong></td>
+          <td style="color:var(--amber)"><strong>~$27,388 (39%)</strong></td><td style="color:var(--red)"><strong>-$45,351</strong></td><td>&#8212;</td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:6px">Proj. EOM = MTD ARR / (day 27 / 30 days). Coverage = Open Pipeline / (Remaining Quota / (MTD Show Rate x MTD Win Rate)).</p>
+</section>
+
+<!-- SECTION 2: EXECUTION -->
+<section>
+  <div class="section-num">Section 2</div>
+  <div class="section-title">Execution &mdash; Show Rate &amp; Win Rate</div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Show Rate &amp; Win Rate &mdash; 16-Month Trend (Jan 2025 &ndash; Apr 2026)</div>
+    <canvas id="execChart" height="90"></canvas>
+  </div>
+
+  <div class="narrative">
+    <div class="narrative-label">Show Rate</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>At 50.6% MTD, April show rate is the lowest in the 16-month dataset. The downward trend from a peak of 100% in Jan 2025 to 50% today is not noise &mdash; it is a structural deterioration in demo execution quality that is directly compressing revenue capacity.</strong></p>
+    <p><span class="tag">Why &mdash;</span> The team booked 79 demos in April but only 40 were held. Alina is the primary driver of the gap: 37 booked, 16 held (43%). Samuel: 19 booked, 9 held (47%). Both are consistently losing roughly half their booked demos before they happen. Joanne (61%) and Ajla (80%) demonstrate that higher show rates are achievable with this buyer profile; the gap is process and prospect qualification, not market conditions.</p>
+    <p><span class="tag">Evidence &mdash;</span> MTD Apr: 40/79 = 50.6%. Apr-25 YoY: 58/80 = 72.5%. Mar-26: 78/127 = 61.4%. The monthly trend has been declining since Sep-25 peak of 86%. Alina: 37 booked (highest volume) at 43% rate. Samuel: 19 booked at 47%.</p>
+    <p><span class="tag">Action &mdash;</span> Implement a same-day confirmation protocol for all upcoming demos: text + email confirmation 2 hours before, with a reschedule link if needed. Target the specific no-show segment for Alina (likely cold-booked inbound leads) and run a separate re-engagement sequence for missed demos within 48 hours. Track by lead source to identify which acquisition channels produce no-shows.</p>
+  </div>
+
+  <!-- Show Rate per-CM cards: 2x2 grid -->
+  <div class="cm-grid-2">
+    <div class="cm-card">
+      <div class="cm-name">Samuel George</div><div class="cm-region">UK &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Booked</span><span class="cm-stat-value">19</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Held</span><span class="cm-stat-value">9</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Show Rate</span><span class="cm-stat-value" style="color:var(--amber)">47.4%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">65.1%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Alina Goldenberg</div><div class="cm-region">Romania &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Booked</span><span class="cm-stat-value">37</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Held</span><span class="cm-stat-value">16</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Show Rate</span><span class="cm-stat-value" style="color:var(--red)">43.2%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">77.8%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Joanne Dakay</div><div class="cm-region">ANZ &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Booked</span><span class="cm-stat-value">18</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Held</span><span class="cm-stat-value">11</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Show Rate</span><span class="cm-stat-value" style="color:var(--green)">61.1%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">82.6%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Ajla Ahmetspahic</div><div class="cm-region">DACH &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Booked</span><span class="cm-stat-value">5</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Demos Held</span><span class="cm-stat-value">4</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Show Rate</span><span class="cm-stat-value" style="color:var(--green)">80.0%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">80.0%</span></div>
+    </div>
+  </div>
+
+  <div class="narrative" style="margin-top:8px">
+    <div class="narrative-label">Win Rate</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>Win rate recovered sharply to 33.8% MTD &mdash; a meaningful reversal of March's 17.4% collapse. This is the conversion signal the team needed, but it is concentrated in ANZ (Joanne 33%) and RO (Alina 75%). Samuel at 26.9% is below his January peak but functional. The question for May is whether this recovery holds at scale.</strong></p>
+    <p><span class="tag">Why &mdash;</span> March's 17.4% win rate was driven by volume anomalies (111 total decisions vs 41 in April) &mdash; a thin conversion rate on an unusually high denominator. April's 33.8% on 41 decisions is a more representative signal of actual conversion quality. Alina's 75% win rate on 4 decisions is exceptional but small-sample; her structural challenge remains show rate not conversion. Ajla at 0% has no decisions to evaluate this month.</p>
+    <p><span class="tag">Evidence &mdash;</span> Team MTD: 15/42 = 35.7%. Alina: 3/4 = 75%. Joanne: 8/22 = 36.4%. Samuel: 4/14 = 26.9%. Ajla: 0/2 = 0%. YoY: up from 21.6% (Apr-25). Monthly trend shows Jan-26 peak at 54.8% &mdash; a standard to target.</p>
+    <p><span class="tag">Action &mdash;</span> Protect the conversion quality by ensuring Alina and Samuel are qualifying demos more aggressively before they book. A higher show rate from lower-intent prospects will mechanically suppress win rate next month. Review whether the 0% Ajla decisions represent prospects that were over-qualified into the funnel too early.</p>
+  </div>
+
+  <!-- Win Rate per-CM cards: 2x2 grid -->
+  <div class="cm-grid-2">
+    <div class="cm-card">
+      <div class="cm-name">Samuel George</div><div class="cm-region">UK &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won</span><span class="cm-stat-value">4</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Total Decisions</span><span class="cm-stat-value">14</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Win Rate</span><span class="cm-stat-value" style="color:var(--amber)">26.9%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">15.0%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Alina Goldenberg</div><div class="cm-region">Romania &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won</span><span class="cm-stat-value">3</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Total Decisions</span><span class="cm-stat-value">4</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Win Rate</span><span class="cm-stat-value" style="color:var(--green)">75.0%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">40.0%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Joanne Dakay</div><div class="cm-region">ANZ &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won</span><span class="cm-stat-value">8</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Total Decisions</span><span class="cm-stat-value">22</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Win Rate</span><span class="cm-stat-value" style="color:var(--green)">36.4%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">27.3%</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Ajla Ahmetspahic</div><div class="cm-region">DACH &mdash; MTD Apr</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won</span><span class="cm-stat-value">0</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Total Decisions</span><span class="cm-stat-value">2</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Win Rate</span><span class="cm-stat-value" style="color:var(--red)">0.0%</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Apr-25 YoY</span><span class="cm-stat-value">0.0%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: PIPELINE QUALITY -->
+<section>
+  <div class="section-num">Section 3</div>
+  <div class="section-title">Pipeline Quality &amp; Composition</div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Open Pipeline Composition by CM &mdash; Early vs Late Stage (Current State)</div>
+    <canvas id="pipelineChart" height="70"></canvas>
+  </div>
+
+  <div class="narrative">
+    <div class="narrative-label">Pipeline Composition</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>The team is sitting on $1.33M of open pipeline, but 73% of it is in early stage. This is a volume story without a conversion engine behind it. Alina carries $616k of early-stage ARR alone &mdash; the team's most valuable asset if show rate improves; its most visible liability if it does not.</strong></p>
+    <p><span class="tag">Why &mdash;</span> Early-stage dominance typically reflects a healthy top-of-funnel but signals that mid-funnel progression is the constraint. Deals are entering Demo Booked or Demo Not Completed and not advancing. DACH has $21k total pipeline &mdash; less than a quarter of one month's quota &mdash; confirming the territory needs a demand generation solution, not a sales execution fix. The pipeline reported here includes all future-dated close entries, which are deal owner projections and not committed ARR.</p>
+    <p><span class="tag">Evidence &mdash;</span> Team: early $970k (73%), late $362k (27%). Alina: $616k / $116k. Samuel: $177k / $130k (more balanced). DACH: $10k / $11k. ANZ: $167k / $105k.</p>
+    <p><span class="tag">Action &mdash;</span> Set a 14-day max for any deal in Demo Not Completed before it is either rebooked or marked lost. Running 600k+ in stale early-stage ARR creates false coverage, inflates pipeline ratios, and masks the real conversion bottleneck. A clean pipeline is a more useful signal than a large one.</p>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:16px">
+    <div class="chart-title">Sales Cycle Trend &mdash; Monthly Avg vs Median (Jan 2025 &ndash; Apr 2026)</div>
+    <canvas id="scChart" height="80"></canvas>
+  </div>
+
+  <div class="narrative">
+    <div class="narrative-label">Sales Cycle</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>The average cycle of 128 days in April is an outlier, not a trend. The median at 26 days is the reliable signal, and it is within the normal range. One long-cycle Joanne deal (154d average across 8 deals, likely including the 574d outlier from earlier) is pulling the team average up substantially.</strong></p>
+    <p><span class="tag">Why &mdash;</span> The average sales cycle has been volatile month to month (ranging 13d to 128d), which is typical for a low-deal-count team where a single enterprise deal can move the metric significantly. The median has been far more stable, clustering around 20&#8211;30 days for most of 2026. That is a healthy conversion velocity for the deal sizes in this segment.</p>
+    <p><span class="tag">Evidence &mdash;</span> Apr-26: avg 128d, median 26d (n=15). Mar-26: avg 82d, median 21d (n=21). Feb-26: avg 35d, median 16d (n=21). Apr-25: avg 38d, median 24d (n=9). The median is the better planning signal for forecasting close timelines.</p>
+    <p><span class="tag">Action &mdash;</span> Flag deals with sales cycle >90 days in the active pipeline as requiring a relationship re-qualification call. For forecasting, use median cycle (26d) not average (128d) when projecting which open pipeline deals are closable before month-end.</p>
+  </div>
+</section>
+
+<!-- SECTION 4: REP VARIANCE -->
+<section>
+  <div class="section-num">Section 4</div>
+  <div class="section-title">Rep-Level Variance</div>
+
+  <div class="cm-grid-2">
+    <div class="cm-card">
+      <div class="cm-name">Samuel George</div><div class="cm-region">UK &mdash; AMBER</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won ARR LW</span><span class="cm-stat-value" style="color:var(--accent)">$1,621</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">WoW</span><span class="cm-stat-value" style="color:var(--green)">+101% vs WP</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">MTD ARR</span><span class="cm-stat-value">$4,039</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">YTD ARR</span><span class="cm-stat-value">$23,123</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Open Pipeline</span><span class="cm-stat-value">$307,120</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Coverage</span><span class="cm-stat-value" style="color:var(--amber)">2.7x</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Alina Goldenberg</div><div class="cm-region">Romania &mdash; GREEN coverage</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won ARR LW</span><span class="cm-stat-value" style="color:var(--red)">$0</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">WoW</span><span class="cm-stat-value" style="color:var(--red)">-100% vs WP ($3.8k)</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">MTD ARR</span><span class="cm-stat-value">$9,331</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">YTD ARR</span><span class="cm-stat-value">$63,849</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Open Pipeline</span><span class="cm-stat-value">$731,550</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Coverage</span><span class="cm-stat-value" style="color:var(--green)">4.6x</span></div>
+    </div>
+    <div class="cm-card">
+      <div class="cm-name">Joanne Dakay</div><div class="cm-region">ANZ &mdash; AMBER</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won ARR LW</span><span class="cm-stat-value" style="color:var(--accent)">$2,152</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">WoW</span><span class="cm-stat-value" style="color:var(--red)">-71% vs WP ($7.4k)</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">MTD ARR</span><span class="cm-stat-value">$11,279</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">YTD ARR</span><span class="cm-stat-value">$34,378</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Open Pipeline</span><span class="cm-stat-value">$272,125</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Coverage</span><span class="cm-stat-value" style="color:var(--amber)">2.8x</span></div>
+    </div>
+    <div class="cm-card" style="border-color:rgba(240,85,85,.4)">
+      <div class="cm-name">Ajla Ahmetspahic</div><div class="cm-region">DACH &mdash; RED</div>
+      <div class="cm-stat"><span class="cm-stat-label">Won ARR LW</span><span class="cm-stat-value" style="color:var(--red)">$0</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">WoW</span><span class="cm-stat-value" style="color:var(--muted)">&#8212;</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">MTD ARR</span><span class="cm-stat-value" style="color:var(--red)">$0</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">YTD ARR</span><span class="cm-stat-value">$45,395</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Open Pipeline</span><span class="cm-stat-value" style="color:var(--red)">$21,330</span></div>
+      <div class="cm-stat"><span class="cm-stat-label">Coverage</span><span class="cm-stat-value" style="color:var(--red)">0.1x</span></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>CM</th><th>Won ARR LW</th><th>Won ARR WP</th><th>&#916; WoW</th><th>SWLY</th><th>&#916; YoY</th><th>MTD ARR</th><th>Win Rate</th><th>SC Avg</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Samuel George</strong></td><td>$1,621</td><td>$808</td><td class="dp">+101%</td><td>$1,261</td><td class="dp">+29%</td><td>$4,039</td><td>26.9%</td><td>125d</td></tr>
+        <tr><td><strong>Alina Goldenberg</strong></td><td>$0</td><td>$3,771</td><td class="dn">-100%</td><td>$0</td><td class="dna">n/a</td><td>$9,331</td><td>75.0%</td><td>62d</td></tr>
+        <tr><td><strong>Joanne Dakay</strong></td><td>$2,152</td><td>$7,373</td><td class="dn">-71%</td><td>$1,210</td><td class="dp">+78%</td><td>$10,354</td><td>33.3%</td><td>154d*</td></tr>
+        <tr><td><strong>Ajla Ahmetspahic</strong></td><td>$0</td><td>$0</td><td class="dna">&#8212;</td><td>$0</td><td class="dna">&#8212;</td><td>$0</td><td>0%</td><td>&#8212;</td></tr>
+        <tr style="border-top:1px solid var(--border)">
+          <td><strong>Team</strong></td><td><strong>$3,773</strong></td><td><strong>$11,951</strong></td><td class="dn"><strong>-68.4%</strong></td><td><strong>$2,470</strong></td><td class="dp"><strong>+52.8%</strong></td><td><strong>$24,649</strong></td><td><strong>35.7%</strong></td><td><strong>128d*</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:var(--muted);font-size:11px;margin-top:8px;font-family:'DM Mono',monospace">* Sales cycle figures are MTD Apr averages from HubSpot dashboard. Joanne 154d average reflects long-cycle ANZ enterprise deals. Team median is 26d, the more reliable close-velocity signal. Win Rate and SC sourced from HubSpot screenshots (MTD Apr). Won ARR LW/WP/SWLY from zip export.</p>
+
+  <div class="narrative" style="margin-top:16px">
+    <div class="narrative-label">Rep Variance</div>
+    <p><span class="tag">Answer &mdash;</span> <strong>Joanne is the team's anchor this month: most deals closed (8, including Nucleus Advisory closing today), highest MTD ARR ($11.3k), and best show rate (61%). Samuel recovered WoW (+101%) but is generating low-ASP deals. Alina has the team's deepest pipeline and best win rate (75%) but is not converting volume through the show-rate bottleneck. Ajla's $45.4k YTD despite a zero-revenue April illustrates that the DACH market works &mdash; the current constraint is pipeline supply, not the territory.</strong></p>
+    <p><span class="tag">Why &mdash;</span> Joanne's consistency comes from a combination of solid show rate (61%), reasonable win rate (33%), and deal volume (21 decisions this month). Samuel's +101% WoW is real but at $810 avg ASP the unit economics are thin. Alina's profile is the most interesting: 75% win rate means she converts nearly everything she gets in front of. Her $731k pipeline is the highest-leverage asset the team holds going into May.</p>
+    <p><span class="tag">Evidence &mdash;</span> Joanne: 8 closed, $11.3k MTD (incl. Nucleus Advisory $925, 27 Apr). Samuel: 4 closed, $4k MTD, $1,010 avg ASP. Alina: 3 closed at 75% win rate, $3.1k avg ASP, $731k open pipeline. Joanne: $34.4k YTD (incl. today's close). Ajla: $45.4k YTD confirms DACH market viability; April is a pipeline availability event.</p>
+    <p><span class="tag">Action &mdash;</span> For May, the primary lever is fixing Alina's show rate: if she holds 70% of her bookings (historical norm) and maintains her 75% win rate, she adds $15&#8211;20k to May revenue at current pipeline depth. That is the highest-expected-value execution target on the team. Assign Ajla a hard pipeline target of 10 qualified leads from the DACH campaign by May 8.</p>
+  </div>
+</section>
+
+<!-- SECTION 5: REGIONAL DEEP DIVES -->
+<section>
+  <div class="section-num">Section 5</div>
+  <div class="section-title">Regional Deep Dives</div>
+  <div class="tabs">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab(event,'uk')">UK &mdash; Samuel</button>
+      <button class="tab-btn" onclick="showTab(event,'ro')">Romania &mdash; Alina</button>
+      <button class="tab-btn" onclick="showTab(event,'dach')">DACH &mdash; Ajla</button>
+      <button class="tab-btn" onclick="showTab(event,'anz')">ANZ &mdash; Joanne</button>
+    </div>
+
+    <!-- UK -->
+    <div id="uk" class="tab-pane active">
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <div class="kpi-card"><div class="kpi-label">Won ARR LW</div><div class="kpi-value">$1,621</div><div class="kpi-delta up">+101% WoW</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Won ARR</div><div class="kpi-value">$4,039</div><div class="kpi-delta neutral">31% of $13k quota</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Show Rate</div><div class="kpi-value">47.4%</div><div class="kpi-delta down">9 held / 19 booked</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Win Rate</div><div class="kpi-value">26.9%</div><div class="kpi-delta up">&#9650; vs 15% Apr-25</div></div>
+        <div class="kpi-card"><div class="kpi-label">LW Pipeline</div><div class="kpi-value">$51,200</div><div class="kpi-delta neutral">Deals w/ Apr 20-26 close date</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Pipeline</div><div class="kpi-value">$112,720</div><div class="kpi-delta neutral">Open Apr close dates</div></div>
+        <div class="kpi-card"><div class="kpi-label">YTD Pipeline</div><div class="kpi-value">$198,320</div><div class="kpi-delta neutral">Open Jan&#8211;Apr</div></div>
+        <div class="kpi-card"><div class="kpi-label">Open Pipeline</div><div class="kpi-value">$307,120</div><div class="kpi-delta neutral">Early $177k / Late $130k</div></div>
+      </div>
+      <div class="narrative" style="margin-top:16px">
+        <div class="narrative-label">UK &mdash; Samuel George</div>
+        <p><span class="tag">Answer &mdash;</span> <strong>Samuel recovered WoW but remains deep in quota deficit. His 26.9% win rate is up from 15% in Apr-25, confirming improved conversion quality year on year. The constraint is deal size: at $1,010 avg ASP, he needs 13 deals to hit quota. That is a volume problem requiring more pipeline, not better conversion.</strong></p>
+        <p><span class="tag">Why &mdash;</span> Samuel's $307k open pipeline with a 2.7x coverage ratio looks reasonable, but his show rate at 47% is suppressing actual conversion throughput. If he held 70% of demos (historical near-norm) he would generate roughly 13 held demos per month &mdash; and at 27% win rate, close 3&#8211;4 deals. The missing piece is deal size; UK ASP needs to move toward $2,500&#8211;3,000 to bring quota attainment into reach.</p>
+        <p><span class="tag">Action &mdash;</span> Immediate: identify 3 late-stage deals for close by April 30. Medium-term: implement a minimum deal size qualification criterion for UK prospects &mdash; deals under $800 ARR should require explicit justification to continue, as they consume disproportionate sales capacity relative to revenue impact.</p>
+      </div>
+    </div>
+
+    <!-- RO -->
+    <div id="ro" class="tab-pane">
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <div class="kpi-card"><div class="kpi-label">Won ARR LW</div><div class="kpi-value">$0</div><div class="kpi-delta down">-100% WoW</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Won ARR</div><div class="kpi-value">$9,331</div><div class="kpi-delta neutral">42% of $22k quota</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Show Rate</div><div class="kpi-value">43.2%</div><div class="kpi-delta down">16 held / 37 booked</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Win Rate</div><div class="kpi-value">75.0%</div><div class="kpi-delta up">&#9650; vs 40% Apr-25</div></div>
+        <div class="kpi-card"><div class="kpi-label">LW Pipeline</div><div class="kpi-value">$37,150</div><div class="kpi-delta neutral">Deals w/ Apr 20-26 close date</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Pipeline</div><div class="kpi-value">$97,950</div><div class="kpi-delta neutral">Open Apr close dates</div></div>
+        <div class="kpi-card"><div class="kpi-label">YTD Pipeline</div><div class="kpi-value">$194,750</div><div class="kpi-delta neutral">Open Jan&#8211;Apr</div></div>
+        <div class="kpi-card"><div class="kpi-label">Open Pipeline</div><div class="kpi-value">$731,550</div><div class="kpi-delta neutral">Early $616k / Late $116k</div></div>
+      </div>
+      <div class="narrative" style="margin-top:16px">
+        <div class="narrative-label">Romania &mdash; Alina Goldenberg</div>
+        <p><span class="tag">Answer &mdash;</span> <strong>Alina is the team's most paradoxical performer: 75% win rate (best on team), $731k pipeline (deepest by far), and $9.3k MTD closed (second-best). The disconnect is entirely a show rate problem. Fix the no-show rate and Alina becomes the team's highest-output CM by a significant margin.</strong></p>
+        <p><span class="tag">Why &mdash;</span> 21 of Alina's 37 booked demos did not happen this month. At a 75% win rate, each held demo converts to a deal 3 out of 4 times. Those 21 no-shows represent approximately 16 lost conversion opportunities at an average deal size of $3,110 &mdash; roughly $49k of potential revenue that evaporated before the sales conversation even started.</p>
+        <p><span class="tag">Evidence &mdash;</span> Alina MTD: 37 booked, 16 held (43.2%). Win rate: 3/4 = 75%. MTD ARR: $9,331 (3 deals). Open pipeline: $731k (largest on team; 84% in early stage). LW: $0 closed (WP: $3,771).</p>
+        <p><span class="tag">Action &mdash;</span> Audit Alina's 21 April no-shows by lead source and booking lead time. Hypothesis: a significant portion are inbound leads booked with 7+ days lead time and insufficient pre-demo engagement. Implement a mandatory 2-touchpoint sequence between booking and demo (email + WhatsApp/SMS). Also prioritise the $116k late-stage pipeline for close in the next 2 weeks &mdash; with 75% win rate, this could yield $87k in closed ARR in May.</p>
+      </div>
+    </div>
+
+    <!-- DACH -->
+    <div id="dach" class="tab-pane">
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <div class="kpi-card"><div class="kpi-label">Won ARR LW</div><div class="kpi-value">$0</div><div class="kpi-delta neutral">0 decisions</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Won ARR</div><div class="kpi-value">$0</div><div class="kpi-delta down">0% of $17k quota</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Show Rate</div><div class="kpi-value">80.0%</div><div class="kpi-delta up">4 held / 5 booked</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Win Rate</div><div class="kpi-value">0%</div><div class="kpi-delta neutral">0/2 decisions</div></div>
+        <div class="kpi-card"><div class="kpi-label">LW Pipeline</div><div class="kpi-value">$4,000</div><div class="kpi-delta neutral">Deals w/ Apr 20-26 close date</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Pipeline</div><div class="kpi-value">$12,530</div><div class="kpi-delta neutral">Open Apr close dates</div></div>
+        <div class="kpi-card"><div class="kpi-label">YTD Pipeline</div><div class="kpi-value">$12,530</div><div class="kpi-delta neutral">Open Jan&#8211;Apr</div></div>
+        <div class="kpi-card"><div class="kpi-label">Open Pipeline</div><div class="kpi-value">$21,330</div><div class="kpi-delta neutral">Early $10k / Late $11k</div></div>
+      </div>
+      <div class="narrative" style="margin-top:16px">
+        <div class="narrative-label">DACH &mdash; Ajla Ahmetspahic</div>
+        <p><span class="tag">Answer &mdash;</span> <strong>DACH is in a demand drought. $21k in total open pipeline is insufficient to sustain a $17k monthly quota regardless of execution quality. Ajla's 80% show rate proves she can convert interest into meetings; the DACH leadmagnet campaign launched last week is the right structural response, and the 3 parallel webinars reinforce it. April is a write-off; May pipeline generation is the only metric that matters right now.</strong></p>
+        <p><span class="tag">Why &mdash;</span> Ajla's $45.4k YTD (when pipeline existed) demonstrates the territory closes when it has fuel. The Q1-Q3 2025 period showed DACH could produce $8&#8211;17k/month. The current pipeline starvation appears to have developed over Q1 2026. DACH buyers require compliance-specific messaging (DATEV integration, GoBD, GDPR) and typically have longer consideration cycles than other regions &mdash; the campaign content must speak to these purchase drivers directly.</p>
+        <p><span class="tag">Evidence &mdash;</span> Ajla MTD: $0 closed, 5 demos booked, 4 held (80% show rate), 2 decisions (0% win rate). Open pipeline: $21.3k. YTD closed: $45,395. Context note: DACH campaign (paid ads + tool consolidation report + nurture sequence) launched last week; 3 regional webinars in planning.</p>
+        <p><span class="tag">Action &mdash;</span> Set a concrete pipeline milestone: 5 qualified leads entered into HubSpot from the campaign by May 2 (Friday). Campaign lead signals should be visible within 5&#8211;7 days of launch. On the webinar planning: prioritise the first DACH webinar by end of May to accelerate mid-funnel demand. Ensure registration data flows into a structured follow-up sequence &mdash; webinar registrants who do not show still represent warm intent and should enter a separate nurture track.</p>
+      </div>
+    </div>
+
+    <!-- ANZ -->
+    <div id="anz" class="tab-pane">
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <div class="kpi-card"><div class="kpi-label">Won ARR LW</div><div class="kpi-value">$2,152</div><div class="kpi-delta down">-71% WoW</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Won ARR</div><div class="kpi-value">$11,279</div><div class="kpi-delta up">63% of $18k quota</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Show Rate</div><div class="kpi-value">61.1%</div><div class="kpi-delta up">11 held / 18 booked</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Win Rate</div><div class="kpi-value">36.4%</div><div class="kpi-delta up">&#9650; vs 27.3% Apr-25</div></div>
+        <div class="kpi-card"><div class="kpi-label">LW Pipeline</div><div class="kpi-value">$0</div><div class="kpi-delta neutral">No Apr 20-26 close dates</div></div>
+        <div class="kpi-card"><div class="kpi-label">MTD Pipeline</div><div class="kpi-value">$35,325</div><div class="kpi-delta neutral">Open Apr close dates</div></div>
+        <div class="kpi-card"><div class="kpi-label">YTD Pipeline</div><div class="kpi-value">$48,925</div><div class="kpi-delta neutral">Open Jan&#8211;Apr</div></div>
+        <div class="kpi-card"><div class="kpi-label">Open Pipeline</div><div class="kpi-value">$272,125</div><div class="kpi-delta neutral">Early $167k / Late $105k</div></div>
+      </div>
+      <div class="narrative" style="margin-top:16px">
+        <div class="narrative-label">ANZ &mdash; Joanne Dakay</div>
+        <p><span class="tag">Answer &mdash;</span> <strong>Joanne is the team's most consistent performer this month. At 57% attainment with 3 days left, she is also the only CM where a realistic push to quota is within reach. Closing $6.7k in 3 days requires 3&#8211;4 deals at her current ASP &mdash; aggressive but possible given her $105k in late-stage pipeline.</strong></p>
+        <p><span class="tag">Why &mdash;</span> Joanne's 61% show rate and 33% win rate represent a sustainable conversion engine. Her 7 closed deals in April (most on the team) and 21 total decisions reflect a high-volume, consistent approach that compounds well. The long-cycle deal pulling her average sales cycle to 154d is a normal feature of ANZ enterprise accounts; her median of 18 days on smaller deals is the volume driver.</p>
+        <p><span class="tag">Evidence &mdash;</span> Joanne MTD: 8 closed, $11,279, 36.4% win rate (incl. Nucleus Advisory $925, closed 27 Apr), 61.1% show rate. LW: $2,152 (1 deal). WP: $7,373 (5 deals). SWLY: $1,210. Open pipeline: $272k. Late-stage: $105k. Apr-25 win rate: 27.3% &mdash; up 6pp YoY.</p>
+        <p><span class="tag">Action &mdash;</span> Joanne should run a same-day deal review on her late-stage $105k: identify the 3 deals closest to close and run a direct close conversation this week. With a 33% win rate, she needs 9&#8211;10 close attempts for 3 deals &mdash; that math works if she works her full pipeline. For May, maintain demo volume and explore whether ANZ deal size can be nudged up through packaging or annual billing options.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-attr">Submitted by Yonis Brander, Head of International Growth, TaxDome</div>
+
+  <div class="footer-flag">&#9888; Pipeline WoW segment delta unavailable (no prior snapshot). First run. A pipeline snapshot (pipeline_snapshot_2026-04-26.csv) has been written for next run. WoW open pipeline segment comparison will be available from 4 May 2026.</div>
+  <div class="footer-flag">&#8505; Show Rate, Win Rate and Sales Cycle figures are MTD April 2026 sourced from HubSpot dashboard screenshots provided alongside this run. Last-week (zip-derived) sub-weekly figures are used for Won ARR WoW/YoY only.</div>
+  <div class="footer-flag">&#8505; Open pipeline includes all future-dated close entries (deal owner projections). Pipeline reported as LW/MTD/YTD uses close date as the filter window for deals in open stages. YTD and all-open figures are most relevant for capacity planning; MTD/LW figures reflect recent booking activity.</div>
+  <div class="footer-flag">&#8505; Sales cycle average is inflated by long-cycle ANZ enterprise deals. Median (26d) is the recommended planning signal.</div>
+
+  <div class="footer-section" style="margin-top:20px">
+    <div class="footer-label">Data Sources</div>
+    <div class="footer-text">Last-week Won ARR: HubSpot zip exports (pipeline volume, show rate, win rate, sales cycle) covering 2025-01&#8211;2026-04, exported 2026-04-24. MTD Show Rate, Win Rate, Sales Cycle and deal counts: HubSpot dashboard screenshots provided 2026-04-27. Monthly trend: HubSpot MoM reports (screenshots). No Cowork Project baseline files were present for this run; zip data served as both delta and baseline.</div>
+  </div>
+
+  <div class="footer-section">
+    <div class="footer-label">Methodology</div>
+    <div class="footer-text">
+      <strong>Period definitions:</strong> Last Week = 2026-04-20 to 2026-04-26; Week Prior = 2026-04-13 to 2026-04-19; SWLY = 2025-04-21 to 2025-04-27; MTD = 2026-04-01 through today (2026-04-27).<br>
+      <strong>Pipeline segments:</strong> Early = Demo Booked + Demo Not Completed + Rebooked Demo. Won = Int-Won + Int-Upsell. Late = all other open stages. Closed stages excluded from open pipeline counts.<br>
+      <strong>Show Rate:</strong> Demos Held / Demos Booked (MTD, from HubSpot screenshot). Win Rate: Won / (Won + Lost) (MTD, from HubSpot screenshot). Sales Cycle: average and median days to close (MTD, from HubSpot screenshot).<br>
+      <strong>Coverage:</strong> Open Pipeline / (Remaining Quota / (MTD Show Rate x MTD Win Rate)). RED &lt;1.5x, AMBER 1.5&#8211;2.9x, GREEN &ge;3.0x.<br>
+      <strong>Proj. EOM:</strong> MTD ARR / (day 27 / 30) = run-rate extrapolation. Not adjusted for known pipeline. Treat as floor estimate.<br>
+      <strong>Pipeline LW/MTD/YTD:</strong> Open-stage deals with close dates falling within the specified window. Current-state open pipeline uses all non-closed deals regardless of close date projection.<br>
+      <strong>Quota:</strong> Baked-in. April 2026: Samuel $13k, Alina $22k, Joanne $18k, Ajla $17k, Team $70k.
+    </div>
+  </div>
+
+  <div class="footer-section">
+    <div class="footer-label">Working Notes</div>
+    <div class="footer-text">
+      All 4 CMs represented: Samuel George (UK), Alina Goldenberg (RO), Joanne Dakay (ANZ), Ajla Ahmetspahic (DACH). Confirmed.<br>
+      Unmatched deal stages: none detected. All stages mapped to Early/Late/Won segments correctly.<br>
+      Context note applied: DACH pipeline constraint and campaign launch factored into DACH narrative and actions throughout.<br>
+      Data correction applied: Show rate, win rate and sales cycle figures updated from HubSpot dashboard screenshots to replace zip-derived weekly approximations. Screenshots represent full MTD April data and are the authoritative source for these metrics.
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<script>
+function showTab(e,id){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  e.target.classList.add('active');
+}
+
+Chart.defaults.color='#7c7c96';
+Chart.defaults.borderColor='#2a2a38';
+
+const labels16=['Jan-25','Feb-25','Mar-25','Apr-25','May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26*'];
+const showData=[100.0,92.86,70.59,72.5,65.66,60.56,80.85,79.17,86.05,67.31,68.49,71.62,63.64,59.76,61.42,50.63];
+const winData=[20.0,26.19,33.33,21.62,24.36,34.62,36.31,33.33,27.27,15.09,24.07,35.0,54.76,28.13,17.43,33.75];
+
+// MTD chart
+new Chart(document.getElementById('mtdChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Samuel (UK)','Alina (RO)','Joanne (ANZ)','Ajla (DACH)','Team'],
+    datasets:[
+      {label:'MTD ARR',data:[4039,9331,10354,0,23724],backgroundColor:['rgba(79,142,247,.7)','rgba(79,142,247,.7)','rgba(79,142,247,.7)','rgba(240,85,85,.4)','rgba(79,142,247,.85)'],borderColor:['#4f8ef7','#4f8ef7','#4f8ef7','#f05555','#4f8ef7'],borderWidth:1,borderRadius:4},
+      {label:'Apr Quota',data:[13000,22000,18000,17000,70000],backgroundColor:'rgba(124,92,191,.12)',borderColor:'#7c5cbf',borderWidth:2,borderRadius:4}
+    ]
+  },
+  options:{responsive:true,plugins:{legend:{display:true,labels:{color:'#7c7c96',font:{family:'DM Mono',size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.raw.toLocaleString()}}},scales:{x:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:11}},grid:{color:'#2a2a38'}},y:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},callback:v=>'$'+v.toLocaleString()},grid:{color:'#2a2a38'}}}}
+});
+
+// Exec trend
+new Chart(document.getElementById('execChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:labels16,
+    datasets:[
+      {label:'Show Rate %',data:showData,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.07)',tension:.35,fill:true,pointRadius:3},
+      {label:'Win Rate %',data:winData,borderColor:'#2dce7a',backgroundColor:'rgba(45,206,122,.05)',tension:.35,fill:true,pointRadius:3}
+    ]
+  },
+  options:{responsive:true,plugins:{legend:{display:true,labels:{color:'#7c7c96',font:{family:'DM Mono',size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toFixed(1)+'%'}}},scales:{x:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},callback:v=>v+'%'},grid:{color:'#2a2a38'}}}}
+});
+
+// Pipeline composition
+new Chart(document.getElementById('pipelineChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Samuel (UK)','Alina (RO)','Joanne (ANZ)','Ajla (DACH)'],
+    datasets:[
+      {label:'Early Stage',data:[176800,616000,167200,10400],backgroundColor:'rgba(79,142,247,.75)',borderRadius:4},
+      {label:'Late Stage',data:[130320,115550,104925,10930],backgroundColor:'rgba(124,92,191,.75)',borderRadius:4}
+    ]
+  },
+  options:{responsive:true,plugins:{legend:{display:true,labels:{color:'#7c7c96',font:{family:'DM Mono',size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.raw.toLocaleString()}}},scales:{x:{stacked:true,ticks:{color:'#7c7c96',font:{family:'DM Mono',size:11}},grid:{color:'#2a2a38'}},y:{stacked:true,ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#2a2a38'}}}}
+});
+
+// Sales cycle trend — all 16 months
+const scAvg=[13,55,22,38,78,70,67,19,54,59,84,116,55,35,82,128];
+const scMed=[14,31,6.5,24,54,23.5,26.5,11,12,25.5,38,27,25,16,21,26];
+new Chart(document.getElementById('scChart').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:labels16,
+    datasets:[
+      {label:'Avg Days to Close',data:scAvg,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.07)',tension:.3,fill:false,pointRadius:4},
+      {label:'Median Days to Close',data:scMed,borderColor:'#7c5cbf',backgroundColor:'rgba(124,92,191,.07)',tension:.3,fill:false,pointRadius:4,borderDash:[4,3]}
+    ]
+  },
+  options:{responsive:true,plugins:{legend:{display:true,labels:{color:'#7c7c96',font:{family:'DM Mono',size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'d'}}},scales:{x:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},maxRotation:45},grid:{color:'#2a2a38'}},y:{ticks:{color:'#7c7c96',font:{family:'DM Mono',size:10},callback:v=>v+'d'},grid:{color:'#2a2a38'}}}}
+});
+</script>
+</body>
+</html>
