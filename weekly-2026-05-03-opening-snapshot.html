@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Report — Opening Snapshot | W/E 3 May 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --td-primary:#1976D3;--td-dark:#004392;
+  --bg:#F4F8FD;--card:#FFFFFF;--border:#C9DCEF;
+  --text:#0A1F44;--muted:#4A6080;
+  --green:#12A05C;--amber:#D97706;--red:#DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;padding:32px 28px;border-radius:12px;margin-bottom:24px}
+.header h1{font-size:24px;font-weight:700;margin-bottom:6px}
+.header .sub{font-size:14px;opacity:.85;margin-bottom:4px}
+.header .meta{font-size:12px;opacity:.7}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.section{margin-bottom:36px}
+.section-title{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:16px;padding-bottom:7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tag{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:#EBF3FB;color:var(--td-primary);letter-spacing:.04em}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.kpi-label{font-size:11px;font-weight:500;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:8px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--text);line-height:1.1}
+.kpi-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.alert{padding:14px 18px;border-radius:0 8px 8px 0;margin-bottom:24px}
+.alert-red{background:#FEF2F2;border-left:5px solid var(--red)}
+.alert-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.alert-red .alert-title{color:var(--red)}
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:16px}
+.chart-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#EBF3FB;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;letter-spacing:.03em}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FBFF}
+.tfoot-row td{font-weight:700;background:#F4F8FD;border-top:2px solid var(--border)}
+.table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.note{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 8px 8px 0;font-size:12px;color:var(--muted);line-height:1.8}
+.note strong{color:var(--text)}
+.footer{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:12px;color:var(--muted);text-align:center;margin-top:32px}
+.rate-green{color:#12A05C;font-weight:600}
+.rate-amber{color:#D97706;font-weight:600}
+.rate-red{color:#DC2626;font-weight:600}
+.target-badge{font-size:10px;padding:1px 6px;border-radius:8px;background:#EBF3FB;color:var(--td-primary);font-weight:600;margin-left:4px;vertical-align:middle}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="sub">Weekly Report — Opening Snapshot</div>
+  <h1>International Growth · Year-to-date through 5 May 2026</h1>
+  <div class="meta">Published 5 May 2026 &nbsp;·&nbsp; YTD 1 Jan → 5 May 2026 &nbsp;·&nbsp; Intl-only (excludes US/Canada) &nbsp;·&nbsp; Yonis Brander, Head of International Growth, TaxDome</div>
+</div>
+
+<!-- EXEC INTRO -->
+<div style="background:var(--card);border:1px solid var(--border);border-left:5px solid var(--td-primary);border-radius:0 10px 10px 0;padding:20px 24px;margin-bottom:16px">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--td-primary);margin-bottom:10px">GTM Bowtie — Primary Constraint</div>
+  <div style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:16px">
+    Right now we're running a marathon, but for every 4 steps forward we take 1 step backwards. The new business engine is strong — Win Rate is approaching top-quartile for B2B SaaS, and the team is closing deals at a healthy pace. But the retention side of the bowtie is eroding the ARR base faster than expansion can cover it. Every dollar won in new business is immediately worth less than a dollar, because a portion disappears through churn before it ever gets the chance to compound. Until NRR crosses 100%, the floor is falling as we build on top of it.
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--red);margin-bottom:6px">Gross Churn</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">$96,849</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">13.0% churn rate &nbsp;·&nbsp; 43 events</div>
+    </div>
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--green);margin-bottom:6px">Expansion</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">$53,678</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">7.2% expansion rate &nbsp;·&nbsp; 33 events</div>
+    </div>
+    <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);margin-bottom:6px">Net Revenue Retention</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">94.2%</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">–$43,171 net &nbsp;·&nbsp; on $744,578 base</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECONDARY BOWTIE BREAK -->
+<div style="background:var(--card);border:1px solid var(--border);border-left:5px solid var(--amber);border-radius:0 10px 10px 0;padding:20px 24px;margin-bottom:28px">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);margin-bottom:10px">GTM Bowtie — Secondary Constraint</div>
+  <div style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:16px">
+    We're doing the hard part — generating qualified interest and getting buyers to commit time in their calendar — then losing them before the conversation even starts. Think of it as a restaurant with a serious no-show problem: the reservations are there, the table is set, and more than one in three guests simply don't walk through the door. The revenue that does show up converts well. The revenue that doesn't show up is the gap between where we are on quota and where we could have been.
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);margin-bottom:6px">Current (60.7% SR)</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">190 held</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">88 wins &nbsp;·&nbsp; $176,433 ARR &nbsp;·&nbsp; 67% to quota</div>
+    </div>
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--green);margin-bottom:6px">At Target (80% SR)</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text)">250 held</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">116 wins &nbsp;·&nbsp; $232,573 ARR &nbsp;·&nbsp; 88% to quota</div>
+    </div>
+    <div style="background:#EBF3FB;border:1px solid var(--border);border-radius:8px;padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--td-primary);margin-bottom:6px">Opportunity</div>
+      <div style="font-size:20px;font-weight:700;color:var(--green)">+$56,140</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">+28 wins &nbsp;·&nbsp; +21pp quota attainment</div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKETING -->
+<div class="section">
+  <div class="section-title">Marketing <span class="tag">YTD</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">Full-funnel volume — Lead to Close</div>
+    <canvas id="funnelChart" height="110"></canvas>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">New Leads</div>
+      <div class="kpi-value">925</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MQLs</div>
+      <div class="kpi-value">486</div>
+      <div class="kpi-sub">Lead-to-MQL: <strong>52.5%</strong></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MQL-to-Demo Booked</div>
+      <div class="kpi-value">64.4%</div>
+      <div class="kpi-sub">313 demos booked from 486 MQLs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Show Rate <span class="target-badge">target 80%</span></div>
+      <div class="kpi-value rate-amber">60.7%</div>
+      <div class="kpi-sub">190 held from 313 booked</div>
+    </div>
+  </div>
+</div>
+
+<!-- SALES -->
+<div class="section">
+  <div class="section-title">Sales <span class="tag">YTD</span></div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Demos Held</div>
+      <div class="kpi-value">190</div>
+      <div class="kpi-sub">Show Rate: <span class="rate-amber">60.7%</span> <span class="target-badge">target 80%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Deals Won</div>
+      <div class="kpi-value">88</div>
+      <div class="kpi-sub">Win Rate: <span class="rate-amber">31.9%</span> <span class="target-badge">target 35%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">New ARR</div>
+      <div class="kpi-value">$176,433</div>
+      <div class="kpi-sub">Avg deal $2,005 &nbsp;·&nbsp; avg cycle 68d</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Open Pipeline</div>
+      <div class="kpi-value">$1,283,460</div>
+      <div class="kpi-sub">222 deals &nbsp;·&nbsp; Early $1,006K / Late $278K</div>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER SUCCESS -->
+<div class="section">
+  <div class="section-title">Customer Success <span class="tag">YTD</span></div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Starting ARR (1 Jan 2026)</div>
+      <div class="kpi-value">$744,578</div>
+      <div class="kpi-sub">Basis for all CS rates</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Churn Rate</div>
+      <div class="kpi-value" style="color:var(--red)">13.0%</div>
+      <div class="kpi-sub">$96,849 / 43 events</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Expansion Rate</div>
+      <div class="kpi-value" style="color:var(--amber)">7.2%</div>
+      <div class="kpi-sub">$53,678 / 33 events</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Net Revenue Retention</div>
+      <div class="kpi-value" style="color:var(--amber)">94.2%</div>
+      <div class="kpi-sub">Ending ARR: $701,407</div>
+    </div>
+  </div>
+</div>
+
+<!-- REGIONAL BREAKDOWN — SALES -->
+<div class="section">
+  <div class="section-title">Regional Breakdown — Sales <span class="tag">YTD · sorted by new ARR</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">CM positioning — Show Rate vs Win Rate (bubble = New ARR) &nbsp;·&nbsp; dashed red lines = targets (SR 80% / WR 35%)</div>
+    <canvas id="cmBubbleChart" height="200"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th><th>Demos Booked</th><th>Demos Held</th>
+          <th>Deals Closed</th><th>New ARR</th><th>Avg Deal</th>
+          <th>Show Rate <span class="target-badge">80%</span></th>
+          <th>Win Rate <span class="target-badge">35%</span></th>
+          <th>Avg Cycle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+          <td>75</td><td>32</td><td>20</td><td><strong>$66,673</strong></td><td>$3,334</td>
+          <td><span class="rate-red">42.7%</span></td>
+          <td><span class="rate-amber">22.7%</span></td><td>66d</td>
+        </tr>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+          <td>21</td><td>18</td><td>22</td><td><strong>$46,331</strong></td><td>$2,106</td>
+          <td><span class="rate-green">85.7%</span></td>
+          <td><span class="rate-green">61.1%</span></td><td>54d</td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+          <td>81</td><td>62</td><td>24</td><td><strong>$35,455</strong></td><td>$1,477</td>
+          <td><span class="rate-amber">76.5%</span></td>
+          <td><span class="rate-green">40.0%</span></td><td>90d</td>
+        </tr>
+        <tr>
+          <td><strong>Samuel George</strong></td><td>UK</td>
+          <td>136</td><td>78</td><td>21</td><td><strong>$27,043</strong></td><td>$1,288</td>
+          <td><span class="rate-red">57.4%</span></td>
+          <td><span class="rate-amber">23.1%</span></td><td>61d</td>
+        </tr>
+        <tr>
+          <td><strong>Piera Bellelli</strong></td><td>Italy (AE inbound)</td>
+          <td>—</td><td>—</td><td>1</td><td><strong>$932</strong></td><td>$932</td>
+          <td>—</td><td>—</td><td>—</td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Team Total</strong></td>
+          <td><strong>313</strong></td><td><strong>190</strong></td><td><strong>88</strong></td>
+          <td><strong>$176,433</strong></td><td><strong>$2,005</strong></td>
+          <td><span class="rate-amber">60.7%</span></td>
+          <td><span class="rate-amber">31.9%</span></td><td><strong>68d</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Show Rate color:</strong> GREEN ≥ 80%, AMBER 60–79%, RED &lt; 60%.<br>
+    <strong>Win Rate color:</strong> GREEN ≥ 35%, AMBER 20–34%, RED &lt; 20%.<br>
+    <strong>Source:</strong> Demos Booked/Held from show rate export; Deals Won and Win Rate from pipeline volume export (Int-Won stage, verified against HubSpot). Win Rate per CM recalculated using HubSpot-confirmed won counts and win rate export lost counts.<br>
+    <strong>Piera/Italy:</strong> AE Italy inbound; 1 deal this year ($932). Not tracked in show rate export so SR/WR shown as "—". Included in team totals.<br>
+    <strong>Alina/RO:</strong> Highest ARR ($66,673) but worst show rate (42.7% — 37pp below target). 75 booked, 32 held. Improving to 80% target yields ~60 held demos; at her current win rate that unlocks ~5 additional closes and ~$15K more ARR with no change to booking volume.<br>
+    <strong>Ajla/DACH:</strong> Both targets beaten (SR 85.7%, WR 61.1%). Inbound-only; low volume but fully efficient.<br>
+    <strong>Samuel/UK:</strong> Highest booking volume (136) but both rates below target. 58 demos lost to no-shows YTD. WR 23.1% means scale is not converting to ARR efficiently.
+  </div>
+</div>
+
+<!-- REGIONAL BREAKDOWN — CS -->
+<div class="section">
+  <div class="section-title">Regional Breakdown — Customer Success <span class="tag">YTD · sorted by churn ARR</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">Churned ARR vs expansion ARR by CSAM</div>
+    <canvas id="csLineChart" height="120"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>CSAM</th><th>Region</th><th>Churn Events</th><th>Churned ARR</th><th>Expansion Events</th><th>Expansion ARR</th><th>Net ARR Delta</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Maria Mazur</strong></td><td>DACH</td><td>14</td>
+          <td><span class="rate-red">$41,561</span></td><td>11</td>
+          <td><span class="rate-green">$18,144</span></td>
+          <td><span class="rate-red">–$23,417</span></td>
+        </tr>
+        <tr>
+          <td><strong>Valentina Manta</strong></td><td>Romania</td><td>6</td>
+          <td><span class="rate-red">$25,376</span></td><td>3</td>
+          <td><span class="rate-green">$3,127</span></td>
+          <td><span class="rate-red">–$22,249</span></td>
+        </tr>
+        <tr>
+          <td><strong>Piera Bellelli</strong></td><td>UK/IT</td><td>14</td>
+          <td><span class="rate-red">$18,367</span></td><td>7</td>
+          <td><span class="rate-green">$16,449</span></td>
+          <td><span class="rate-red">–$1,918</span></td>
+        </tr>
+        <tr>
+          <td><strong>Paolo Zafra</strong></td><td>ANZ</td><td>7</td>
+          <td><span class="rate-red">$7,792</span></td><td>7</td>
+          <td><span class="rate-green">$12,455</span></td>
+          <td><span class="rate-green">+$4,663</span></td>
+        </tr>
+        <tr>
+          <td><strong>Julia Seitz</strong></td><td>DACH</td><td>2</td>
+          <td><span class="rate-red">$3,752</span></td><td>2</td>
+          <td><span class="rate-green">$1,481</span></td>
+          <td><span class="rate-red">–$2,271</span></td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Total</strong></td><td><strong>43</strong></td>
+          <td><strong><span class="rate-red">$96,849</span></strong></td><td><strong>33</strong></td>
+          <td><strong><span class="rate-green">$53,678</span></strong></td>
+          <td><strong><span class="rate-red">–$43,171</span></strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>CS rates (basis: $744,578 starting ARR):</strong> Churn Rate 13.0%, Expansion Rate 7.2%, NRR 94.2%.<br>
+    <strong>Maria/DACH:</strong> Largest churn at $41,561 — 43% of total team churn from a single CSAM. Recommend cohort review to identify whether a product tier, contract length, or country sub-segment is driving the concentration.<br>
+    <strong>Valentina/RO:</strong> Net –$22,249 with expansion covering only 12% of churn. RO expansion pipeline needs attention.<br>
+    <strong>Paolo/ANZ:</strong> Only CSAM with positive net ARR delta (+$4,663). Expansion outpacing churn; model to study for other markets.
+  </div>
+</div>
+
+<!-- WORKING NOTES -->
+<div class="section">
+  <div class="section-title">Working Notes</div>
+  <div class="note">
+    <strong>Coverage window:</strong> 1 Jan 2026 → 5 May 2026 (today).<br>
+    <strong>Demo and deal source:</strong> Demos Booked (313) and Demos Held (190) from HubSpot show rate export. Deals Won (88) verified against HubSpot Int-Won stage report (screenshot confirmed 5 May 2026): Alina 20, Ajla 22, Joanne 24, Samuel 21, Piera 1. ARR ($176,433) from pipeline volume export. Win Rate (31.9%) = 88 won / 276 total (lost count 188 from win rate export, assumed unchanged).<br>
+    <strong>US/Canada exclusion:</strong> Applied at CM level. Residual contamination risk (~5–8%) for ambiguous country fields.<br>
+    <strong>Lead and MQL counts (925 / 486):</strong> Provided manually this week; not available in the standard HubSpot drop files.<br>
+    <strong>Data files used:</strong> ig-mom-pipeline-volume-va.csv, ig-mom-win-rate-last-year.csv, ig-mom-show-rate-last-yea.csv, ig-mom-sales-cycle-last-y.csv, int-cs-churn-amount-by-csam.csv, int-cs-expansion-revenue-by.csv, mkt-generated-pipeline-arr-by.csv.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>Yonis Brander</strong> · Head of International Growth, TaxDome<br>
+  Source: HubSpot CRM · Weekly data drop 5 May 2026<br>
+  Generated 5 May 2026
+</div>
+
+</div>
+
+<script>
+// ── 1. FULL FUNNEL area/line chart ───────────────────────────
+const fCtx = document.getElementById('funnelChart').getContext('2d');
+new Chart(fCtx, {
+  type: 'line',
+  data: {
+    labels: ['New Leads', 'MQLs', 'Demos Booked', 'Demos Held', 'Deals Won'],
+    datasets: [{
+      label: 'Volume',
+      data: [925, 486, 313, 190, 88],
+      borderColor: '#1976D3',
+      backgroundColor: 'rgba(25,118,211,0.10)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#1976D3',
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+      pointRadius: 7,
+      pointHoverRadius: 9,
+      fill: true,
+      tension: 0.3,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#004392',
+        callbacks: {
+          label: ctx => {
+            const stages = [925, 486, 313, 190, 88];
+            const pct = ctx.dataIndex > 0
+              ? ' (' + ((ctx.raw / stages[ctx.dataIndex - 1]) * 100).toFixed(1) + '% of prior stage)'
+              : '';
+            return ' ' + ctx.raw.toLocaleString() + pct;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#4A6080', font: { size: 12, weight: '500' } } },
+      y: { grid: { color: '#E8F0F8' }, ticks: { color: '#4A6080', font: { size: 11 } }, min: 0 }
+    }
+  }
+});
+
+// ── 2. CM BUBBLE chart: Show Rate (y) vs Win Rate (x) ───────
+const bCtx = document.getElementById('cmBubbleChart').getContext('2d');
+
+const cmData = [
+  { label: 'Alina / Romania', x: 22.7, y: 42.7, arr: 66673, color: '#1976D3' },
+  { label: 'Ajla / DACH',     x: 61.1, y: 85.7, arr: 46331, color: '#12A05C' },
+  { label: 'Joanne / ANZ',    x: 40.0, y: 76.5, arr: 35455, color: '#D97706' },
+  { label: 'Samuel / UK',     x: 23.1, y: 57.4, arr: 27043, color: '#DC2626' },
+];
+
+// Scale bubble r: min 16, max 34 proportional to ARR
+const minARR = 27043, maxARR = 66673;
+const scaleR = arr => 16 + ((arr - minARR) / (maxARR - minARR)) * 18;
+
+// Target reference lines as line-type datasets
+const wrLine = {
+  type: 'line', label: '_wr',
+  data: [{ x: 35, y: 0 }, { x: 35, y: 105 }],
+  borderColor: 'rgba(220,38,38,0.45)', borderDash: [5, 4], borderWidth: 1.5,
+  pointRadius: 0, fill: false, tension: 0
+};
+const srLine = {
+  type: 'line', label: '_sr',
+  data: [{ x: 0, y: 80 }, { x: 80, y: 80 }],
+  borderColor: 'rgba(220,38,38,0.45)', borderDash: [5, 4], borderWidth: 1.5,
+  pointRadius: 0, fill: false, tension: 0
+};
+
+const bubbleDatasets = cmData.map(cm => ({
+  type: 'bubble',
+  label: cm.label,
+  data: [{ x: cm.x, y: cm.y, r: scaleR(cm.arr) }],
+  backgroundColor: cm.color + 'BB',
+  borderColor: cm.color,
+  borderWidth: 2,
+}));
+
+new Chart(bCtx, {
+  type: 'scatter',
+  data: { datasets: [...bubbleDatasets, wrLine, srLine] },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#4A6080', font: { size: 12 }, padding: 16,
+          filter: item => !item.text.startsWith('_')
+        }
+      },
+      tooltip: {
+        backgroundColor: '#004392',
+        filter: item => item.dataset.type === 'bubble',
+        callbacks: {
+          label: ctx => {
+            const cm = cmData[ctx.datasetIndex];
+            return [
+              ' ' + cm.label,
+              ' Win Rate: ' + ctx.parsed.x + '%',
+              ' Show Rate: ' + ctx.parsed.y + '%',
+              ' New ARR: $' + cm.arr.toLocaleString()
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Win Rate (%)', color: '#4A6080', font: { size: 11 } },
+        min: 0, max: 75,
+        grid: { color: '#E8F0F8' },
+        ticks: { color: '#4A6080', font: { size: 11 }, callback: v => v + '%' }
+      },
+      y: {
+        title: { display: true, text: 'Show Rate (%)', color: '#4A6080', font: { size: 11 } },
+        min: 0, max: 105,
+        grid: { color: '#E8F0F8' },
+        ticks: { color: '#4A6080', font: { size: 11 }, callback: v => v + '%' }
+      }
+    }
+  }
+});
+
+// ── 3. CS LINE chart: churn vs expansion by CSAM ─────────────
+const csCtx = document.getElementById('csLineChart').getContext('2d');
+new Chart(csCtx, {
+  type: 'line',
+  data: {
+    labels: ['Maria (DACH)', 'Valentina (RO)', 'Piera (UK/IT)', 'Paolo (ANZ)', 'Julia (DACH)'],
+    datasets: [
+      {
+        label: 'Churned ARR',
+        data: [41561, 25376, 18367, 7792, 3752],
+        borderColor: '#DC2626',
+        backgroundColor: 'rgba(220,38,38,0.07)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#DC2626',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 7,
+        fill: true,
+        tension: 0.3,
+      },
+      {
+        label: 'Expansion ARR',
+        data: [18144, 3127, 16449, 12455, 1481],
+        borderColor: '#12A05C',
+        backgroundColor: 'rgba(18,160,92,0.07)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#12A05C',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 7,
+        fill: true,
+        tension: 0.3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { color: '#4A6080', font: { size: 12 }, padding: 16 }
+      },
+      tooltip: {
+        backgroundColor: '#004392',
+        callbacks: {
+          label: ctx => ' ' + ctx.dataset.label + ': $' + ctx.raw.toLocaleString()
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#4A6080', font: { size: 12 } } },
+      y: {
+        grid: { color: '#E8F0F8' },
+        ticks: { color: '#4A6080', font: { size: 11 }, callback: v => '$' + (v / 1000).toFixed(0) + 'K' },
+        min: 0
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
