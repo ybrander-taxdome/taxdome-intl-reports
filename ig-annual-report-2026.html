@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Int'l Growth — 2026 Annual Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ef;--surface:#fff;--surface-2:#f0ede8;--surface-3:#e8e4de;
+  --ink:#1a1814;--ink-muted:#6b6660;--ink-faint:#b5b0aa;
+  --accent:#1d6b4f;--accent-light:#e8f3ee;
+  --warn:#c45c2a;--warn-light:#fdf0e8;
+  --neutral:#8a6f5c;--border:#e2ded8;
+  --up:#1d6b4f;--down:#c45c2a;--blue:#2d5fa6;--blue-light:#e8eef8;
+  --forecast:#7b4f9e;--forecast-light:#f3eef8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;min-height:100vh;}
+
+/* ── TOP NAV ── */
+.top-nav{background:var(--ink);padding:0 24px;display:flex;align-items:center;gap:0;border-bottom:2px solid var(--ink);}
+.top-nav-brand{color:#fff;font-family:'Fraunces',serif;font-size:16px;font-weight:600;padding:14px 20px 14px 0;border-right:1px solid #3a3632;margin-right:4px;white-space:nowrap;}
+.top-nav-brand span{color:var(--accent-light);opacity:0.8;font-size:12px;font-family:'DM Mono',monospace;font-weight:400;margin-left:8px;}
+.top-tab{background:none;border:none;color:#888;font-family:'DM Mono',monospace;font-size:12px;padding:14px 18px;cursor:pointer;position:relative;transition:color 0.15s;white-space:nowrap;letter-spacing:0.03em;}
+.top-tab:hover{color:#fff;}
+.top-tab.active{color:#fff;}
+.top-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent-light);}
+.top-tab.ytd.active::after{background:#f0c040;}
+.top-tab.forecast.active::after{background:var(--forecast);}
+.top-tab.ytd{color:#f0c040;opacity:0.7;}
+.top-tab.ytd:hover,.top-tab.ytd.active{opacity:1;color:#f0c040;}
+.top-tab.forecast{color:#c4a0e8;opacity:0.7;}
+.top-tab.forecast:hover,.top-tab.forecast.active{opacity:1;color:#c4a0e8;}
+
+/* ── MONTH SUB-NAV ── */
+.month-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;align-items:center;}
+.month-tab{background:none;border:none;font-family:'DM Mono',monospace;font-size:11px;padding:10px 14px;cursor:pointer;color:var(--ink-muted);position:relative;transition:color 0.15s;letter-spacing:0.03em;}
+.month-tab:hover:not(.empty){color:var(--ink);}
+.month-tab.active{color:var(--ink);font-weight:500;}
+.month-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--blue);}
+.month-tab.empty{color:var(--ink-faint);cursor:not-allowed;}
+.month-tab.empty::after{display:none;}
+
+/* ── CONTENT ── */
+.panel{display:none;padding:28px 24px 48px;}
+.panel.active{display:block;}
+
+/* ── KPI CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 14px 12px;position:relative;overflow:hidden;transition:box-shadow 0.15s;cursor:default;}
+.kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.k-pipeline::before{background:var(--blue);}
+.kpi-card.k-newarr::before{background:var(--accent);}
+.kpi-card.k-churn::before{background:var(--warn);}
+.kpi-card.k-churnrate::before{background:var(--neutral);}
+.kpi-card.k-nrr::before{background:var(--forecast);}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:6px;}
+.kpi-value{font-family:'Fraunces',serif;font-size:22px;font-weight:600;letter-spacing:-0.5px;margin-bottom:5px;line-height:1;}
+.kpi-delta{font-size:10px;display:flex;gap:5px;flex-wrap:wrap;}
+.pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:20px;font-size:10px;font-weight:500;}
+.pill.up{background:var(--accent-light);color:var(--up);}
+.pill.down{background:var(--warn-light);color:var(--down);}
+.pill.na{background:var(--surface-2);color:var(--ink-muted);}
+.pill.fc{background:var(--forecast-light);color:var(--forecast);}
+
+/* ── SECTION LABEL ── */
+.slabel{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+.mb-10{margin-bottom:10px;}.mb-20{margin-bottom:20px;}.mb-24{margin-bottom:24px;}
+
+/* ── SUMMARY TABLE ── */
+.sum-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;}
+.sum-table{width:100%;border-collapse:collapse;font-size:12px;}
+.sum-table th{background:var(--ink);color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;padding:9px 12px;font-weight:500;text-align:left;}
+.sum-table th.r{text-align:right;}
+.sum-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.sum-table td.r{text-align:right;}
+.sum-table tr:last-child td{border-bottom:none;}
+.sum-table tr:hover td{background:var(--surface-2);}
+.vp{color:var(--up);font-weight:500;}
+.vn{color:var(--down);font-weight:500;}
+.badge{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;}
+.badge.up{background:var(--accent-light);color:var(--up);}
+.badge.down{background:var(--warn-light);color:var(--down);}
+.badge.na{background:var(--surface-2);color:var(--ink-muted);}
+.badge.fc{background:var(--forecast-light);color:var(--forecast);}
+
+/* ── ACCORDION ── */
+.acc{margin-bottom:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.acc-trig{width:100%;background:var(--surface);border:none;text-align:left;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink);transition:background 0.15s;}
+.acc-trig:hover{background:var(--surface-2);}
+.acc-left{display:flex;align-items:center;gap:8px;}
+.dot{width:7px;height:7px;border-radius:50%;}
+.dot.blue{background:var(--blue);}
+.dot.green{background:var(--accent);}
+.dot.orange{background:var(--warn);}
+.acc-meta{font-size:10px;color:var(--ink-muted);font-weight:400;}
+.chev{font-size:10px;color:var(--ink-muted);transition:transform 0.2s;}
+.acc.open .chev{transform:rotate(180deg);}
+.acc-body{display:none;padding:18px;background:var(--surface);border-top:1px solid var(--border);}
+.acc.open .acc-body{display:block;}
+
+/* ── CHART GRID ── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ct{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:3px;}
+.cv{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:12px;}
+.cv.green{color:var(--accent);}
+.cv.warn{color:var(--warn);}
+.chart-wrap{position:relative;height:200px;}
+
+/* ── DATA TABLE ── */
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);padding:5px 7px;border-bottom:1px solid var(--border);font-weight:500;}
+.dt th.r{text-align:right;}
+.dt td{padding:7px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.dt tr:last-child td{border-bottom:none;}
+.dt td.r{text-align:right;}
+.dt tr.tot td{font-weight:500;background:var(--surface-2);font-family:'Fraunces',serif;font-size:13px;}
+.dt tr:not(.tot):hover td{background:var(--surface-2);}
+.bar-r{display:flex;align-items:center;gap:6px;}
+.bar-bg{width:50px;height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.bar-f{height:100%;border-radius:2px;}
+.bar-f.blue{background:var(--blue);}
+.bar-f.green{background:var(--accent);}
+.bar-f.orange{background:var(--warn);}
+
+/* ── CHURN METRICS ── */
+.cm-grid{margin-top:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.cm-row{display:grid;grid-template-columns:1.8fr 2fr 1fr;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);align-items:center;}
+.cm-row:last-child{border-bottom:none;}
+.cm-row.hdr{background:var(--surface-2);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);font-weight:500;}
+.cm-lbl{font-weight:500;font-size:11px;}
+.cm-form{color:var(--ink-muted);font-size:10px;}
+.cm-val{font-family:'Fraunces',serif;font-size:13px;font-weight:600;text-align:right;}
+.cm-val.warn{color:var(--down);}
+.cm-val.good{color:var(--up);}
+.cm-val.muted{color:var(--ink-muted);font-size:11px;font-family:'DM Mono',monospace;font-weight:400;}
+.cm-sub{font-size:9px;color:var(--ink-faint);font-family:'DM Mono',monospace;font-weight:400;}
+
+/* ── NRR / EXPANSION ── */
+.exp-section{margin-top:18px;border-top:1px solid var(--border);padding-top:18px;}
+
+/* ── YTD PANEL ── */
+.ytd-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.ytd-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+.ytd-card-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:6px;}
+.ytd-card-value{font-family:'Fraunces',serif;font-size:28px;font-weight:600;margin-bottom:4px;}
+.ytd-card-sub{font-size:11px;color:var(--ink-muted);}
+.trend-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.trend-chart-wrap{position:relative;height:180px;}
+
+/* ── FORECAST PANEL ── */
+.fc-note{background:var(--forecast-light);border:1px solid #d4b8f0;border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:12px;color:var(--forecast);line-height:1.6;}
+.fc-note strong{font-weight:500;}
+.fc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.fc-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;}
+.fc-card-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:4px;}
+.fc-card-value{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:2px;}
+.fc-card-sub{font-size:11px;color:var(--ink-muted);}
+.fc-actual{color:var(--ink-muted);}
+.fc-projected{color:var(--forecast);}
+
+.footnote{font-size:10px;color:var(--ink-faint);margin-top:28px;padding-top:14px;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="top-nav-brand">Int'l Growth <span>2026</span></div>
+  <button class="top-tab active" onclick="showSection('monthly')">Monthly</button>
+  <button class="top-tab ytd" onclick="showSection('ytd')">Year to Date</button>
+  <button class="top-tab forecast" onclick="showSection('forecast')">Forecast</button>
+</div>
+
+<!-- MONTH SUB-NAV (only shown under Monthly) -->
+<div class="month-nav" id="monthNav">
+  <button class="month-tab active" onclick="showMonth('jan')">Jan</button>
+  <button class="month-tab" onclick="showMonth('feb')">Feb</button>
+  <button class="month-tab" onclick="showMonth('mar')">Mar</button>
+  <button class="month-tab" onclick="showMonth('apr')">Apr</button>
+  <button class="month-tab empty" title="Month not yet closed">May</button>
+  <button class="month-tab empty" title="Month not yet closed">Jun</button>
+  <button class="month-tab empty" title="Month not yet closed">Jul</button>
+  <button class="month-tab empty" title="Month not yet closed">Aug</button>
+  <button class="month-tab empty" title="Month not yet closed">Sep</button>
+  <button class="month-tab empty" title="Month not yet closed">Oct</button>
+  <button class="month-tab empty" title="Month not yet closed">Nov</button>
+  <button class="month-tab empty" title="Month not yet closed">Dec</button>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     JANUARY
+════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-jan">
+  <div class="kpi-row">
+    <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline ARR</div><div class="kpi-value">$405k</div><div class="kpi-delta"><span class="pill na">Jan — no prior month</span><span class="pill up">↑ +1,198% YoY</span></div></div>
+    <div class="kpi-card k-newarr"><div class="kpi-label">New ARR</div><div class="kpi-value">$55k</div><div class="kpi-delta"><span class="pill na">Jan — no prior month</span><span class="pill down">↓ −88% YoY</span></div></div>
+    <div class="kpi-card k-churn"><div class="kpi-label">Churned ARR</div><div class="kpi-value">$51k</div><div class="kpi-delta"><span class="pill na">Jan — no prior month</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-churnrate"><div class="kpi-label">Monthly Churn Rate</div><div class="kpi-value">6.81%</div><div class="kpi-delta"><span class="pill na">Jan — no prior month</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-nrr"><div class="kpi-label">NRR</div><div class="kpi-value">93.83%</div><div class="kpi-delta"><span class="pill na">Jan — no prior month</span><span class="pill na">YoY N/A</span></div></div>
+  </div>
+  <div class="slabel mb-10">Summary</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Jan '26</th><th class="r">Jan '25 (YoY)</th><th class="r">YoY Δ</th></tr></thead>
+    <tbody>
+      <tr><td>MKT Generated Pipeline ARR</td><td class="r">$404,903</td><td class="r">$31,203</td><td class="r"><span class="badge up">+1,198%</span></td></tr>
+      <tr><td>New ARR</td><td class="r">$54,700</td><td class="r">$468,005</td><td class="r"><span class="badge down">−88%</span></td></tr>
+      <tr><td>Churned ARR</td><td class="r">$50,714</td><td class="r">N/A</td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Expansion ARR</td><td class="r">$4,801</td><td class="r">N/A</td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Standard Monthly Churn</td><td class="r">6.81%</td><td class="r">N/A</td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>NRR</td><td class="r">93.83%</td><td class="r">N/A</td><td class="r"><span class="badge na">N/A</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">Breakdowns</div>
+  <!-- Marketing -->
+  <div class="acc open" id="acc-jan-mkt">
+    <button class="acc-trig" onclick="toggleAcc('acc-jan-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — MKT Generated Pipeline ARR</span><span class="acc-meta">$404,903 &nbsp;·&nbsp; Jan '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">Pipeline by Country</div><div class="cv">$404,903</div><div class="chart-wrap"><canvas id="c-jan-pipe"></canvas></div></div>
+      <div><div class="ct">Country breakdown</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Jan '26</th><th class="r">Jan '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇯🇵 Japan</td><td class="r">$104,764</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇮🇹 Italy</td><td class="r">$56,800</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$49,686</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$48,976</td><td class="r">$1,200</td><td class="r"><span class="badge up">+3,981%</span></td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$44,038</td><td class="r">$1,812</td><td class="r"><span class="badge up">+2,330%</span></td></tr>
+          <tr><td>🇷🇴 Romania</td><td class="r">$32,204</td><td class="r">$14,164</td><td class="r"><span class="badge up">+127%</span></td></tr>
+          <tr><td>🇳🇱 Netherlands</td><td class="r">$23,358</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇧🇷 Brazil</td><td class="r">$16,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇨🇭 Switzerland</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$404,903</td><td class="r">$31,203</td><td class="r"><span class="vp">+1,198%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <!-- Sales -->
+  <div class="acc open" id="acc-jan-sales">
+    <button class="acc-trig" onclick="toggleAcc('acc-jan-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR</span><span class="acc-meta">$54,700 &nbsp;·&nbsp; Jan '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">New ARR by Country</div><div class="cv">$54,700</div><div class="chart-wrap"><canvas id="c-jan-sales"></canvas></div></div>
+      <div><div class="ct">Country breakdown</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Jan '26</th><th class="r">Jan '25 YoY</th></tr></thead>
+        <tbody>
+          <tr><td>🇷🇴 Romania</td><td class="r">$24,778</td><td class="r">—</td></tr>
+          <tr><td>🇦🇹 Austria</td><td class="r">$7,470</td><td class="r">—</td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$8,056</td><td class="r">—</td></tr>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$4,871</td><td class="r">—</td></tr>
+          <tr><td>🇳🇱 Netherlands</td><td class="r">$3,687</td><td class="r">—</td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$3,030</td><td class="r">—</td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$54,700</td><td class="r">$468,005</td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <!-- CS -->
+  <div class="acc open" id="acc-jan-cs">
+    <button class="acc-trig" onclick="toggleAcc('acc-jan-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Churn &amp; Expansion</span><span class="acc-meta">Churn $50,714 &nbsp;·&nbsp; Exp $4,801 &nbsp;·&nbsp; NRR 93.83%</span></div><span class="chev">▼</span></button>
+    <div class="acc-body">
+      <div class="cgrid">
+        <div><div class="ct">Churned ARR by Country</div><div class="cv warn">$50,714</div><div class="chart-wrap"><canvas id="c-jan-churn"></canvas></div></div>
+        <div>
+          <div class="cm-grid">
+            <div class="cm-row hdr"><span>Metric</span><span>Formula</span><span style="text-align:right">Value</span></div>
+            <div class="cm-row"><span class="cm-lbl">Standard Monthly Churn</span><span class="cm-form">$50,714 ÷ $744,578 × 100</span><span class="cm-val warn">6.81%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Annualised Monthly Churn</span><span class="cm-form">1 − (1 − 6.81%)¹²</span><span class="cm-val warn">57.11%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Actual Annual Churn (YTD)</span><span class="cm-form">$50,714 ÷ $744,578 × 100</span><span class="cm-val muted">6.81% <span class="cm-sub">(Jan only)</span></span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR — January</span><span class="cm-form">($744,578 + $4,801 − $50,714) ÷ $744,578</span><span class="cm-val warn">93.83%</span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR YoY</span><span class="cm-form">No prior year data</span><span class="cm-val muted">N/A</span></div>
+          </div>
+          <div class="exp-section">
+            <div class="ct mb-10">Expansion ARR by Country — Jan '26</div>
+            <table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th><th class="r">Churn</th><th class="r">Net</th></tr></thead>
+            <tbody>
+              <tr><td>🇯🇵 Japan</td><td class="r vp">+$2,021</td><td class="r">$0</td><td class="r vp">+$2,021</td></tr>
+              <tr><td>🇦🇺 Australia</td><td class="r vp">+$636</td><td class="r vn">−$1,000</td><td class="r vn">−$364</td></tr>
+              <tr><td>🇩🇪 Germany</td><td class="r vp">+$902</td><td class="r vn">−$927</td><td class="r vn">−$25</td></tr>
+              <tr><td>🇩🇰 Denmark</td><td class="r vp">+$682</td><td class="r vn">−$1,877</td><td class="r vn">−$1,195</td></tr>
+              <tr><td>🇬🇧 United Kingdom</td><td class="r vp">+$559</td><td class="r vn">−$1,683</td><td class="r vn">−$1,124</td></tr>
+              <tr><td>🇷🇴 Romania</td><td class="r">$0</td><td class="r vn">−$21,633</td><td class="r vn">−$21,633</td></tr>
+              <tr class="tot"><td>Net movement</td><td class="r vp">+$4,801</td><td class="r vn">−$50,714</td><td class="r vn">−$45,913</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footnote">Data source: HubSpot &nbsp;·&nbsp; Jan 1–31, 2026 &nbsp;·&nbsp; Starting ARR: $744,578 &nbsp;·&nbsp; YoY: Jan 2025 (pipeline from export summary; sales/CS from deal-level CSV)</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     FEBRUARY
+════════════════════════════════════════════════ -->
+<div class="panel" id="panel-feb">
+  <div class="kpi-row">
+    <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline ARR</div><div class="kpi-value">$315k</div><div class="kpi-delta"><span class="pill down">↓ −22% MoM</span><span class="pill up">↑ +1,329% YoY</span></div></div>
+    <div class="kpi-card k-newarr"><div class="kpi-label">New ARR</div><div class="kpi-value">$33k</div><div class="kpi-delta"><span class="pill down">↓ −40% MoM</span><span class="pill down">↓ −81% YoY</span></div></div>
+    <div class="kpi-card k-churn"><div class="kpi-label">Churned ARR</div><div class="kpi-value">$17k</div><div class="kpi-delta"><span class="pill up">↓ −66% MoM</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-churnrate"><div class="kpi-label">Monthly Churn Rate</div><div class="kpi-value">2.27%</div><div class="kpi-delta"><span class="pill up">↓ from 6.81%</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-nrr"><div class="kpi-label">NRR</div><div class="kpi-value">99.11%</div><div class="kpi-delta"><span class="pill up">↑ from 93.83%</span><span class="pill na">YoY N/A</span></div></div>
+  </div>
+  <div class="slabel mb-10">Summary</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Jan '26</th><th class="r">Feb '26</th><th class="r">Feb '25 (YoY)</th><th class="r">MoM Δ</th><th class="r">YoY Δ</th></tr></thead>
+    <tbody>
+      <tr><td>MKT Generated Pipeline ARR</td><td class="r">$404,903</td><td class="r">$314,688</td><td class="r">$22,026</td><td class="r"><span class="vn">−22%</span></td><td class="r"><span class="badge up">+1,329%</span></td></tr>
+      <tr><td>New ARR</td><td class="r">$54,700</td><td class="r">$32,713</td><td class="r">$169,570</td><td class="r"><span class="vn">−40%</span></td><td class="r"><span class="badge down">−81%</span></td></tr>
+      <tr><td>Churned ARR</td><td class="r">$50,714</td><td class="r">$17,013</td><td class="r">N/A</td><td class="r"><span class="vp">−66%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Expansion ARR</td><td class="r">$4,801</td><td class="r">$10,319</td><td class="r">N/A</td><td class="r"><span class="vp">+115%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Standard Monthly Churn</td><td class="r">6.81%</td><td class="r">2.27%</td><td class="r">N/A</td><td class="r"><span class="vp">−4.54pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>NRR</td><td class="r">93.83%</td><td class="r">99.11%</td><td class="r">N/A</td><td class="r"><span class="vp">+5.28pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">Breakdowns</div>
+  <div class="acc open" id="acc-feb-mkt">
+    <button class="acc-trig" onclick="toggleAcc('acc-feb-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — MKT Generated Pipeline ARR</span><span class="acc-meta">$314,688 &nbsp;·&nbsp; Feb '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">Pipeline by Country</div><div class="cv">$314,688</div><div class="chart-wrap"><canvas id="c-feb-pipe"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Feb '26</th><th class="r">Feb '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$167,280</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$54,549</td><td class="r">$623</td><td class="r"><span class="badge up">+8,659%</span></td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$46,377</td><td class="r">$1,074</td><td class="r"><span class="badge up">+4,219%</span></td></tr>
+          <tr><td>🇦🇪 UAE</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇭🇰 Hong Kong</td><td class="r">$4,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$314,688</td><td class="r">$22,026</td><td class="r"><span class="vp">+1,329%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-feb-sales">
+    <button class="acc-trig" onclick="toggleAcc('acc-feb-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR</span><span class="acc-meta">$32,713 &nbsp;·&nbsp; Feb '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">New ARR by Country</div><div class="cv">$32,713</div><div class="chart-wrap"><canvas id="c-feb-sales"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Feb '26</th><th class="r">Feb '25 YoY</th></tr></thead>
+        <tbody>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$9,771</td><td class="r">—</td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$7,595</td><td class="r">—</td></tr>
+          <tr><td>🇨🇭 Switzerland</td><td class="r">$6,508</td><td class="r">—</td></tr>
+          <tr><td>🇷🇴 Romania</td><td class="r">$4,716</td><td class="r">—</td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$3,172</td><td class="r">—</td></tr>
+          <tr><td>🇮🇪 Ireland</td><td class="r">$951</td><td class="r">—</td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$32,713</td><td class="r">$169,570</td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-feb-cs">
+    <button class="acc-trig" onclick="toggleAcc('acc-feb-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Churn &amp; Expansion</span><span class="acc-meta">Churn $17,013 &nbsp;·&nbsp; Exp $10,319 &nbsp;·&nbsp; NRR 99.11%</span></div><span class="chev">▼</span></button>
+    <div class="acc-body">
+      <div class="cgrid">
+        <div><div class="ct">Churned ARR by Country</div><div class="cv warn">$17,013</div><div class="chart-wrap"><canvas id="c-feb-churn"></canvas></div></div>
+        <div>
+          <div class="cm-grid">
+            <div class="cm-row hdr"><span>Metric</span><span>Formula</span><span style="text-align:right">Value</span></div>
+            <div class="cm-row"><span class="cm-lbl">Standard Monthly Churn</span><span class="cm-form">$17,013 ÷ $748,564 × 100</span><span class="cm-val warn">2.27%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Annualised Monthly Churn</span><span class="cm-form">1 − (1 − 2.27%)¹²</span><span class="cm-val warn">24.11%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Actual Annual Churn (YTD)</span><span class="cm-form">$67,727 ÷ $744,578 × 100</span><span class="cm-val muted">9.10% <span class="cm-sub">(Jan–Feb)</span></span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR — February</span><span class="cm-form">($748,564 + $10,319 − $17,013) ÷ $748,564</span><span class="cm-val warn">99.11%</span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR MoM</span><span class="cm-form">vs Jan 93.83%</span><span class="cm-val good">↑ +5.28pp</span></div>
+          </div>
+          <div class="exp-section">
+            <div class="ct mb-10">Expansion ARR — Feb '26</div>
+            <table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th><th class="r">Churn</th><th class="r">Net</th></tr></thead>
+            <tbody>
+              <tr><td>🇦🇺 Australia</td><td class="r vp">+$2,473</td><td class="r vn">−$989</td><td class="r vp">+$1,484</td></tr>
+              <tr><td>🇷🇴 Romania</td><td class="r vp">+$2,200</td><td class="r vn">−$944</td><td class="r vp">+$1,256</td></tr>
+              <tr><td>🇨🇭 Switzerland</td><td class="r vp">+$1,662</td><td class="r vn">−$925</td><td class="r vp">+$737</td></tr>
+              <tr><td>🇩🇪 Germany</td><td class="r vp">+$1,705</td><td class="r vn">−$6,570</td><td class="r vn">−$4,865</td></tr>
+              <tr><td>🇧🇦 Bosnia</td><td class="r">$0</td><td class="r vn">−$4,211</td><td class="r vn">−$4,211</td></tr>
+              <tr class="tot"><td>Net movement</td><td class="r vp">+$10,319</td><td class="r vn">−$17,013</td><td class="r vn">−$6,694</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footnote">Data source: HubSpot &nbsp;·&nbsp; Feb 1–28, 2026 &nbsp;·&nbsp; Starting ARR: $748,564 &nbsp;·&nbsp; YoY: Feb 2025</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     MARCH
+════════════════════════════════════════════════ -->
+<div class="panel" id="panel-mar">
+  <div class="kpi-row">
+    <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline ARR</div><div class="kpi-value">$436k</div><div class="kpi-delta"><span class="pill up">↑ +39% MoM</span><span class="pill up">↑ +1,119% YoY</span></div></div>
+    <div class="kpi-card k-newarr"><div class="kpi-label">New ARR</div><div class="kpi-value">$56k</div><div class="kpi-delta"><span class="pill up">↑ +70% MoM</span><span class="pill up">↑ +53% YoY</span></div></div>
+    <div class="kpi-card k-churn"><div class="kpi-label">Churned ARR</div><div class="kpi-value">$13k</div><div class="kpi-delta"><span class="pill up">↓ −23% MoM</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-churnrate"><div class="kpi-label">Monthly Churn Rate</div><div class="kpi-value">1.71%</div><div class="kpi-delta"><span class="pill up">↓ from 2.27%</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-nrr"><div class="kpi-label">NRR</div><div class="kpi-value">99.21%</div><div class="kpi-delta"><span class="pill up">↑ from 99.11%</span><span class="pill na">YoY N/A</span></div></div>
+  </div>
+  <div class="slabel mb-10">Summary</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Feb '26</th><th class="r">Mar '26</th><th class="r">Mar '25 (YoY)</th><th class="r">MoM Δ</th><th class="r">YoY Δ</th></tr></thead>
+    <tbody>
+      <tr><td>MKT Generated Pipeline ARR</td><td class="r">$314,688</td><td class="r">$436,344</td><td class="r">$35,807</td><td class="r"><span class="vp">+39%</span></td><td class="r"><span class="badge up">+1,119%</span></td></tr>
+      <tr><td>New ARR</td><td class="r">$32,713</td><td class="r">$55,632</td><td class="r">$36,265</td><td class="r"><span class="vp">+70%</span></td><td class="r"><span class="badge up">+53%</span></td></tr>
+      <tr><td>Churned ARR</td><td class="r">$17,013</td><td class="r">$13,037</td><td class="r">N/A</td><td class="r"><span class="vp">−23%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Expansion ARR</td><td class="r">$10,319</td><td class="r">$6,994</td><td class="r">N/A</td><td class="r"><span class="vn">−32%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Standard Monthly Churn</td><td class="r">2.27%</td><td class="r">1.71%</td><td class="r">N/A</td><td class="r"><span class="vp">−0.56pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>NRR</td><td class="r">99.11%</td><td class="r">99.21%</td><td class="r">N/A</td><td class="r"><span class="vp">+0.10pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">Breakdowns</div>
+  <div class="acc open" id="acc-mar-mkt">
+    <button class="acc-trig" onclick="toggleAcc('acc-mar-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — MKT Generated Pipeline ARR</span><span class="acc-meta">$436,344 &nbsp;·&nbsp; Mar '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">Pipeline by Country</div><div class="cv">$436,344</div><div class="chart-wrap"><canvas id="c-mar-pipe"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Mar '26</th><th class="r">Mar '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$114,254</td><td class="r">$8,700</td><td class="r"><span class="badge up">+1,213%</span></td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$54,510</td><td class="r">$17,817</td><td class="r"><span class="badge up">+206%</span></td></tr>
+          <tr><td>🇫🇷 France</td><td class="r">$49,718</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇧🇷 Brazil</td><td class="r">$45,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇷🇴 Romania</td><td class="r">$42,857</td><td class="r">$5,935</td><td class="r"><span class="badge up">+622%</span></td></tr>
+          <tr><td>🇰🇷 South Korea</td><td class="r">$40,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇵🇹 Portugal</td><td class="r">$32,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇨🇭 Switzerland</td><td class="r">$20,000</td><td class="r">$671</td><td class="r"><span class="badge up">+2,880%</span></td></tr>
+          <tr><td>🇮🇹 Italy</td><td class="r">$19,200</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$436,344</td><td class="r">$35,807</td><td class="r"><span class="vp">+1,119%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-mar-sales">
+    <button class="acc-trig" onclick="toggleAcc('acc-mar-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR</span><span class="acc-meta">$55,632 &nbsp;·&nbsp; Mar '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">New ARR by Country</div><div class="cv">$55,632</div><div class="chart-wrap"><canvas id="c-mar-sales"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Mar '26</th><th class="r">Mar '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇷🇴 Romania</td><td class="r">$25,041</td><td class="r">$3,226</td><td class="r"><span class="badge up">+677%</span></td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$15,021</td><td class="r">$10,207</td><td class="r"><span class="badge up">+47%</span></td></tr>
+          <tr><td>🇦🇹 Austria</td><td class="r">$7,385</td><td class="r">$1,933</td><td class="r"><span class="badge up">+282%</span></td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$6,470</td><td class="r">$4,448</td><td class="r"><span class="badge up">+45%</span></td></tr>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$799</td><td class="r">$9,234</td><td class="r"><span class="badge down">−91%</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$55,632</td><td class="r">$36,265</td><td class="r"><span class="vp">+53%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-mar-cs">
+    <button class="acc-trig" onclick="toggleAcc('acc-mar-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Churn &amp; Expansion</span><span class="acc-meta">Churn $13,037 &nbsp;·&nbsp; Exp $6,994 &nbsp;·&nbsp; NRR 99.21%</span></div><span class="chev">▼</span></button>
+    <div class="acc-body">
+      <div class="cgrid">
+        <div><div class="ct">Churned ARR by Country</div><div class="cv warn">$13,037</div><div class="chart-wrap"><canvas id="c-mar-churn"></canvas></div></div>
+        <div>
+          <div class="cm-grid">
+            <div class="cm-row hdr"><span>Metric</span><span>Formula</span><span style="text-align:right">Value</span></div>
+            <div class="cm-row"><span class="cm-lbl">Standard Monthly Churn</span><span class="cm-form">$13,037 ÷ $764,263 × 100</span><span class="cm-val warn">1.71%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Annualised Monthly Churn</span><span class="cm-form">1 − (1 − 1.71%)¹²</span><span class="cm-val warn">18.65%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Actual Annual Churn (YTD)</span><span class="cm-form">$80,764 ÷ $744,578 × 100</span><span class="cm-val muted">10.85% <span class="cm-sub">(Jan–Mar)</span></span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR — March</span><span class="cm-form">($764,263 + $6,994 − $13,037) ÷ $764,263</span><span class="cm-val warn">99.21%</span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR MoM</span><span class="cm-form">vs Feb 99.11%</span><span class="cm-val good">↑ +0.10pp</span></div>
+          </div>
+          <div class="exp-section">
+            <div class="ct mb-10">Expansion ARR — Mar '26</div>
+            <table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th><th class="r">Churn</th><th class="r">Net</th></tr></thead>
+            <tbody>
+              <tr><td>🇦🇺 Australia</td><td class="r vp">+$3,377</td><td class="r vn">−$1,968</td><td class="r vp">+$1,409</td></tr>
+              <tr><td>🇬🇧 United Kingdom</td><td class="r vp">+$2,290</td><td class="r vn">−$804</td><td class="r vp">+$1,486</td></tr>
+              <tr><td>🇷🇴 Romania</td><td class="r vp">+$927</td><td class="r">$0</td><td class="r vp">+$927</td></tr>
+              <tr><td>🇮🇱 Israel</td><td class="r vp">+$400</td><td class="r">$0</td><td class="r vp">+$400</td></tr>
+              <tr><td>🇮🇹 Italy</td><td class="r">$0</td><td class="r vn">−$6,557</td><td class="r vn">−$6,557</td></tr>
+              <tr><td>🇩🇪 Germany</td><td class="r">$0</td><td class="r vn">−$3,708</td><td class="r vn">−$3,708</td></tr>
+              <tr class="tot"><td>Net movement</td><td class="r vp">+$6,994</td><td class="r vn">−$13,037</td><td class="r vn">−$6,043</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footnote">Data source: HubSpot &nbsp;·&nbsp; Mar 1–31, 2026 &nbsp;·&nbsp; Starting ARR: $764,263 &nbsp;·&nbsp; YoY: Mar 2025</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     APRIL
+════════════════════════════════════════════════ -->
+<div class="panel" id="panel-apr">
+  <div class="kpi-row">
+    <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline ARR</div><div class="kpi-value">$339k</div><div class="kpi-delta"><span class="pill down">↓ −22% MoM</span><span class="pill up">↑ +121% YoY</span></div></div>
+    <div class="kpi-card k-newarr"><div class="kpi-label">New ARR</div><div class="kpi-value">$33k</div><div class="kpi-delta"><span class="pill down">↓ −40% MoM</span><span class="pill up">↑ +129% YoY</span></div></div>
+    <div class="kpi-card k-churn"><div class="kpi-label">Churned ARR</div><div class="kpi-value">$10k</div><div class="kpi-delta"><span class="pill up">↓ −20% MoM</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-churnrate"><div class="kpi-label">Monthly Churn Rate</div><div class="kpi-value">1.29%</div><div class="kpi-delta"><span class="pill up">↓ from 1.71%</span><span class="pill na">YoY N/A</span></div></div>
+    <div class="kpi-card k-nrr"><div class="kpi-label">NRR</div><div class="kpi-value">99.78%</div><div class="kpi-delta"><span class="pill up">↑ from 99.21%</span><span class="pill na">YoY N/A</span></div></div>
+  </div>
+  <div class="slabel mb-10">Summary</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Mar '26</th><th class="r">Apr '26</th><th class="r">Apr '25 (YoY)</th><th class="r">MoM Δ</th><th class="r">YoY Δ</th></tr></thead>
+    <tbody>
+      <tr><td>MKT Generated Pipeline ARR</td><td class="r">$436,344</td><td class="r">$339,224</td><td class="r">$153,768</td><td class="r"><span class="vn">−22%</span></td><td class="r"><span class="badge up">+121%</span></td></tr>
+      <tr><td>New ARR</td><td class="r">$55,632</td><td class="r">$33,388</td><td class="r">$14,582</td><td class="r"><span class="vn">−40%</span></td><td class="r"><span class="badge up">+129%</span></td></tr>
+      <tr><td>Churned ARR</td><td class="r">$13,037</td><td class="r">$10,401</td><td class="r">N/A</td><td class="r"><span class="vp">−20%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Expansion ARR</td><td class="r">$6,994</td><td class="r">$8,624</td><td class="r">N/A</td><td class="r"><span class="vp">+23%</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>Standard Monthly Churn</td><td class="r">1.71%</td><td class="r">1.29%</td><td class="r">N/A</td><td class="r"><span class="vp">−0.42pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+      <tr><td>NRR</td><td class="r">99.21%</td><td class="r">99.78%</td><td class="r">N/A</td><td class="r"><span class="vp">+0.57pp</span></td><td class="r"><span class="badge na">N/A</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">Breakdowns</div>
+  <div class="acc open" id="acc-apr-mkt">
+    <button class="acc-trig" onclick="toggleAcc('acc-apr-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — MKT Generated Pipeline ARR</span><span class="acc-meta">$339,224 &nbsp;·&nbsp; Apr '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">Pipeline by Country</div><div class="cv">$339,224</div><div class="chart-wrap"><canvas id="c-apr-pipe"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Apr '26</th><th class="r">Apr '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇷🇴 Romania</td><td class="r">$121,015</td><td class="r">$7,315</td><td class="r"><span class="badge up">+1,555%</span></td></tr>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$84,810</td><td class="r">$7,426</td><td class="r"><span class="badge up">+1,042%</span></td></tr>
+          <tr><td>🇦🇺 Australia</td><td class="r">$84,063</td><td class="r">$15,076</td><td class="r"><span class="badge up">+457%</span></td></tr>
+          <tr><td>🇨🇭 Switzerland</td><td class="r">$13,600</td><td class="r">$723</td><td class="r"><span class="badge up">+1,781%</span></td></tr>
+          <tr><td>🇮🇹 Italy</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr><td>🇫🇷 France</td><td class="r">$5,600</td><td class="r">$30,000</td><td class="r"><span class="badge down">−81%</span></td></tr>
+          <tr><td>🇳🇱 Netherlands</td><td class="r">$5,200</td><td class="r">$800</td><td class="r"><span class="badge up">+550%</span></td></tr>
+          <tr><td>🇩🇪 Germany</td><td class="r">$4,000</td><td class="r">$10,968</td><td class="r"><span class="badge down">−64%</span></td></tr>
+          <tr><td>🇯🇵 Japan</td><td class="r">$1,600</td><td class="r">$80,800</td><td class="r"><span class="badge down">−98%</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$339,224</td><td class="r">$153,768</td><td class="r"><span class="vp">+121%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-apr-sales">
+    <button class="acc-trig" onclick="toggleAcc('acc-apr-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR</span><span class="acc-meta">$33,388 &nbsp;·&nbsp; Apr '26</span></div><span class="chev">▼</span></button>
+    <div class="acc-body"><div class="cgrid">
+      <div><div class="ct">New ARR by Country</div><div class="cv">$33,388</div><div class="chart-wrap"><canvas id="c-apr-sales"></canvas></div></div>
+      <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div>
+        <table class="dt"><thead><tr><th>Country</th><th class="r">Apr '26</th><th class="r">Apr '25 YoY</th><th class="r">YoY Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇦🇺 Australia</td><td class="r">$12,555</td><td class="r">$6,001</td><td class="r"><span class="badge up">+109%</span></td></tr>
+          <tr><td>🇷🇴 Romania</td><td class="r">$12,139</td><td class="r">$1,984</td><td class="r"><span class="badge up">+512%</span></td></tr>
+          <tr><td>🇬🇧 United Kingdom</td><td class="r">$7,959</td><td class="r">$3,090</td><td class="r"><span class="badge up">+157%</span></td></tr>
+          <tr><td>🇦🇹 Austria</td><td class="r">$936</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+          <tr class="tot"><td>Total</td><td class="r">$33,388</td><td class="r">$14,582</td><td class="r"><span class="vp">+129%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div></div>
+  </div>
+  <div class="acc open" id="acc-apr-cs">
+    <button class="acc-trig" onclick="toggleAcc('acc-apr-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Churn &amp; Expansion</span><span class="acc-meta">Churn $10,401 &nbsp;·&nbsp; Exp $8,624 &nbsp;·&nbsp; NRR 99.78%</span></div><span class="chev">▼</span></button>
+    <div class="acc-body">
+      <div class="cgrid">
+        <div><div class="ct">Churned ARR by Country</div><div class="cv warn">$10,401</div><div class="chart-wrap"><canvas id="c-apr-churn"></canvas></div></div>
+        <div>
+          <div class="cm-grid">
+            <div class="cm-row hdr"><span>Metric</span><span>Formula</span><span style="text-align:right">Value</span></div>
+            <div class="cm-row"><span class="cm-lbl">Standard Monthly Churn</span><span class="cm-form">$10,401 ÷ $806,858 × 100</span><span class="cm-val good">1.29%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Annualised Monthly Churn</span><span class="cm-form">1 − (1 − 1.29%)¹²</span><span class="cm-val warn">14.42%</span></div>
+            <div class="cm-row"><span class="cm-lbl">Actual Annual Churn (YTD)</span><span class="cm-form">$91,166 ÷ $744,578 × 100</span><span class="cm-val muted">12.24% <span class="cm-sub">(Jan–Apr)</span></span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR — April</span><span class="cm-form">($806,858 + $8,624 − $10,401) ÷ $806,858</span><span class="cm-val good">99.78%</span></div>
+            <div class="cm-row"><span class="cm-lbl">NRR MoM</span><span class="cm-form">vs Mar 99.21%</span><span class="cm-val good">↑ +0.57pp</span></div>
+          </div>
+          <div class="exp-section">
+            <div class="ct mb-10">Expansion ARR — Apr '26</div>
+            <table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th><th class="r">Churn</th><th class="r">Net</th></tr></thead>
+            <tbody>
+              <tr><td>🇩🇰 Denmark</td><td class="r vp">+$3,452</td><td class="r">$0</td><td class="r vp">+$3,452</td></tr>
+              <tr><td>🇷🇴 Romania</td><td class="r vp">+$2,387</td><td class="r vn">−$1,866</td><td class="r vp">+$521</td></tr>
+              <tr><td>🇩🇪 Germany</td><td class="r vp">+$1,505</td><td class="r">$0</td><td class="r vp">+$1,505</td></tr>
+              <tr><td>🇦🇺 Australia</td><td class="r vp">+$880</td><td class="r vn">−$2,056</td><td class="r vn">−$1,176</td></tr>
+              <tr><td>🇬🇧 United Kingdom</td><td class="r vp">+$401</td><td class="r vn">−$4,080</td><td class="r vn">−$3,679</td></tr>
+              <tr><td>🇦🇪 UAE</td><td class="r">$0</td><td class="r vn">−$2,400</td><td class="r vn">−$2,400</td></tr>
+              <tr class="tot"><td>Net movement</td><td class="r vp">+$8,624</td><td class="r vn">−$10,401</td><td class="r vn">−$1,777</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footnote">Data source: HubSpot &nbsp;·&nbsp; Apr 1–30, 2026 &nbsp;·&nbsp; Starting ARR: $806,858 &nbsp;·&nbsp; YoY: Apr 2025</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     YEAR TO DATE
+════════════════════════════════════════════════ -->
+<div class="panel" id="panel-ytd">
+  <div class="ytd-hero">
+    <div class="ytd-card"><div class="ytd-card-label">YTD Pipeline ARR</div><div class="ytd-card-value" style="color:var(--blue)">$1.50M</div><div class="ytd-card-sub">Jan–Apr 2026</div></div>
+    <div class="ytd-card"><div class="ytd-card-label">YTD New ARR</div><div class="ytd-card-value" style="color:var(--accent)">$176k</div><div class="ytd-card-sub">Jan–Apr 2026</div></div>
+    <div class="ytd-card"><div class="ytd-card-label">YTD Churned ARR</div><div class="ytd-card-value" style="color:var(--warn)">$91k</div><div class="ytd-card-sub">Jan–Apr 2026</div></div>
+    <div class="ytd-card"><div class="ytd-card-label">YTD Expansion ARR</div><div class="ytd-card-value" style="color:var(--forecast)">$31k</div><div class="ytd-card-sub">Jan–Apr 2026</div></div>
+  </div>
+  <div class="slabel mb-10">YTD Retention Metrics</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">YTD Total / Avg</th></tr></thead>
+    <tbody>
+      <tr><td>MKT Pipeline ARR</td><td class="r">$404,903</td><td class="r">$314,688</td><td class="r">$436,344</td><td class="r">$339,224</td><td class="r"><strong>$1,495,160</strong></td></tr>
+      <tr><td>New ARR</td><td class="r">$54,700</td><td class="r">$32,713</td><td class="r">$55,632</td><td class="r">$33,388</td><td class="r"><strong>$176,433</strong></td></tr>
+      <tr><td>Churned ARR</td><td class="r">$50,714</td><td class="r">$17,013</td><td class="r">$13,037</td><td class="r">$10,401</td><td class="r"><strong>$91,166</strong></td></tr>
+      <tr><td>Expansion ARR</td><td class="r">$4,801</td><td class="r">$10,319</td><td class="r">$6,994</td><td class="r">$8,624</td><td class="r"><strong>$30,737</strong></td></tr>
+      <tr><td>Standard Monthly Churn</td><td class="r">6.81%</td><td class="r">2.27%</td><td class="r">1.71%</td><td class="r">1.29%</td><td class="r"><strong>avg 3.02%</strong></td></tr>
+      <tr><td>NRR</td><td class="r">93.83%</td><td class="r">99.11%</td><td class="r">99.21%</td><td class="r">99.78%</td><td class="r"><strong>avg 97.98%</strong></td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">YTD Retention Summary</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table"><thead><tr><th>Metric</th><th class="r">Value</th><th class="r">Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Actual Annual Churn Rate (YTD)</td><td class="r"><strong>12.24%</strong></td><td class="r">$91,166 ÷ $744,578 Jan 1 ARR</td></tr>
+      <tr><td>NRR YTD (Jan–Apr)</td><td class="r"><strong>91.88%</strong></td><td class="r">($744,578 + $30,737 − $91,166) ÷ $744,578</td></tr>
+      <tr><td>Net ARR movement YTD</td><td class="r vn"><strong>−$60,429</strong></td><td class="r">New $176,433 + Exp $30,737 − Churn $91,166 − Base = net</td></tr>
+      <tr><td>Ending ARR (Apr 30 est.)</td><td class="r"><strong>$829,845</strong></td><td class="r">Rolling from Jan 1 base</td></tr>
+      <tr><td>ARR growth Jan–Apr</td><td class="r vp"><strong>+11.5%</strong></td><td class="r">$829,845 vs $744,578</td></tr>
+    </tbody></table>
+  </div>
+  <div class="slabel mb-10">Monthly Trends</div>
+  <div class="trend-grid">
+    <div><div class="ct mb-10">Pipeline ARR — Monthly</div><div class="trend-chart-wrap"><canvas id="c-ytd-pipeline"></canvas></div></div>
+    <div><div class="ct mb-10">New ARR — Monthly</div><div class="trend-chart-wrap"><canvas id="c-ytd-newarr"></canvas></div></div>
+    <div><div class="ct mb-10">Churn &amp; Expansion — Monthly</div><div class="trend-chart-wrap"><canvas id="c-ytd-churnexp"></canvas></div></div>
+    <div><div class="ct mb-10">NRR — Monthly</div><div class="trend-chart-wrap"><canvas id="c-ytd-nrr"></canvas></div></div>
+  </div>
+  <div class="footnote">YTD covers Jan 1 – Apr 30, 2026 &nbsp;·&nbsp; Starting ARR basis: $744,578 (Jan 1 2026) &nbsp;·&nbsp; NRR = (Starting ARR + Expansion − Churn) ÷ Starting ARR per month</div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     FORECAST
+════════════════════════════════════════════════ -->
+<div class="panel" id="panel-forecast">
+  <div class="fc-note">
+    <strong>New ARR methodology:</strong> YTD quota attainment (Jan–Apr actual $176,433 ÷ Jan–Apr quota $265,000) = <strong>66.6%</strong>. This attainment rate is applied to each remaining month's quota to project New ARR. <strong>Churn: fixed at 2% of starting ARR per month</strong> (May–Dec). <strong>Expansion: linear ramp from Apr actual ($8,624) to $30,000 by December.</strong> NRR crosses 100% in September as expansion overtakes the 2% churn rate.
+  </div>
+  <div class="fc-grid">
+    <div class="fc-card"><div class="fc-card-label">Projected Full-Year Pipeline ARR</div><div class="fc-card-value" style="color:var(--blue)">$4.12M</div><div class="fc-card-sub"><span class="fc-actual">Actual YTD: $1.50M</span> &nbsp;+&nbsp; <span class="fc-projected">Projected: $2.63M</span></div></div>
+    <div class="fc-card"><div class="fc-card-label">Projected Full-Year New ARR</div><div class="fc-card-value" style="color:var(--accent)">$599k</div><div class="fc-card-sub"><span class="fc-actual">Actual YTD: $176k (66.6% attainment)</span> &nbsp;·&nbsp; <span class="fc-projected">Full-year quota: $900k</span></div></div>
+    <div class="fc-card"><div class="fc-card-label">Projected Full-Year Churn</div><div class="fc-card-value" style="color:var(--warn)">$254k</div><div class="fc-card-sub"><span class="fc-actual">Actual YTD: $91k</span> &nbsp;+&nbsp; <span class="fc-projected">Projected: $163k (2% of growing ARR base)</span></div></div>
+    <div class="fc-card"><div class="fc-card-label">Projected Full-Year Expansion</div><div class="fc-card-value" style="color:var(--forecast)">$196k</div><div class="fc-card-sub"><span class="fc-actual">Actual YTD: $31k</span> &nbsp;+&nbsp; <span class="fc-projected">Projected: $165k (ramp to $30k/mo)</span></div></div>
+    <div class="fc-card"><div class="fc-card-label">Projected Ending ARR (Dec 31)</div><div class="fc-card-value">$1.25M</div><div class="fc-card-sub">Starting from $829,845 (Apr 30 est.) · NRR &gt;100% from Sep</div></div>
+    <div class="fc-card"><div class="fc-card-label">Projected ARR Growth (Full Year)</div><div class="fc-card-value" style="color:var(--accent)">+68.5%</div><div class="fc-card-sub">$1,255k vs $744,578 Jan 1 base &nbsp;·&nbsp; Full-year quota attainment: 66.6%</div></div>
+  </div>
+  <div class="slabel mb-10">Full-Year Projection by Month</div>
+  <div class="sum-wrap mb-20">
+    <table class="sum-table">
+      <thead><tr><th>Month</th><th class="r">Pipeline ARR</th><th class="r">Quota</th><th class="r">New ARR (66.6%)</th><th class="r">Churn (2%)</th><th class="r">Expansion</th><th class="r">Net ARR</th><th class="r">NRR</th><th class="r">Type</th></tr></thead>
+      <tbody>
+        <tr><td>January</td><td class="r">$404,903</td><td class="r">$60,000</td><td class="r">$54,700 <span style="font-size:10px;color:var(--ink-muted)">(91.2%)</span></td><td class="r">$50,714</td><td class="r">$4,801</td><td class="r vn">−$45,913</td><td class="r">93.83%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+        <tr><td>February</td><td class="r">$314,688</td><td class="r">$62,000</td><td class="r">$32,713 <span style="font-size:10px;color:var(--ink-muted)">(52.8%)</span></td><td class="r">$17,013</td><td class="r">$10,319</td><td class="r vn">−$6,694</td><td class="r">99.11%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+        <tr><td>March</td><td class="r">$436,344</td><td class="r">$73,000</td><td class="r">$55,632 <span style="font-size:10px;color:var(--ink-muted)">(76.2%)</span></td><td class="r">$13,037</td><td class="r">$6,994</td><td class="r vn">−$6,043</td><td class="r">99.21%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+        <tr><td>April</td><td class="r">$339,224</td><td class="r">$70,000</td><td class="r">$33,388 <span style="font-size:10px;color:var(--ink-muted)">(47.7%)</span></td><td class="r">$10,401</td><td class="r">$8,624</td><td class="r vn">−$1,777</td><td class="r">99.78%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>May</td><td class="r" style="color:var(--forecast)">$354,944</td><td class="r">$76,000</td><td class="r" style="color:var(--forecast)">$50,600</td><td class="r" style="color:var(--forecast)">$16,597</td><td class="r" style="color:var(--forecast)">$11,296</td><td class="r vp">+$45,299</td><td class="r" style="color:var(--forecast)">99.36%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>June</td><td class="r" style="color:var(--forecast)">$347,406</td><td class="r">$91,000</td><td class="r" style="color:var(--forecast)">$60,586</td><td class="r" style="color:var(--forecast)">$17,503</td><td class="r" style="color:var(--forecast)">$13,968</td><td class="r vp">+$57,052</td><td class="r" style="color:var(--forecast)">99.60%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>July</td><td class="r" style="color:var(--forecast)">$339,868</td><td class="r">$84,000</td><td class="r" style="color:var(--forecast)">$55,926</td><td class="r" style="color:var(--forecast)">$18,644</td><td class="r" style="color:var(--forecast)">$16,640</td><td class="r vp">+$53,922</td><td class="r" style="color:var(--forecast)">99.79%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>August</td><td class="r" style="color:var(--forecast)">$332,330</td><td class="r">$84,000</td><td class="r" style="color:var(--forecast)">$55,926</td><td class="r" style="color:var(--forecast)">$19,722</td><td class="r" style="color:var(--forecast)">$19,312</td><td class="r vp">+$55,516</td><td class="r" style="color:var(--forecast)">99.96%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>September</td><td class="r" style="color:var(--forecast)">$324,792</td><td class="r">$91,000</td><td class="r" style="color:var(--forecast)">$60,586</td><td class="r" style="color:var(--forecast)">$20,833</td><td class="r" style="color:var(--forecast)">$21,984</td><td class="r vp">+$61,738</td><td class="r" style="color:var(--forecast)"><strong>100.11%</strong></td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>October</td><td class="r" style="color:var(--forecast)">$317,254</td><td class="r">$79,000</td><td class="r" style="color:var(--forecast)">$52,597</td><td class="r" style="color:var(--forecast)">$22,067</td><td class="r" style="color:var(--forecast)">$24,656</td><td class="r vp">+$55,186</td><td class="r" style="color:var(--forecast)">100.23%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>November</td><td class="r" style="color:var(--forecast)">$309,716</td><td class="r">$78,000</td><td class="r" style="color:var(--forecast)">$51,931</td><td class="r" style="color:var(--forecast)">$23,171</td><td class="r" style="color:var(--forecast)">$27,328</td><td class="r vp">+$56,088</td><td class="r" style="color:var(--forecast)">100.36%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+        <tr style="background:var(--forecast-light)"><td>December</td><td class="r" style="color:var(--forecast)">$302,178</td><td class="r">$52,000</td><td class="r" style="color:var(--forecast)">$34,621</td><td class="r" style="color:var(--forecast)">$24,293</td><td class="r" style="color:var(--forecast)">$30,000</td><td class="r vp">+$40,328</td><td class="r" style="color:var(--forecast)">100.47%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slabel mb-10">Trendline Charts</div>
+  <div class="trend-grid">
+    <div><div class="ct mb-10">Pipeline ARR — Actual vs Forecast</div><div class="trend-chart-wrap"><canvas id="c-fc-pipeline"></canvas></div></div>
+    <div><div class="ct mb-10">New ARR — Actual vs Forecast</div><div class="trend-chart-wrap"><canvas id="c-fc-newarr"></canvas></div></div>
+    <div><div class="ct mb-10">Churn — Actual vs Forecast</div><div class="trend-chart-wrap"><canvas id="c-fc-churn"></canvas></div></div>
+    <div><div class="ct mb-10">Expansion ARR — Actual vs Forecast</div><div class="trend-chart-wrap"><canvas id="c-fc-expansion"></canvas></div></div>
+  </div>
+  <div class="footnote">Forecast assumptions: Pipeline ARR uses linear regression on Jan–Apr actuals. New ARR projected using YTD quota attainment rate (66.6%) applied to each remaining month's quota — Jan 91.2%, Feb 52.8%, Mar 76.2%, Apr 47.7%, blended 66.6%. Churn fixed at 2% of starting ARR per month. Expansion ramped linearly from Apr actual ($8,624) to $30,000 by December. NRR crosses 100% in September. Update attainment rate and actuals monthly as months close.</div>
+</div>
+
+<script>
+// ── NAV LOGIC ────────────────────────────────────────────────
+function showSection(s){
+  document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.top-tab[onclick*="\''+s+'\'"]').classList.add('active');
+  document.getElementById('monthNav').style.display = s==='monthly'?'flex':'none';
+  if(s==='monthly'){
+    const active = document.querySelector('.month-tab.active');
+    const m = active ? active.getAttribute('onclick').match(/'(\w+)'/)[1] : 'jan';
+    document.getElementById('panel-'+m).classList.add('active');
+  } else {
+    document.getElementById('panel-'+s).classList.add('active');
+  }
+}
+
+function showMonth(m){
+  document.querySelectorAll('.month-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.month-tab[onclick*="\''+m+'\'"]').classList.add('active');
+  document.getElementById('panel-'+m).classList.add('active');
+  renderChartsForMonth(m);
+}
+
+function toggleAcc(id){document.getElementById(id).classList.toggle('open');}
+
+// ── CHART HELPERS ─────────────────────────────────────────────
+const MONTHS=['Jan','Feb','Mar','Apr'];
+const C={blue:'#2d5fa6',green:'#1d6b4f',orange:'#c45c2a',purple:'#7b4f9e',grey:'#b5b0aa'};
+
+function barOpts(color){
+  return {indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1814',bodyFont:{family:'DM Mono',size:11},padding:8,callbacks:{label:c=>` $${c.raw.toLocaleString('en-US',{maximumFractionDigits:0})}`}}},scales:{x:{grid:{color:'#e2ded8'},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660',callback:v=>'$'+(v>=1000?Math.round(v/1000)+'k':v)},border:{display:false}},y:{grid:{display:false},ticks:{font:{family:'DM Mono',size:11},color:'#1a1814'},border:{display:false}}}};
+}
+
+function lineOpts(label,color,format){
+  return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:label},tooltip:{backgroundColor:'#1a1814',bodyFont:{family:'DM Mono',size:11},padding:8}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660'},border:{display:false}},y:{grid:{color:'#e2ded8'},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660',callback:v=>format?format(v):v},border:{display:false}}}};
+}
+
+const charts={};
+function makeChart(id,type,data,opts){
+  if(charts[id]){charts[id].destroy();}
+  const el=document.getElementById(id);
+  if(!el)return;
+  charts[id]=new Chart(el,{type,data,options:opts});
+}
+
+// ── MONTHLY CHARTS ────────────────────────────────────────────
+const monthData={
+  jan:{pipe:{l:['JP','IT','UK','AU','DE','RO','NL','BR','CH'],d:[104764,56800,49686,48976,44038,32204,23358,16000,13600]},sales:{l:['RO','DE','AT','UK','NL','AU'],d:[24778,8056,7470,4871,3687,3030]},churn:{l:['RO','IN','BA','IT','AT','LU','PH','TR','CH','UK','AU'],d:[21633,18000,1847,931,927,927,800,800,1239,1683,1000]}},
+  feb:{pipe:{l:['UK','DE','AU','UAE','HK'],d:[167280,54549,46377,13600,4000]},sales:{l:['UK','DE','CH','RO','AU','IE'],d:[9771,7595,6508,4716,3172,951]},churn:{l:['BA','DE','EC','IT','CH','UK','AU','RO'],d:[4211,6570,1600,937,925,837,989,944]}},
+  mar:{pipe:{l:['UK','AU','FR','BR','RO','KR','PT','CH','IT','ES'],d:[114254,54510,49718,45600,42857,40000,32000,20000,19200,8000]},sales:{l:['RO','AU','AT','DE','UK'],d:[25041,15021,7385,6470,799]},churn:{l:['IT','DE','AU','UK'],d:[6557,3708,1968,804]}},
+  apr:{pipe:{l:['RO','UK','AU','CH','IT','FR','NL','DE','JP'],d:[121015,84810,84063,13600,13600,5600,5200,4000,1600]},sales:{l:['AU','RO','UK','AT'],d:[12555,12139,7959,936]},churn:{l:['UK','UAE','AU','RO'],d:[4080,2400,2056,1866]}}
+};
+
+function renderChartsForMonth(m){
+  const d=monthData[m];
+  makeChart('c-'+m+'-pipe','bar',{labels:d.pipe.l,datasets:[{data:d.pipe.d,backgroundColor:C.blue,borderRadius:3,barThickness:14}]},barOpts(C.blue));
+  makeChart('c-'+m+'-sales','bar',{labels:d.sales.l,datasets:[{data:d.sales.d,backgroundColor:C.green,borderRadius:3,barThickness:14}]},barOpts(C.green));
+  makeChart('c-'+m+'-churn','bar',{labels:d.churn.l,datasets:[{data:d.churn.d,backgroundColor:C.orange,borderRadius:3,barThickness:14}]},barOpts(C.orange));
+}
+
+// ── YTD CHARTS ────────────────────────────────────────────────
+function renderYTD(){
+  const fmt=v=>'$'+(v>=1000?Math.round(v/1000)+'k':v);
+  makeChart('c-ytd-pipeline','bar',{labels:MONTHS,datasets:[{data:[404903,314688,436344,339224],backgroundColor:C.blue,borderRadius:3}]},{...lineOpts(false,C.blue,fmt),indexAxis:'x'});
+  makeChart('c-ytd-newarr','bar',{labels:MONTHS,datasets:[{data:[54700,32713,55632,33388],backgroundColor:C.green,borderRadius:3}]},{...lineOpts(false,C.green,fmt),indexAxis:'x'});
+  makeChart('c-ytd-churnexp','line',{labels:MONTHS,datasets:[{label:'Churn',data:[50714,17013,13037,10401],borderColor:C.orange,backgroundColor:C.orange+'22',tension:0.3,fill:true,pointRadius:4},{label:'Expansion',data:[4801,10319,6994,8624],borderColor:C.purple,backgroundColor:C.purple+'22',tension:0.3,fill:true,pointRadius:4}]},lineOpts(true,null,fmt));
+  makeChart('c-ytd-nrr','line',{labels:MONTHS,datasets:[{label:'NRR %',data:[93.83,99.11,99.21,99.78],borderColor:C.purple,backgroundColor:C.purple+'22',tension:0.3,fill:true,pointRadius:4}]},{...lineOpts(false,C.purple,v=>v.toFixed(1)+'%'),scales:{...lineOpts(false).scales,y:{...lineOpts(false).scales.y,min:90,max:102,ticks:{callback:v=>v.toFixed(0)+'%',font:{family:'DM Mono',size:10},color:'#6b6660'},border:{display:false}}}});
+}
+
+// ── FORECAST CHARTS ───────────────────────────────────────────
+function renderForecast(){
+  const allM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmt=v=>'$'+(v>=1000?Math.round(v/1000)+'k':v);
+
+  const fcBase={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{family:'DM Mono',size:10},boxWidth:10}},tooltip:{backgroundColor:'#1a1814',bodyFont:{family:'DM Mono',size:11},padding:8}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660'},border:{display:false}},y:{grid:{color:'#e2ded8'},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660',callback:v=>fmt(v)},border:{display:false}}}};
+
+  // Pipeline
+  makeChart('c-fc-pipeline','line',{labels:allM,datasets:[
+    {label:'Actual',data:[404903,314688,436344,339224,null,null,null,null,null,null,null,null],borderColor:C.blue,backgroundColor:C.blue+'33',tension:0.3,fill:true,pointRadius:4},
+    {label:'Forecast',data:[null,null,null,339224,354944,347406,339868,332330,324791,317253,309715,302177],borderColor:C.purple,backgroundColor:C.purple+'22',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+  ]},fcBase);
+
+  // New ARR: quota attainment methodology (66.6% of monthly quota)
+  makeChart('c-fc-newarr','line',{labels:allM,datasets:[
+    {label:'Actual',data:[54700,32713,55632,33388,null,null,null,null,null,null,null,null],borderColor:C.green,backgroundColor:C.green+'33',tension:0.3,fill:true,pointRadius:4},
+    {label:'Forecast (66.6% of quota)',data:[null,null,null,33388,50600,60586,55926,55926,60586,52597,51931,34621],borderColor:C.purple,backgroundColor:C.purple+'22',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+  ]},fcBase);
+
+  // Churn: 2% of rolling ARR each month (approx using fixed start points from table)
+  makeChart('c-fc-churn','line',{labels:allM,datasets:[
+    {label:'Actual',data:[50714,17013,13037,10401,null,null,null,null,null,null,null,null],borderColor:C.orange,backgroundColor:C.orange+'33',tension:0.3,fill:true,pointRadius:4},
+    {label:'Forecast (2% cap)',data:[null,null,null,10401,16597,17168,17699,18191,18644,19060,19439,19781],borderColor:C.purple,backgroundColor:C.purple+'22',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+  ]},fcBase);
+
+  // Expansion: ramp from $8,624 to $30,000
+  makeChart('c-fc-expansion','line',{labels:allM,datasets:[
+    {label:'Actual',data:[4801,10319,6994,8624,null,null,null,null,null,null,null,null],borderColor:C.purple,backgroundColor:C.purple+'33',tension:0.3,fill:true,pointRadius:4},
+    {label:'Forecast (ramp to $30k)',data:[null,null,null,8624,11296,13968,16640,19312,21984,24656,27328,30000],borderColor:C.green,backgroundColor:C.green+'22',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+  ]},fcBase);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('monthNav').style.display='flex';
+  renderChartsForMonth('jan');
+});
+
+// Render YTD and Forecast on demand
+document.querySelector('.top-tab.ytd').addEventListener('click',()=>setTimeout(renderYTD,50));
+document.querySelector('.top-tab.forecast').addEventListener('click',()=>setTimeout(renderForecast,50));
+</script>
+</body>
+</html>
