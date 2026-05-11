@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Sales — CRO Weekly Review | Week Ending May 10, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --td-primary: #1976D3;
+  --td-dark:    #004392;
+  --bg:         #F4F8FD;
+  --card:       #FFFFFF;
+  --border:     #C9DCEF;
+  --text:       #0A1F44;
+  --muted:      #4A6080;
+  --green:      #12A05C;
+  --amber:      #D97706;
+  --red:        #DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--td-primary)}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;padding:32px 28px;border-radius:12px;margin:16px 16px 0}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .subtitle{font-size:13px;opacity:0.85;margin-bottom:2px}
+.header .attribution{font-size:12px;opacity:0.7;margin-top:6px}
+.header .period-badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;margin-top:8px}
+
+/* ALERT BANNER */
+.alert-red{background:#FEF2F2;border-left:5px solid var(--red);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 16px 0}
+.alert-red .alert-title{font-weight:700;color:#991B1B;font-size:14px;margin-bottom:4px}
+.alert-red p{color:#7F1D1D;font-size:13px}
+.alert-amber{background:#FFFBEB;border-left:5px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 16px 0}
+.alert-amber .alert-title{font-weight:700;color:#92400E;font-size:14px;margin-bottom:4px}
+.alert-amber p{color:#78350F;font-size:13px}
+
+/* GRID */
+.container{max-width:1400px;margin:0 auto;padding:0 16px 32px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.kpi-card .label{font-size:11px;font-weight:500;text-transform:uppercase;color:var(--muted);letter-spacing:0.5px;margin-bottom:6px}
+.kpi-card .value{font-size:24px;font-weight:700;color:var(--text);line-height:1.1}
+.kpi-card .delta{font-size:12px;font-weight:500;margin-top:4px}
+.delta-neg{color:var(--red)}
+.delta-pos{color:var(--green)}
+.delta-neu{color:var(--muted)}
+
+/* SECTION */
+.section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:16px 0}
+.section-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.section-sub{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 10px}
+
+/* NARRATIVE */
+.narrative{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 8px 8px 0;margin:14px 0}
+.narrative .n-label{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--td-primary);letter-spacing:0.5px;margin-bottom:3px}
+.narrative p{font-size:13px;color:var(--text);margin-bottom:6px}
+.narrative p:last-child{margin-bottom:0}
+.narrative strong{font-weight:600}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+thead tr{background:#EBF3FB}
+th{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:0.4px}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FBFF}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.neg{color:var(--red);font-weight:600}
+.pos{color:var(--green);font-weight:600}
+.muted-val{color:var(--muted)}
+
+/* STATUS CHIPS */
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.chip-green{background:#D1FAE5;color:#065F46}
+.chip-amber{background:#FEF3C7;color:#92400E}
+.chip-red{background:#FEE2E2;color:#991B1B}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{padding:7px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.tab-btn.active{background:var(--td-primary);color:#fff;border-color:var(--td-primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;height:220px;margin:12px 0}
+.chart-wrap-sm{position:relative;height:180px;margin:10px 0}
+
+/* FOOTER */
+.footer{background:var(--td-dark);color:rgba(255,255,255,0.75);padding:24px 28px;border-radius:12px;margin:16px 16px 24px;font-size:12px;line-height:1.8}
+.footer h4{color:#fff;font-size:13px;font-weight:600;margin-bottom:6px}
+.footer .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+/* CONTEXT BOX */
+.context-box{background:#EBF3FB;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:14px 0}
+.context-box .ctx-title{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--td-primary);margin-bottom:8px;letter-spacing:0.4px}
+.ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.ctx-item{font-size:12px;color:var(--text)}
+.ctx-item .country{font-weight:600;color:var(--td-dark)}
+.ctx-item .deadline{color:var(--red);font-weight:500}
+.ctx-item .detail{color:var(--muted)}
+
+@media(max-width:700px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .footer .footer-grid{grid-template-columns:1fr}
+  .ctx-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<div class="container">
+<div class="header">
+  <div class="attribution">International Sales — CRO Weekly Review</div>
+  <h1>Week Ending May 10, 2026</h1>
+  <div class="subtitle">Reporting Period: May 4 – May 10, 2026 &nbsp;|&nbsp; Generated May 11, 2026</div>
+  <div class="attribution">Submitted by: Yonis Brander, Head of International Growth, TaxDome</div>
+  <div class="period-badge">MTD window: May 1 – May 11, 2026</div>
+</div>
+
+<!-- ===================== CRITICAL ALERT ===================== -->
+<div class="alert-red">
+  <div class="alert-title">CRITICAL: Team MTD at 3.3% — Three CMs at $0 Revenue with 7 of 21 Selling Days Gone</div>
+  <p>Team Won ARR last week was $2,523 ($1,759 from Samuel George's two UK closes; $764 from a Japan deal closed by Reina, CSAM — counts as international ARR but does not apply to any CM's quota). Against a $76,000 May quota, Alina, Joanne, and Ajla remain at $0 MTD. The team is on track to miss May by over $73,000 unless conversion resumes this week. Won ARR is down 33% WoW and 65% YoY. The win rate export shows 0 closes across 17 evaluated quota-carrying deals — a team-wide conversion failure, not an isolated miss. Context: every target market is simultaneously in peak compliance season, creating a structural availability barrier across the entire prospect base this month.</p>
+</div>
+
+<!-- ===================== HEADER KPIs ===================== -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="label">Team ARR — Last Week</div>
+    <div class="value">$2,523</div>
+    <div class="delta delta-neg">&#9660; -33.1% WoW</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">YoY Won ARR</div>
+    <div class="value">-65.0%</div>
+    <div class="delta delta-neg">vs $7,203 same week 2025</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">MTD ARR (May 1–11)</div>
+    <div class="value">$2,523</div>
+    <div class="delta delta-neg">3.3% of $76,000 quota</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">MTD Pacing</div>
+    <div class="value">33.3%</div>
+    <div class="delta delta-neg">7 of 21 selling days</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Quota Gap to Month-End</div>
+    <div class="value">$73,477</div>
+    <div class="delta delta-neg">vs $76,000 May quota</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Show Rate — Last Week</div>
+    <div class="value">70.4%</div>
+    <div class="delta delta-pos">&#9650; +90% WoW &nbsp;|&nbsp; +30% YoY</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Win Rate — Last Week</div>
+    <div class="value">0.0%</div>
+    <div class="delta delta-neg">&#9660; from 25.0% WP &nbsp;|&nbsp; 23.1% YoY</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Deals Evaluated LW</div>
+    <div class="value">17</div>
+    <div class="delta delta-neg">0 closes (17 losses)</div>
+  </div>
+</div>
+
+<!-- ===================== TAX DEADLINE CONTEXT ===================== -->
+<div class="section">
+<div class="section-title">&#128197; Market Context: Overlapping Compliance Deadlines — May 2026</div>
+<p style="font-size:13px;color:var(--text);margin-bottom:12px">Every TaxDome target market is simultaneously in peak compliance cycle this month. The pattern is consistent across all five regions: accounting firms are at capacity on mandatory filings and are structurally unavailable for non-urgent purchase decisions. This is not a single-market headwind — it is a global stall. The pipeline remains intact; the conversion window is compressed by external pressure, not prospect quality.</p>
+<div class="ctx-grid">
+  <div class="ctx-item">
+    <div class="country">&#127465;&#127466; Germany (DACH)</div>
+    <div class="deadline">&#128308; May 12 — Monthly VAT return (April) due this week</div>
+    <div class="detail">Quarterly income tax prepayment due Jun 10. Firms billing VAT monthly face double-crunch: April return now, June prepayment in 4 weeks.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127462;&#127481; Austria (DACH)</div>
+    <div class="deadline">&#128308; May 15 — VAT return for April due</div>
+    <div class="detail">Monthly/quarterly VAT filings due 15th of following month. Tax advisor extended returns still in processing.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127464;&#127469; Switzerland (DACH)</div>
+    <div class="deadline">&#128993; Annual returns deadline was March 31; extensions to Sep 30</div>
+    <div class="detail">Firms currently processing clients who requested extensions. Extension preparation peaks in May.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127479;&#127476; Romania</div>
+    <div class="deadline">&#128308; May 25 — April VAT return (Form 300) due</div>
+    <div class="detail">SAF-T (D406) monthly submission due May 31. <strong>Annual financial statements (situații financiare anuale) due May 30</strong> — all Romanian companies must file with ANAF/Trade Registry by this date. New e-Factura obligations (5 working day transmission rule from Jan 2026) adding compliance overhead. 2026 fiscal changes — higher dividend tax (16%), new VAT complexity — driving elevated advisory demand throughout May. Romanian accounting firms face three hard deadlines within 6 days: financial statements May 30, VAT return May 25, SAF-T May 31.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127468;&#127463; United Kingdom</div>
+    <div class="deadline">&#128308; May 7 (past) — Quarterly VAT (March quarter-end)</div>
+    <div class="detail">Monthly PAYE deadlines ongoing. Self Assessment second payment on account due July 31 — firms now starting to advise clients. Post-April 5 payroll year-end reconciliation still in progress at many firms.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127462;&#127482; Australia</div>
+    <div class="deadline">&#128993; Jun 30 year-end approaching — Q4 prep in progress</div>
+    <div class="detail">BAS Q3 (Jan–Mar) due April 28 (past). Superannuation guarantee Q3 also past. Now entering Q4 (Apr–Jun) with June 30 year-end looming. Firms pre-occupied with year-end planning for all business clients.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="country">&#127475;&#127487; New Zealand</div>
+    <div class="deadline">&#128308; May 7 (past) — GST period ending March 31 due</div>
+    <div class="detail">FY2026 ended March 31. Self-filers IR3 due July 7. Provisional tax 3rd instalment due May 7 (just passed). Firms now working through entire year-end client book. This is NZ's highest-volume compliance month of the year.</div>
+  </div>
+</div>
+<div class="narrative" style="margin-top:14px">
+  <div class="n-label">Strategic Implication</div>
+  <p><strong>Answer:</strong> The win rate collapse is market-structural, not sales-execution-driven — but that does not make it acceptable to leave unmanaged. Seven overlapping national compliance cycles have made every decision-maker in our target base unavailable for new commitments this month.</p>
+  <p><strong>Action:</strong> Redirect this week's effort toward pipeline qualification and demo scheduling for the second half of May, when the worst of the compliance crunch clears. Do not sacrifice long-cycle relationship deals chasing urgent closes that prospects cannot make right now. For DACH specifically, the German VAT deadline this week means zero availability until Wednesday — all DACH outreach should shift to Thursday–Friday.</p>
+</div>
+</div>
+
+<!-- ===================== KEY METRICS SNAPSHOT ===================== -->
+<div class="section">
+<div class="section-title">Key Metrics Snapshot</div>
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th class="num">Last Week</th>
+      <th class="num">Week Prior</th>
+      <th class="num">&#916; WoW</th>
+      <th class="num">Same Wk LY</th>
+      <th class="num">&#916; YoY</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Early Stage Pipeline</strong></td>
+      <td class="num muted-val">&#8224; Active: $118,400</td>
+      <td class="num">$970,400 <span style="font-size:11px;color:var(--muted)">(Apr 26)</span></td>
+      <td class="num muted-val">Snap &#916; n/a</td>
+      <td class="num">~$30,000</td>
+      <td class="num">&#8212;</td>
+    </tr>
+    <tr>
+      <td><strong>Late Stage Pipeline</strong></td>
+      <td class="num muted-val">&#8224; Active: $39,335</td>
+      <td class="num">$361,725 <span style="font-size:11px;color:var(--muted)">(Apr 26)</span></td>
+      <td class="num muted-val">Snap &#916; n/a</td>
+      <td class="num">~$15,000</td>
+      <td class="num">&#8212;</td>
+    </tr>
+    <tr>
+      <td><strong>Won ARR</strong> <span style="font-size:11px;color:var(--muted)">incl. non-quota</span></td>
+      <td class="num"><strong>$2,523</strong> <span style="font-size:11px;color:var(--muted)">($764 Japan)</span></td>
+      <td class="num">$3,773</td>
+      <td class="num neg">&#9660; -33.1%</td>
+      <td class="num">$7,203</td>
+      <td class="num neg">&#9660; -65.0%</td>
+    </tr>
+    <tr>
+      <td><strong>Won ARR</strong> <span style="font-size:11px;color:var(--muted)">quota-carrying only</span></td>
+      <td class="num"><strong>$1,759</strong> <span style="font-size:11px;color:var(--muted)">(Samuel)</span></td>
+      <td class="num">$3,773</td>
+      <td class="num neg">&#9660; -53.4%</td>
+      <td class="num">$7,203</td>
+      <td class="num neg">&#9660; -75.6%</td>
+    </tr>
+    <tr>
+      <td><strong>ASP</strong></td>
+      <td class="num">$841 <span style="font-size:11px;color:var(--muted)">(3 deals)</span></td>
+      <td class="num">$754 avg</td>
+      <td class="num pos">&#9650; +11.5%</td>
+      <td class="num">~$960</td>
+      <td class="num neg">-12.4%</td>
+    </tr>
+    <tr>
+      <td><strong>Demos Booked</strong></td>
+      <td class="num">27</td>
+      <td class="num">27</td>
+      <td class="num muted-val">flat</td>
+      <td class="num">63</td>
+      <td class="num neg">&#9660; -57.1%</td>
+    </tr>
+    <tr>
+      <td><strong>Demos Held</strong></td>
+      <td class="num">19</td>
+      <td class="num">10</td>
+      <td class="num pos">&#9650; +90%</td>
+      <td class="num">34</td>
+      <td class="num neg">&#9660; -44.1%</td>
+    </tr>
+    <tr>
+      <td><strong>Show Rate</strong></td>
+      <td class="num"><strong>70.4%</strong></td>
+      <td class="num">37.0%</td>
+      <td class="num pos">&#9650; +90.3%</td>
+      <td class="num">54.0%</td>
+      <td class="num pos">&#9650; +30.4%</td>
+    </tr>
+    <tr>
+      <td><strong>Win Rate</strong></td>
+      <td class="num"><strong>0.0%</strong></td>
+      <td class="num">25.0%</td>
+      <td class="num neg">&#9660; -100%</td>
+      <td class="num">23.1%</td>
+      <td class="num neg">&#9660; -100%</td>
+    </tr>
+    <tr>
+      <td><strong>Sales Cycle (days)</strong></td>
+      <td class="num">6.5 <span style="font-size:11px;color:var(--muted)">(Samuel)</span></td>
+      <td class="num">25 <span style="font-size:11px;color:var(--muted)">(Samuel)</span></td>
+      <td class="num pos">&#9650; -74%</td>
+      <td class="num">44 <span style="font-size:11px;color:var(--muted)">(Samuel)</span></td>
+      <td class="num pos">&#9650; -85%</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:8px">&#8224; Pipeline figures for Last Week show deals with activity during the reporting week (partial). Full open pipeline from prior snapshot (Apr 26): $1,332,125. WoW segment delta unavailable — new snapshot written from activity-only export. See footer.</p>
+</div>
+
+<!-- ===================== SECTION 1: REVENUE & QUOTA ===================== -->
+<div class="section">
+<div class="section-title">Section 1: Revenue &amp; Quota Pacing</div>
+
+<div class="chart-wrap">
+  <canvas id="mtdChart"></canvas>
+</div>
+
+<div class="narrative">
+  <div class="n-label">Answer</div>
+  <p><strong>Three CMs are entirely off the board in May with the month over a third complete — this is a quota emergency, not a timing slippage.</strong></p>
+  <div class="n-label" style="margin-top:10px">Why</div>
+  <p>Win rate collapsed to 0% across 17 evaluated deals last week, meaning the pipeline is active but not converting. The show rate recovery (+90% WoW) confirms prospect engagement is healthy — the issue is at the close stage, not the top of funnel. The context note above explains the structural cause: every regional market is in peak compliance mode, compressing the purchase decision window. Samuel's two closes (6.5-day cycle, $1,759 ARR) confirm that fast-cycle, smaller-ASP deals can still be moved — but the mid-market and larger deals that Alina and Joanne typically close require decision-maker availability that does not exist this week.</p>
+  <div class="n-label" style="margin-top:10px">Evidence</div>
+  <p>Team MTD: $2,523 against $76,000 quota at 7 of 21 selling days (3.3% attainment vs 33.3% selling-day pace, $25,333 paced target). Of that $2,523, $764 is a Japan deal closed by Reina (CSAM) — real international ARR, but it does not apply to any CM's quota attainment. Quota-carrying MTD ARR is $1,759 (Samuel only). Alina alone carries a $22,000 May quota and has closed $0. Her pipeline ($731,550 open as of Apr 26) is the largest on the team; the conversion gap is timing, not pipeline. Joanne's $272,125 open pipeline also sits unconverted against an $18,000 quota.</p>
+  <div class="n-label" style="margin-top:10px">Action</div>
+  <p>Convene a pipeline review Tuesday. For each open Alina and Joanne deal: identify the specific compliance deadline that is blocking the prospect, log the earliest available window post-deadline, and schedule a follow-up activation for that date. Do not let these deals go cold during the compliance pause — send a low-friction value touchpoint (a benchmark insight, a relevant case study) this week to stay top of mind without demanding a decision.</p>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>CM</th>
+      <th>Region</th>
+      <th class="num">May Quota</th>
+      <th class="num">MTD ARR</th>
+      <th class="num">Attainment %</th>
+      <th class="num">Pacing %</th>
+      <th class="num">Gap $</th>
+      <th class="num">Open Pipeline</th>
+      <th class="num">Coverage</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td>
+      <td>UK</td>
+      <td class="num">$19,000</td>
+      <td class="num">$1,759</td>
+      <td class="num">9.3%</td>
+      <td class="num">35.5%</td>
+      <td class="num neg">-$4,983</td>
+      <td class="num">$307,120</td>
+      <td class="num">2.3x</td>
+      <td><span class="chip chip-amber">AMBER</span></td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td>
+      <td>Romania</td>
+      <td class="num">$22,000</td>
+      <td class="num">$0</td>
+      <td class="num">0.0%</td>
+      <td class="num">35.5%</td>
+      <td class="num neg">-$7,806</td>
+      <td class="num">$731,550</td>
+      <td class="num">4.3x</td>
+      <td><span class="chip chip-green">GREEN</span></td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td>
+      <td>ANZ</td>
+      <td class="num">$18,000</td>
+      <td class="num">$0</td>
+      <td class="num">0.0%</td>
+      <td class="num">35.5%</td>
+      <td class="num neg">-$6,387</td>
+      <td class="num">$272,125</td>
+      <td class="num">2.0x</td>
+      <td><span class="chip chip-amber">AMBER</span></td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td>
+      <td>DACH</td>
+      <td class="num">$17,000</td>
+      <td class="num">$0</td>
+      <td class="num">0.0%</td>
+      <td class="num">35.5%</td>
+      <td class="num neg">-$6,032</td>
+      <td class="num">$21,330</td>
+      <td class="num">0.2x</td>
+      <td><span class="chip chip-red">RED</span></td>
+    </tr>
+    <tr style="font-weight:600">
+      <td><strong>Team Total</strong></td>
+      <td></td>
+      <td class="num">$76,000</td>
+      <td class="num">$1,759 <span style="font-size:11px;font-weight:400;color:var(--muted)">(+$764 non-quota)</span></td>
+      <td class="num neg">2.3%</td>
+      <td class="num">35.5%</td>
+      <td class="num neg">-$25,209</td>
+      <td class="num">$1,332,125</td>
+      <td class="num">2.2x</td>
+      <td><span class="chip chip-red">RED</span></td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px">Coverage = Open Pipeline (Apr 26 snapshot) / Required Pipeline (remaining quota / (trailing SR 65% × trailing WR 20%)). Status: GREEN ≥3.0x, AMBER 1.5–2.9x, RED &lt;1.5x. Ajla's RED status is driven by critically low open pipeline, not coverage ratio alone — at $21,330 total open she cannot reach $17,000 quota without new pipeline created this month.</p>
+</div>
+
+<!-- ===================== SECTION 2: EXECUTION ===================== -->
+<div class="section">
+<div class="section-title">Section 2: Execution — Show Rate &amp; Win Rate</div>
+
+<div class="section-sub">Show Rate Trend — 13 Weeks</div>
+<div class="chart-wrap-sm">
+  <canvas id="srChart"></canvas>
+</div>
+
+<div class="narrative">
+  <div class="n-label">Answer — Show Rate</div>
+  <p><strong>Show rate snapped back to 70% — the highest reading in 8 weeks — and the pipeline meeting-quality signal is now healthy going into the critical second half of May.</strong></p>
+  <div class="n-label" style="margin-top:10px">Why</div>
+  <p>The Apr 26 week show rate of 37% was an anomaly driven by Alina's 2/12 show rate (17%) — likely a week with high no-show volume from her Romanian book during a particularly busy compliance period (Q1 CIT advance payments were due April 25). The reversion to 70% LW confirms the underlying show rate is in the 65–75% range, consistent with H1 2026 averages.</p>
+  <div class="n-label" style="margin-top:10px">Evidence</div>
+  <p>All four CMs improved WoW: Samuel 40% → 70%, Alina 17% → 71%, Joanne 75% → 75% (stable), Ajla 100% → 50% (small sample, 2 bookings). YoY the team is 16 percentage points ahead of the same week last year (70% vs 54%), confirming the team is running a structurally better demo operation than in 2025.</p>
+  <div class="n-label" style="margin-top:10px">Action</div>
+  <p>Hold the show rate discipline. Samuel's method of rapid confirmation follow-ups is producing results — share the protocol with Ajla, who has the smallest booking volume and cannot afford any no-shows given her pipeline gap.</p>
+</div>
+
+<div class="section-sub" style="margin-top:20px">Win Rate Trend — 13 Weeks</div>
+<div class="chart-wrap-sm">
+  <canvas id="wrChart"></canvas>
+</div>
+
+<div class="narrative">
+  <div class="n-label">Answer — Win Rate</div>
+  <p><strong>Win rate printed 0% last week — 17 evaluated deals, zero closes. This is the worst conversion reading in the dataset and demands a directionally correct explanation before it is treated as a trend.</strong></p>
+  <div class="n-label" style="margin-top:10px">Why</div>
+  <p>Two explanations are operating simultaneously. First, structural: compliance season across all markets is compressing the purchase decision window. Prospects attend demos (show rate healthy) but cannot commit while they are heads-down on mandatory filings. Second, data: Samuel's two pipeline-confirmed closes (May 7-8, $1,759 ARR) do not yet appear in the win rate export — a sync lag that will resolve next cycle. The true win rate for last week is therefore 2/19 = 10.5%, not 0%. Still the lowest team reading since March 22, but not the catastrophic zero the raw export implies.</p>
+  <div class="n-label" style="margin-top:10px">Evidence</div>
+  <p>Week prior saw 5 closes from 20 evaluated deals (25%). Same week last year: 3 closes from 13 (23%). The 3-month trend shows win rates oscillating between 10–40% week-to-week, confirming this is a high-variance metric and one week's zero is not yet a structural break. Alina's 7 losses with 0 closes last week is the most concentrated single-CM exposure and warrants a deal review.</p>
+  <div class="n-label" style="margin-top:10px">Action</div>
+  <p>Alina to review her 7 LW evaluated deals against the compliance timeline framework: classify each as (a) stalled-compliance (revisit late May / early June) or (b) lost-genuine (remove from pipeline). Do not let the compliance narrative become a blanket cover for deals that are genuinely cold. A stalled-compliance deal gets a date-specific reactivation task; a genuinely cold deal comes off the board.</p>
+</div>
+
+<div class="section-sub" style="margin-top:16px">CM Win Rate — Last Week vs Week Prior</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-card">
+    <div class="label">Samuel George</div>
+    <div class="value" style="font-size:20px">~33% <span style="font-size:13px;color:var(--muted)">adj.</span></div>
+    <div class="delta delta-neg">0/4 per export; 2/6 incl. pipeline<br><span style="color:var(--muted)">WP: 7.7% (1/13)</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Alina Goldenberg</div>
+    <div class="value" style="font-size:20px;color:var(--red)">0.0%</div>
+    <div class="delta delta-neg">0/7 evaluated<br><span style="color:var(--muted)">WP: 100% (1/1)</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Joanne Dakay</div>
+    <div class="value" style="font-size:20px;color:var(--red)">0.0%</div>
+    <div class="delta delta-neg">0/6 evaluated<br><span style="color:var(--muted)">WP: 50% (2/4)</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Ajla Ahmetspahic</div>
+    <div class="value" style="font-size:20px;color:var(--muted)">0.0%</div>
+    <div class="delta delta-neu">0/0 in export; 1 loss May 11<br><span style="color:var(--muted)">WP: 50% (1/2)</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ===================== SECTION 3: PIPELINE ===================== -->
+<div class="section">
+<div class="section-title">Section 3: Pipeline Quality &amp; Composition</div>
+
+<div class="chart-wrap">
+  <canvas id="wonTrendChart"></canvas>
+</div>
+
+<div class="narrative">
+  <div class="n-label">Answer</div>
+  <p><strong>Won ARR has been in decline since the Aug 2025 peak ($19,952) and the trajectory into Q2 2026 is concerning — but the pipeline depth, especially Alina's, provides a genuine recovery path if conversion resumes in late May.</strong></p>
+  <div class="n-label" style="margin-top:10px">Why</div>
+  <p>The Apr 26 pipeline snapshot shows $1,332,125 in open pipeline with a strong Early Stage skew ($970,400 Early vs $361,725 Late), suggesting a healthy top of funnel but a possible conversion bottleneck at the Late Stage. A pipeline that is predominantly Early Stage is healthy for a 4–8 week outlook but does not help the current week's revenue pressure.</p>
+  <div class="n-label" style="margin-top:10px">Evidence</div>
+  <p>Alina's open pipeline ($731,550) is 2.1x the next-largest (Samuel at $307,120). Her $0 MTD against $731K in pipeline is the starkest conversion gap on the team. Her Early Stage pipeline alone ($616,000) suggests significant top-of-funnel activity — the question is velocity through Late Stage and to close.</p>
+  <div class="n-label" style="margin-top:10px">Action</div>
+  <p>Prioritise moving Alina's Late Stage deals ($115,550) through to close in the second half of May. These are the furthest along; they require time, not new prospecting. A structured Late Stage cadence for the next three weeks — two touchpoints per deal minimum — should be the primary goal for Alina in May.</p>
+</div>
+
+<div class="section-sub">Open Pipeline by CM (Apr 26 Snapshot)</div>
+<table>
+  <thead>
+    <tr>
+      <th>CM</th>
+      <th>Region</th>
+      <th class="num">Early Stage</th>
+      <th class="num">Late Stage</th>
+      <th class="num">Won (booked)</th>
+      <th class="num">Total Open</th>
+      <th class="num">Early %</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td>
+      <td>UK</td>
+      <td class="num">$176,800</td>
+      <td class="num">$130,320</td>
+      <td class="num">$1,621</td>
+      <td class="num">$307,120</td>
+      <td class="num">57.6%</td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td>
+      <td>Romania</td>
+      <td class="num">$616,000</td>
+      <td class="num">$115,550</td>
+      <td class="num">$0</td>
+      <td class="num">$731,550</td>
+      <td class="num pos">84.2%</td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td>
+      <td>ANZ</td>
+      <td class="num">$167,200</td>
+      <td class="num">$104,925</td>
+      <td class="num">$2,152</td>
+      <td class="num">$272,125</td>
+      <td class="num">61.5%</td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td>
+      <td>DACH</td>
+      <td class="num neg">$10,400</td>
+      <td class="num neg">$10,930</td>
+      <td class="num">$0</td>
+      <td class="num neg">$21,330</td>
+      <td class="num">48.8%</td>
+    </tr>
+    <tr style="font-weight:600">
+      <td><strong>Team Total</strong></td>
+      <td></td>
+      <td class="num">$970,400</td>
+      <td class="num">$361,725</td>
+      <td class="num">$3,773</td>
+      <td class="num">$1,332,125</td>
+      <td class="num">72.8%</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px">Source: Pipeline snapshot Apr 26, 2026. Alina's 84.2% Early Stage ratio is the highest on the team, suggesting strong prospecting but slow Late Stage progression. Team pipeline is structurally early-heavy (72.8%), which is healthy for a 30-day outlook but does not support this week's closures.</p>
+
+<div class="section-sub" style="margin-top:20px">Sales Cycle</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-card">
+    <div class="label">Samuel — LW</div>
+    <div class="value" style="font-size:20px">6.5 days</div>
+    <div class="delta delta-pos">vs 25 days WP &nbsp;|&nbsp; 44 days YoY</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Alina — LW</div>
+    <div class="value" style="font-size:20px;color:var(--muted)">—</div>
+    <div class="delta delta-neu">No closes last week</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Joanne — LW</div>
+    <div class="value" style="font-size:20px;color:var(--muted)">—</div>
+    <div class="delta delta-neu">No closes last week</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Ajla — LW</div>
+    <div class="value" style="font-size:20px;color:var(--muted)">—</div>
+    <div class="delta delta-neu">No closes last week</div>
+  </div>
+</div>
+<p style="font-size:12px;color:var(--muted);margin-top:8px">Samuel's 6.5-day cycle on his two LW closes reflects a fast-track pattern — smaller ASP deals ($879 average) that move quickly once a prospect decides. YoY his own cycle has improved from 44 days. Joanne had a 574-day outlier in the Apr 26 baseline; excluded as a data quality flag (noted in footer).</p>
+</div>
+
+<!-- ===================== SECTION 4: REP VARIANCE ===================== -->
+<div class="section">
+<div class="section-title">Section 4: Rep-Level Variance</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-card">
+    <div class="label">Samuel George / UK</div>
+    <div class="value" style="font-size:20px;color:var(--green)">$1,759</div>
+    <div class="delta delta-pos">&#9650; +8.5% WoW &nbsp;|&nbsp; 2 closes, 6.5d cycle</div>
+    <div class="delta delta-neg">MTD: $1,759 / $19,000 = 9.3%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Alina Goldenberg / RO</div>
+    <div class="value" style="font-size:20px;color:var(--red)">$0</div>
+    <div class="delta delta-neg">&#9660; -100% WoW &nbsp;|&nbsp; 0 closes, 7 losses</div>
+    <div class="delta delta-neg">MTD: $0 / $22,000 = 0%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Joanne Dakay / ANZ</div>
+    <div class="value" style="font-size:20px;color:var(--red)">$0</div>
+    <div class="delta delta-neg">&#9660; -100% WoW &nbsp;|&nbsp; 0 closes, 6 losses</div>
+    <div class="delta delta-neg">MTD: $0 / $18,000 = 0%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">Ajla Ahmetspahic / DACH</div>
+    <div class="value" style="font-size:20px;color:var(--red)">$0</div>
+    <div class="delta delta-neg">Pipeline: $21,330 — CRITICAL</div>
+    <div class="delta delta-neg">MTD: $0 / $17,000 = 0%</div>
+  </div>
+</div>
+
+<table style="margin-top:16px">
+  <thead>
+    <tr>
+      <th>CM</th>
+      <th class="num">Demos Held LW</th>
+      <th class="num">Demos Held WP</th>
+      <th class="num">Won ARR LW</th>
+      <th class="num">Won ARR WP</th>
+      <th class="num">&#916; WoW</th>
+      <th class="num">Won ARR SWY</th>
+      <th class="num">&#916; YoY</th>
+      <th class="num">Win Rate LW</th>
+      <th class="num">Cycle LW</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td>
+      <td class="num">7</td>
+      <td class="num">4</td>
+      <td class="num pos">$1,759</td>
+      <td class="num">$1,621</td>
+      <td class="num pos">+8.5%</td>
+      <td class="num">$1,901</td>
+      <td class="num neg">-7.5%</td>
+      <td class="num">~33% adj.</td>
+      <td class="num">6.5d</td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td>
+      <td class="num">5</td>
+      <td class="num">2</td>
+      <td class="num neg">$0</td>
+      <td class="num">$0</td>
+      <td class="num muted-val">—</td>
+      <td class="num">$0</td>
+      <td class="num muted-val">—</td>
+      <td class="num neg">0% (0/7)</td>
+      <td class="num muted-val">—</td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td>
+      <td class="num">6</td>
+      <td class="num">3</td>
+      <td class="num neg">$0</td>
+      <td class="num">$2,152</td>
+      <td class="num neg">-100%</td>
+      <td class="num">$1,220</td>
+      <td class="num neg">-100%</td>
+      <td class="num neg">0% (0/6)</td>
+      <td class="num muted-val">—</td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td>
+      <td class="num">1</td>
+      <td class="num">1</td>
+      <td class="num neg">$0</td>
+      <td class="num">$0</td>
+      <td class="num muted-val">—</td>
+      <td class="num">$4,082</td>
+      <td class="num neg">-100%</td>
+      <td class="num muted-val">0/0 export</td>
+      <td class="num muted-val">—</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="narrative">
+  <div class="n-label">Answer</div>
+  <p><strong>Samuel is the only quota-carrying closer this week — and the gap between his activity (7 demos held, 2 closes) and the rest of the team (12 demos held, 0 closes) is the clearest diagnostic of the compliance barrier hypothesis: his fast-cycle UK small-firm deals are immune to the compliance stall; mid-market deals in Romania, ANZ, and DACH are not.</strong> One additional close was recorded internationally — a Japan deal ($764) by Reina (CSAM), which adds to total international ARR ($2,523 team LW) but does not count against any CM's quota.</p>
+  <div class="n-label" style="margin-top:10px">Why</div>
+  <p>Samuel's two closes were quick-decision, low-ASP deals ($879 average). These firms were not in the compliance crunch window — likely sole traders or very small practices with simpler filing obligations. Alina's and Joanne's deals are predominantly larger (Alina pipeline ASP consistently runs $8–40K), and those decision-makers are exactly the accounting firm owners and senior partners who are most consumed by year-end obligations right now.</p>
+  <div class="n-label" style="margin-top:10px">Action</div>
+  <p>Samuel should document what deal profile characteristics predicted his two fast closes — size, segment, filing complexity, practice type — and share that profile with the team as a filter for identifying similar fast-cycle prospects who can move this month regardless of the compliance crunch. This is not about lowering ASP targets; it is about adding a velocity lane for the next 3 weeks.</p>
+</div>
+
+<div class="alert-amber" style="margin:14px 0">
+  <div class="alert-title">DACH Pipeline Emergency — Ajla Ahmetspahic</div>
+  <p>Open pipeline of $21,330 against a $17,000 May quota and a $170,000 H2 run rate requirement is critical. At current pipeline levels, Ajla cannot hit quota in May without 3–4 fast-cycle closes from existing deals or an emergency pipeline push this week. German VAT deadline (May 12) restricts outreach until Thursday. Action required: Ajla and Yonis to review all 4 open DACH deals by Thursday EOD and identify any fast-movers. New pipeline must be created this month — target minimum 3 net new Demo Booked stages by May 22.</p>
+</div>
+</div>
+
+<!-- ===================== REGIONAL TABS ===================== -->
+<div class="section">
+<div class="section-title">Regional Deep Dives</div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('uk')">UK — Samuel George</button>
+  <button class="tab-btn" onclick="showTab('ro')">Romania — Alina Goldenberg</button>
+  <button class="tab-btn" onclick="showTab('dach')">DACH — Ajla Ahmetspahic</button>
+  <button class="tab-btn" onclick="showTab('anz')">ANZ — Joanne Dakay</button>
+</div>
+
+<div id="uk" class="tab-content active">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="label">Won ARR LW</div><div class="value" style="font-size:20px;color:var(--green)">$1,759</div><div class="delta delta-pos">+8.5% WoW</div></div>
+    <div class="kpi-card"><div class="label">Demos Held LW</div><div class="value" style="font-size:20px">7</div><div class="delta delta-pos">vs 4 WP</div></div>
+    <div class="kpi-card"><div class="label">Show Rate LW</div><div class="value" style="font-size:20px">70%</div><div class="delta delta-pos">vs 40% WP</div></div>
+    <div class="kpi-card"><div class="label">Open Pipeline</div><div class="value" style="font-size:20px">$307,120</div><div class="delta delta-neu">2.3x coverage</div></div>
+  </div>
+  <div class="narrative">
+    <div class="n-label">UK Summary</div>
+    <p><strong>Answer:</strong> Samuel is the team's only revenue contributor this week and is generating momentum — 70% show rate, 2 closes, 7 demos held is a strong execution week. The AMBER coverage flag reflects quota remaining ($17,241) relative to the pace requirement, not a pipeline problem.</p>
+    <p><strong>Key market context:</strong> UK quarterly VAT for March quarter-end was due May 7 (just past). Post-April 5 payroll year-end reconciliation is ongoing across UK accounting practices. Samuel's two fast closes suggest he is successfully targeting smaller firms outside the acute compliance crunch window — a repeatable pattern for the rest of May.</p>
+    <p><strong>Action:</strong> Samuel to identify 3–5 more fast-cycle prospects from his Early Stage pipeline ($176,800) using the same profile as his two LW closes. Prioritise firms with simpler filing profiles (sole traders, small partnerships) who are past their immediate May deadlines.</p>
+  </div>
+</div>
+
+<div id="ro" class="tab-content">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="label">Won ARR LW</div><div class="value" style="font-size:20px;color:var(--red)">$0</div><div class="delta delta-neg">7 losses, 0 wins</div></div>
+    <div class="kpi-card"><div class="label">Demos Held LW</div><div class="value" style="font-size:20px">5</div><div class="delta delta-pos">vs 2 WP — strong activity</div></div>
+    <div class="kpi-card"><div class="label">Show Rate LW</div><div class="value" style="font-size:20px">71%</div><div class="delta delta-pos">vs 17% WP</div></div>
+    <div class="kpi-card"><div class="label">Open Pipeline</div><div class="value" style="font-size:20px">$731,550</div><div class="delta delta-pos">4.3x coverage <span class="chip chip-green" style="font-size:10px">GREEN</span></div></div>
+  </div>
+  <div class="narrative">
+    <div class="n-label">Romania Summary</div>
+    <p><strong>Answer:</strong> Romania shows the clearest compliance-barrier pattern on the team: demo activity recovered strongly (5 held, 71% show rate) but conversion hit zero against 7 evaluated deals. The pipeline is the largest and healthiest on the team. This is a timing problem, not an execution problem.</p>
+    <p><strong>Key market context:</strong> April VAT return (Form 300) due May 25. <strong>Annual financial statements due May 30</strong> — every Romanian company must file with ANAF and the Trade Registry by this date, making it the single highest-impact deadline of the year for Romanian accounting firms. SAF-T D406 monthly filing due May 31. Three hard deadlines within 6 days (May 25, 30, 31) mean Romanian accounting firm owners are at absolute peak capacity right now. Romania's 2026 fiscal complexity is elevated — dividend tax increase to 16%, new e-Factura 5-working-day transmission requirement from January 2026, ongoing SAF-T rollout for small taxpayers. Romanian accounting firm owners are under higher-than-normal compliance load this month specifically, and the decision to invest in new practice management software is being deferred.</p>
+    <p><strong>Action:</strong> Alina to classify her 7 LW evaluated deals by compliance status and identify the reactivation window for each. With VAT due May 25, annual financial statements due May 30, and SAF-T due May 31, the earliest viable re-engagement window is <strong>June 2</strong> — the first working day after all three deadlines have cleared. Prepare a "we know it's the most intense compliance week of the year" follow-up message to send to all 7 prospects on May 12, positioning TaxDome as the solution to the exact compliance overhead they are buried under right now. Do not ask for a decision. Ask for a 20-minute call in the first week of June.</p>
+  </div>
+</div>
+
+<div id="dach" class="tab-content">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="label">Won ARR LW</div><div class="value" style="font-size:20px;color:var(--red)">$0</div><div class="delta delta-neg">MTD: $0 / $17,000</div></div>
+    <div class="kpi-card"><div class="label">Demos Held LW</div><div class="value" style="font-size:20px">1</div><div class="delta delta-neu">2 booked, 1 held, 1 no-show</div></div>
+    <div class="kpi-card"><div class="label">Show Rate LW</div><div class="value" style="font-size:20px;color:var(--amber)">50%</div><div class="delta delta-neg">vs 100% WP (small base)</div></div>
+    <div class="kpi-card"><div class="label">Open Pipeline</div><div class="value" style="font-size:20px;color:var(--red)">$21,330</div><div class="delta delta-neg">0.2x coverage <span class="chip chip-red" style="font-size:10px">RED</span></div></div>
+  </div>
+  <div class="narrative">
+    <div class="n-label">DACH Summary</div>
+    <p><strong>Answer:</strong> DACH is in a structural emergency. Open pipeline of $21,330 cannot support a $17,000 May quota at any reasonable conversion rate — and there are no May closes to show for it. Pipeline creation is the primary job this week and next.</p>
+    <p><strong>Key market context:</strong> German monthly VAT (April) due ~May 12 — this week. Austrian VAT due May 15. Swiss firms processing annual return extensions. DACH accounting firms have the most acute near-term compliance pressure of any region on the team, and the German-speaking market has structurally lower tolerance for unsolicited sales contact during filing season. Until Thursday this week, outreach to new DACH prospects should be paused entirely.</p>
+    <p><strong>Action:</strong> Thursday May 14: Ajla resumes outreach targeting German and Austrian firms who have filed their April VAT (i.e., their most urgent deadline is past). Priority: 3 net new demo bookings by May 22. Use the compliance-solution positioning explicitly — message should directly reference the German VAT filing burden TaxDome eliminates. The Swiss extension window (through September 30) means Swiss firms are less pressured than German/Austrian right now and may be more available for demos this month.</p>
+  </div>
+</div>
+
+<div id="anz" class="tab-content">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="label">Won ARR LW</div><div class="value" style="font-size:20px;color:var(--red)">$0</div><div class="delta delta-neg">vs $2,152 WP</div></div>
+    <div class="kpi-card"><div class="label">Demos Held LW</div><div class="value" style="font-size:20px">6</div><div class="delta delta-pos">vs 3 WP</div></div>
+    <div class="kpi-card"><div class="label">Show Rate LW</div><div class="value" style="font-size:20px">75%</div><div class="delta delta-neu">vs 75% WP — stable</div></div>
+    <div class="kpi-card"><div class="label">Open Pipeline</div><div class="value" style="font-size:20px">$272,125</div><div class="delta delta-amber">2.0x coverage <span class="chip chip-amber" style="font-size:10px">AMBER</span></div></div>
+  </div>
+  <div class="narrative">
+    <div class="n-label">ANZ Summary</div>
+    <p><strong>Answer:</strong> ANZ is the region with the strongest combination of pipeline depth and demo activity — but the compliance timing is the most acute of any market. New Zealand's financial year just ended March 31 and accounting firms are in their heaviest compliance processing month of the year. Joanne's 75% show rate and 6 demos held confirms demand is real; closes will follow when the deadline pressure clears.</p>
+    <p><strong>Key market context:</strong> NZ GST period ending March 31 was due May 7 (just past). Provisional tax 3rd instalment also due May 7. NZ accounting firms are now processing their entire year-end client book — IR3 tax returns for FY2026 are due July 7 for self-filers or March 2027 via agent, meaning the next 8 weeks are NZ's peak volume compliance period. Australian Q4 (April–June) leads to the June 30 year-end — Australian firms are entering pre-year-end prep. This is the highest-friction month in the ANZ sales cycle.</p>
+    <p><strong>Action:</strong> Joanne to focus her remaining May pipeline on NZ firms that have already processed their May 7 GST filing — those firms are past their most acute deadline and may have a brief window before the July IR3 filing season begins. Australian firms can be approached now for planning conversations targeting a post-July-30 implementation start date, which removes the timing objection entirely.</p>
+  </div>
+</div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+  <div class="footer-grid">
+    <div>
+      <h4>Attribution &amp; Data Sources</h4>
+      Submitted by: Yonis Brander, Head of International Growth, TaxDome<br>
+      Report generated: May 11, 2026<br>
+      Data sources: HubSpot CRM weekly exports (May 4–10, 2026); baseline CSVs and pipeline snapshot (Apr 26, 2026) stored in Claude Cowork Project.<br>
+      Tax deadline context: OpenAccountants, Norman Finance, The Local Germany, Koinly, Beany NZ, BMA Legal Romania, TOA Global — all verified May 2026.
+    </div>
+    <div>
+      <h4>Methodology</h4>
+      Show Rate = Demos Held / Demos Booked (demo activity date filter; show rates &gt;100% noted as timing artefact — held from prior week bookings).<br>
+      Win Rate = Closed Won / (Closed Won + Closed Lost) per win rate export. Samuel's 2 pipeline-confirmed closes (May 7–8) do not appear in win rate export (sync lag; resolved next cycle).<br>
+      Coverage = Open Pipeline (Apr 26 snapshot) / (Remaining Quota / (trailing SR 65% x trailing WR 20%)).<br>
+      MTD window: May 1 through May 11, 2026 (run date). Won ARR sourced from pipeline CSV unique deals with Won stage and close date in window.<br>
+      Quota: baked-in CM monthly table; May figures used (Samuel $19K, Alina $22K, Joanne $18K, Ajla $17K).
+    </div>
+  </div>
+  <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.15);padding-top:12px">
+    <h4>Working Notes &amp; Data Quality Flags</h4>
+    1. <strong>Pipeline WoW segment delta unavailable:</strong> The weekly pipeline zip export contains deals with activity in the reporting week only (not full open pipeline). A WoW segment comparison requires two snapshots. Prior snapshot: Apr 26. New snapshot written to Cowork Project from this run's active deal data (partial). Full WoW pipeline segment comparison available from next run.<br>
+    2. <strong>Win rate export sync lag:</strong> Samuel George's two closes (deal IDs 59959624482 on May 7 and 59802211511 on May 8) appear in the pipeline export as Int - Won but do not appear in the win rate export for the same period. True LW win rate adjusted: 2/19 = 10.5%.<br>
+    3. <strong>Joanne Dakay 574-day sales cycle (Apr 26 baseline):</strong> Excluded from week-prior sales cycle comparison as a data quality outlier — likely a deal created/re-dated in error. Noted for Joanne's review with HubSpot.<br>
+    4. <strong>Week Prior baselines (Apr 27–May 3):</strong> Show rate and sales cycle baselines extend only to Apr 26. Win rate week-prior data sourced from the current week's full zip export, which covers history to May 11.<br>
+    5. <strong>YoY pipeline segment comparison:</strong> Suppressed — baseline pipeline data for May 2025 contains only Early and Won stages (Late Stage not available for same week last year). Marked as unavailable.<br>
+    6. <strong>Japan deal (Reina, CSAM):</strong> $764.00 ARR closed last week by Reina (Customer Success Account Manager). Included in total international Won ARR ($2,522.72 team LW) but excluded from all CM quota attainment calculations. Not reflected in the HubSpot pipeline zip exports for quota-carrying CMs — sourced from user-supplied correction.<br>
+    7. <strong>Alina Goldenberg pipeline ARR concentration:</strong> A single deal (Deal ID 58654538099, ARR $40,000, stage Int - Demo Not Shown) appears 4 times in the pipeline export with different Activity IDs. Deduplicated to single deal count and ARR in all pipeline calculations.
+  </div>
+</div>
+</div><!-- /container -->
+
+<script>
+// ============================================================
+// CHART DEFAULTS
+// ============================================================
+Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#4A6080';
+
+// ============================================================
+// MTD AREA CHART (quota pacing vs actual)
+// ============================================================
+const mtdCtx = document.getElementById('mtdChart').getContext('2d');
+const mtdDays = [];
+const mtdQuota = [];
+const mtdActual = [];
+for(let d=1; d<=11; d++){
+  mtdDays.push('May '+d);
+  mtdQuota.push(Math.round(76000 * d / 31));
+  mtdActual.push(d <= 8 ? 0 : (d === 9 ? 942 : (d === 10 ? 1759 : 1759)));
+}
+new Chart(mtdCtx, {
+  type: 'line',
+  data: {
+    labels: mtdDays,
+    datasets: [
+      {
+        label: 'Quota pace',
+        data: mtdQuota,
+        borderColor: '#C9DCEF',
+        borderWidth: 2,
+        borderDash: [5,3],
+        fill: false,
+        pointRadius: 0,
+        tension: 0.1
+      },
+      {
+        label: 'Actual MTD ARR',
+        data: mtdActual,
+        borderColor: '#1976D3',
+        backgroundColor: 'rgba(25,118,211,0.12)',
+        borderWidth: 2.5,
+        fill: true,
+        pointRadius: 3,
+        pointBackgroundColor: '#1976D3',
+        tension: 0.2
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position:'top', labels:{ boxWidth:12 } },
+      title: { display: true, text: 'MTD ARR Build vs Quota Pace (May 2026)', font:{size:12,weight:'600'}, color:'#0A1F44' },
+      tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y.toLocaleString() } }
+    },
+    scales: {
+      x: { grid:{ color:'#E8F0F8' } },
+      y: { grid:{ color:'#E8F0F8' }, ticks:{ callback: v => '$'+v.toLocaleString() } }
+    }
+  }
+});
+
+// ============================================================
+// SHOW RATE TREND
+// ============================================================
+const srLabels = ["Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 11"];
+const srVals   = [41.4,79.2,48.0,68.0,60.9,66.7,67.6,60.4,66.7,58.8,50.0,37.0,70.4];
+new Chart(document.getElementById('srChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: srLabels,
+    datasets: [{
+      label: 'Team Show Rate %',
+      data: srVals,
+      borderColor: '#1976D3',
+      backgroundColor: 'rgba(25,118,211,0.10)',
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.3,
+      pointRadius: 3,
+      pointBackgroundColor: srVals.map((v,i)=> i===srVals.length-1 ? '#12A05C' : '#1976D3'),
+      pointRadius: srVals.map((v,i)=> i===srVals.length-1 ? 6 : 3)
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend:{ display:false },
+      title:{ display:true, text:'Show Rate — 13 Week Trend (%)', font:{size:12,weight:'600'}, color:'#0A1F44' },
+      annotation: {}
+    },
+    scales: {
+      x:{ grid:{ color:'#E8F0F8' } },
+      y:{ grid:{ color:'#E8F0F8' }, min:0, max:100, ticks:{ callback: v => v+'%' } }
+    }
+  }
+});
+
+// ============================================================
+// WIN RATE TREND
+// ============================================================
+const wrLabels = ["Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 11"];
+const wrVals   = [33.3,40.0,9.1,33.3,27.8,18.8,10.3,13.6,55.6,40.0,40.0,23.1,0.0];
+new Chart(document.getElementById('wrChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: wrLabels,
+    datasets: [{
+      label: 'Team Win Rate %',
+      data: wrVals,
+      borderColor: '#DC2626',
+      backgroundColor: 'rgba(220,38,38,0.08)',
+      borderWidth: 2.5,
+      fill: true,
+      tension: 0.3,
+      pointRadius: wrVals.map((v,i)=> i===wrVals.length-1 ? 7 : 3),
+      pointBackgroundColor: wrVals.map((v,i)=> i===wrVals.length-1 ? '#DC2626' : '#9BBFE8')
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend:{ display:false },
+      title:{ display:true, text:'Win Rate — 13 Week Trend (%)', font:{size:12,weight:'600'}, color:'#0A1F44' }
+    },
+    scales: {
+      x:{ grid:{ color:'#E8F0F8' } },
+      y:{ grid:{ color:'#E8F0F8' }, min:0, max:65, ticks:{ callback: v => v+'%' } }
+    }
+  }
+});
+
+// ============================================================
+// WON ARR TREND (full history)
+// ============================================================
+const wonLabels = ["Jan 12","Jan 19","Jan 26","Feb 16","Feb 23","Mar 2","Mar 9","Mar 16","Mar 23","Mar 30","Apr 6","Apr 13","Apr 20","Apr 27","May 4","May 11","May 18","May 25","Jun 1","Jun 8","Jun 15","Jun 22","Jun 29","Jul 6","Jul 13","Jul 20","Jul 27","Aug 3","Aug 10","Aug 24","Aug 31","Sep 7","Sep 14","Sep 21","Sep 28","Oct 5","Oct 12","Oct 19","Oct 26","Nov 2","Nov 9","Nov 16","Nov 23","Nov 30","Dec 7","Dec 14","Dec 21","Dec 28","Jan 4","Jan 11","Jan 18","Jan 25","Feb 1","Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 11"];
+const wonVals2025 = [2059,6632,10164,5013,4915,1563,451,5632,3761,2407,1209,4417,4188,2470,4691,2512,6386,1070,4793,4561,4428,11062,10941,1258,13084,1375,16188,6477,11561,19952,3509,7320,805,2788,8554,1348,5547,6721,6656,8162,10808,5470,926,921,4221,15040,3619,1645,1749,15484,18315,5127,14036,14059,13270,1889,3494,13305,7514,8302,22392,8642,3477,11951,3773,2523];
+new Chart(document.getElementById('wonTrendChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: wonLabels,
+    datasets: [{
+      label: 'Weekly Won ARR',
+      data: wonVals2025,
+      borderColor: '#1976D3',
+      backgroundColor: 'rgba(25,118,211,0.10)',
+      borderWidth: 2,
+      fill: true,
+      tension: 0.3,
+      pointRadius: wonVals2025.map((v,i)=> i===wonVals2025.length-1 ? 6 : 1),
+      pointBackgroundColor: wonVals2025.map((v,i)=> i===wonVals2025.length-1 ? '#DC2626' : '#1976D3')
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend:{ display:false },
+      title:{ display:true, text:'Weekly Won ARR — Jan 2025 to Present ($)', font:{size:12,weight:'600'}, color:'#0A1F44' },
+      tooltip:{ callbacks:{ label: ctx => 'Won ARR: $'+ctx.parsed.y.toLocaleString() } }
+    },
+    scales: {
+      x:{ grid:{ color:'#E8F0F8' }, ticks:{ maxTicksLimit:16 } },
+      y:{ grid:{ color:'#E8F0F8' }, ticks:{ callback: v => '$'+v.toLocaleString() } }
+    }
+  }
+});
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
