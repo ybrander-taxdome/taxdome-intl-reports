@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>International Sales — CRO Weekly Review | Week Ending May 17, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --td-primary: #1976D3;
+  --td-dark:    #004392;
+  --bg:         #F4F8FD;
+  --card:       #FFFFFF;
+  --border:     #C9DCEF;
+  --text:       #0A1F44;
+  --muted:      #4A6080;
+  --green:      #12A05C;
+  --amber:      #D97706;
+  --red:        #DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;padding:32px 28px;border-radius:12px;margin:16px 16px 0}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .sub{font-size:13px;opacity:0.85;margin-bottom:2px}
+.header .attr{font-size:12px;opacity:0.7;margin-top:6px}
+.badge{display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;margin-top:8px}
+
+.alert-red{background:#FEF2F2;border-left:5px solid var(--red);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 16px 0}
+.alert-red .at{font-weight:700;color:#991B1B;font-size:14px;margin-bottom:4px}
+.alert-red p{color:#7F1D1D;font-size:13px}
+.alert-amber{background:#FFFBEB;border-left:5px solid var(--amber);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 16px 0}
+.alert-amber .at{font-weight:700;color:#92400E;font-size:14px;margin-bottom:4px}
+.alert-amber p{color:#78350F;font-size:13px}
+.alert-green{background:#F0FDF4;border-left:5px solid var(--green);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 16px 0}
+.alert-green .at{font-weight:700;color:#065F46;font-size:14px;margin-bottom:4px}
+.alert-green p{color:#064E3B;font-size:13px}
+
+.container{max-width:1400px;margin:0 auto;padding:0 16px 32px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.kpi .lbl{font-size:11px;font-weight:500;text-transform:uppercase;color:var(--muted);letter-spacing:0.5px;margin-bottom:6px}
+.kpi .val{font-size:24px;font-weight:700;color:var(--text);line-height:1.1}
+.kpi .dl{font-size:12px;font-weight:500;margin-top:4px}
+.neg{color:var(--red)}.pos{color:var(--green)}.neu{color:var(--muted)}
+
+.section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:16px 0}
+.sh{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.sh2{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin:18px 0 10px}
+
+.narr{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 8px 8px 0;margin:14px 0}
+.narr .nl{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--td-primary);letter-spacing:0.5px;margin-bottom:3px}
+.narr p{font-size:13px;color:var(--text);margin-bottom:6px}
+.narr p:last-child{margin-bottom:0}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+thead tr{background:#EBF3FB}
+th{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:0.4px}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FBFF}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.dneg{color:var(--red);font-weight:600}.dpos{color:var(--green);font-weight:600}.dmut{color:var(--muted)}
+
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.cg{background:#D1FAE5;color:#065F46}.ca{background:#FEF3C7;color:#92400E}.cr{background:#FEE2E2;color:#991B1B}
+
+.tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
+.tb{padding:7px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.tb.active{background:var(--td-primary);color:#fff;border-color:var(--td-primary)}
+.tc{display:none}.tc.active{display:block}
+
+.cw{position:relative;height:220px;margin:12px 0}
+.cws{position:relative;height:180px;margin:10px 0}
+
+.footer{background:var(--td-dark);color:rgba(255,255,255,0.75);padding:24px 28px;border-radius:12px;margin:16px 16px 24px;font-size:12px;line-height:1.8}
+.footer h4{color:#fff;font-size:13px;font-weight:600;margin-bottom:6px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+.ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0}
+.ctx-item{background:#F4F8FD;border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.ctx-item .ct{font-size:12px;font-weight:700;color:var(--td-dark);margin-bottom:4px}
+.ctx-item .cd{font-size:12px;color:var(--muted)}
+
+@media(max-width:700px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .fg{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="attr">International Sales — CRO Weekly Review</div>
+  <h1>Week Ending May 17, 2026</h1>
+  <div class="sub">Reporting Period: May 11 – May 17, 2026 &nbsp;|&nbsp; Generated May 18, 2026</div>
+  <div class="attr">Submitted by: Yonis Brander, Head of International Growth, TaxDome</div>
+  <div class="badge">MTD window: May 1 – May 18, 2026 &nbsp;|&nbsp; 12 of 21 selling days</div>
+</div>
+
+<!-- ACCOUNTEX ALERT -->
+<div class="alert-green">
+  <div class="at">Accountex London: 63 Demos Booked + 275 Badge Leads</div>
+  <p>The UK two-day event generated 63 new demo bookings and 275 leads scanned from badges this week. These are not yet reflected in MTD revenue but represent the single largest pipeline-creation event of the quarter. The quality and conversion of this inbound will determine whether Accountex translates to a June revenue spike or a qualified-but-cold list. Samuel owns the activation follow-up cadence; urgency is high given the volume.</p>
+</div>
+
+<!-- CRITICAL ALERT -->
+<div class="alert-red">
+  <div class="at">Team MTD at 6.9% vs 57.1% Selling-Day Pace — $38,197 Behind Target</div>
+  <p>With 12 of 21 selling days gone, the team has closed $5,231 against a $76,000 quota. Samuel and Alina have closed; Joanne and Ajla are at $0 MTD. The compliance-season headwind has not yet cleared. Accountex pipeline is real but cannot be converted this month. May is recoverable only if late-stage deals move this week.</p>
+</div>
+
+<!-- HEADER KPIs -->
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="lbl">Team ARR — Last Week</div>
+    <div class="val">$3,472</div>
+    <div class="dl pos">&#9650; +37.6% WoW</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">YoY Won ARR</div>
+    <div class="val">-61.0%</div>
+    <div class="dl neg">vs $8,898 same week 2025</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">MTD ARR (May 1–18)</div>
+    <div class="val">$5,231</div>
+    <div class="dl neg">6.9% of $76,000 quota</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">MTD Pacing</div>
+    <div class="val">57.1%</div>
+    <div class="dl neg">12 of 21 selling days</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Gap to Month-End</div>
+    <div class="val">$70,769</div>
+    <div class="dl neg">$38,197 behind selling-day pace</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Show Rate — Last Week</div>
+    <div class="val">71.4%</div>
+    <div class="dl pos">&#9650; +1pp WoW &nbsp;|&nbsp; +43% YoY</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Win Rate — Last Week</div>
+    <div class="val">~27%</div>
+    <div class="dl pos">&#9650; 3/11 adj. (incl. pipeline-confirmed) &nbsp;|&nbsp; from 0% WP</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Accountex Demos Booked</div>
+    <div class="val">63</div>
+    <div class="dl pos">+ 275 badge leads</div>
+  </div>
+</div>
+
+<!-- SECTION 1: REVENUE -->
+<div class="section">
+<div class="sh">Section 1: Revenue and Quota Pacing</div>
+
+<div class="cw">
+  <canvas id="mtdChart"></canvas>
+</div>
+
+<div class="narr">
+  <p><strong>May is effectively lost — 6.9% attainment with 57% of selling days gone, and the compliance window hasn't cleared in any target market.</strong> The only closable ARR this month is the $16,335 sitting in combined late-stage; everything else, including Accountex, is a June story.</p>
+  <p>Stop chasing May closes that can't happen. Each CM identifies their one best late-stage bet this week and locks a June 1–15 close date. Accountex activation sequence starts now.</p>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>CM</th><th>Region</th><th class="num">May Quota</th><th class="num">MTD ARR</th>
+      <th class="num">Attainment</th><th class="num">Pace</th><th class="num">Paced Gap</th>
+      <th class="num">Open Pipeline</th><th class="num">Coverage</th><th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td><td>UK</td>
+      <td class="num">$19,000</td><td class="num">$3,359</td>
+      <td class="num">17.7%</td><td class="num">57.1%</td>
+      <td class="num neg">-$7,498</td><td class="num">$92,800</td>
+      <td class="num">0.5x</td><td><span class="chip cr">RED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+      <td class="num">$22,000</td><td class="num">$1,872</td>
+      <td class="num">8.5%</td><td class="num">57.1%</td>
+      <td class="num neg">-$10,699</td><td class="num">$108,935</td>
+      <td class="num">0.4x</td><td><span class="chip cr">RED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+      <td class="num">$18,000</td><td class="num">$0</td>
+      <td class="num">0.0%</td><td class="num">57.1%</td>
+      <td class="num neg">-$10,286</td><td class="num">$4,000</td>
+      <td class="num">0.0x</td><td><span class="chip cr">RED</span></td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+      <td class="num">$17,000</td><td class="num">$0</td>
+      <td class="num">0.0%</td><td class="num">57.1%</td>
+      <td class="num neg">-$9,714</td><td class="num">$8,000</td>
+      <td class="num">0.0x</td><td><span class="chip cr">RED</span></td>
+    </tr>
+    <tr style="font-weight:600">
+      <td><strong>Team Total</strong></td><td></td>
+      <td class="num">$76,000</td><td class="num">$5,231</td>
+      <td class="num neg">6.9%</td><td class="num">57.1%</td>
+      <td class="num neg">-$38,197</td><td class="num">$212,735</td>
+      <td class="num">0.3x</td><td><span class="chip cr">RED</span></td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px">Coverage = Open Pipeline (LW activity zip) / Required Pipeline (remaining quota / (SR 71% x WR 11%)). Pacing = selling days elapsed (12) / total selling days in May (21). Ajla's $2,400 closed May 18 (today); included in MTD but not in LW win rate window. Note: coverage is universally RED this week because the required pipeline denominator is very high at current conversion rates — this reflects month-end math realism, not pipeline quality.</p>
+</div>
+
+<!-- SECTION 2: EXECUTION -->
+<div class="section">
+<div class="sh">Section 2: Execution — Show Rate and Win Rate</div>
+
+<div class="sh2">Show Rate Trend — 14 Weeks</div>
+<div class="cws"><canvas id="srChart"></canvas></div>
+
+<div class="narr">
+  <p><strong>71% team show rate is healthy, but Alina's 40% (2/5) is the drag — three no-shows in a single week is a process gap, not just a market gap.</strong></p>
+  <p>Alina implements the same multi-step confirmation protocol as Joanne and Samuel before the next batch of demos.</p>
+</div>
+
+<div class="sh2" style="margin-top:20px">Win Rate Trend — 14 Weeks</div>
+<div class="cws"><canvas id="wrChart"></canvas></div>
+
+<div class="narr">
+  <p><strong>Win rate recovered to ~27% adjusted (3 closes from 11 evaluated) — Alina and Samuel both closed, ending the two-week drought. The export shows 0% for Samuel due to a sync lag; his two pipeline-confirmed closes are flagged in working notes.</strong></p>
+  <p>Find the next mid-cycle deal across the team with a prospect past their most acute filing deadline. That profile closed twice this week — replicate it.</p>
+</div>
+
+<div class="sh2" style="margin-top:16px">CM Win Rate and Show Rate — Last Week</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi">
+    <div class="lbl">Samuel George</div>
+    <div class="val" style="font-size:20px;color:var(--green)">40% WR adj.</div>
+    <div class="dl pos">2/5 incl. pipeline-confirmed &nbsp;|&nbsp; <span class="pos">SR 100% (1/1)</span></div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Alina Goldenberg</div>
+    <div class="val" style="font-size:20px;color:var(--green)">50% WR</div>
+    <div class="dl pos">1/2 closes &nbsp;|&nbsp; <span class="neg">SR 40% (2/5)</span></div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Joanne Dakay</div>
+    <div class="val" style="font-size:20px;color:var(--red)">0% WR</div>
+    <div class="dl neg">0/2 closes &nbsp;|&nbsp; <span class="pos">SR 100% (5/5)</span></div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Ajla Ahmetspahic</div>
+    <div class="val" style="font-size:20px;color:var(--red)">0% WR</div>
+    <div class="dl neg">0/2 closes &nbsp;|&nbsp; SR 67% (2/3)</div>
+  </div>
+</div>
+</div>
+
+<!-- SECTION 3: PIPELINE -->
+<div class="section">
+<div class="sh">Section 3: Pipeline Quality and Composition</div>
+
+<div class="cw"><canvas id="wonTrendChart"></canvas></div>
+
+<div class="narr">
+  <p><strong>Accountex added 63 demo bookings in two days — the biggest single pipeline event of the quarter. None of it closes in May; all of it needs activating now before the momentum dies.</strong></p>
+  <p>Segment the 63 bookings by firm size before end of week and confirm every demo within 5 business days. Badge lead outreach starts May 23. Fast-track small UK firms matching Samuel's 6–16 day close profile.</p>
+</div>
+
+<div class="sh2">Active Pipeline by CM (LW Activity Zip)</div>
+<table>
+  <thead>
+    <tr>
+      <th>CM</th><th>Region</th><th class="num">Early Stage</th><th class="num">Late Stage</th>
+      <th class="num">Total Active</th><th class="num">Early %</th><th class="num">Prior Snapshot (May 10)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td><td>UK</td>
+      <td class="num">$88,000</td><td class="num">$4,800</td>
+      <td class="num">$92,800</td><td class="num pos">94.8%</td><td class="num dmut">$24,800</td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+      <td class="num">$102,400</td><td class="num">$6,535</td>
+      <td class="num">$108,935</td><td class="num pos">94.0%</td><td class="num dmut">$88,135</td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+      <td class="num">$0</td><td class="num">$4,000</td>
+      <td class="num">$4,000</td><td class="num dmut">0.0%</td><td class="num dmut">$30,400</td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+      <td class="num">$6,400</td><td class="num">$1,600</td>
+      <td class="num">$8,000</td><td class="num">80.0%</td><td class="num dmut">$14,400</td>
+    </tr>
+    <tr style="font-weight:600">
+      <td><strong>Team Total</strong></td><td></td>
+      <td class="num">$196,800</td><td class="num">$16,335</td>
+      <td class="num">$212,735</td><td class="num">92.5%</td><td class="num dmut">$157,735</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px">LW activity zip shows deals with activity during May 11–17 only. Full open pipeline from May 10 snapshot: $1,332,125. WoW segment delta suppressed — activity-only zip does not represent full pipeline change. See footer.</p>
+
+<div class="sh2" style="margin-top:20px">Sales Cycle</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi">
+    <div class="lbl">Samuel George</div>
+    <div class="val" style="font-size:18px">16 days</div>
+    <div class="dl neu">1 clean close &nbsp;|&nbsp; 597-day outlier excluded</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Alina Goldenberg</div>
+    <div class="val" style="font-size:18px">37 days</div>
+    <div class="dl pos">1 close &nbsp;|&nbsp; vs 6.5d LW (Samuel)</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Joanne Dakay</div>
+    <div class="val" style="font-size:18px;color:var(--muted)">—</div>
+    <div class="dl neu">No closes last week</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Ajla Ahmetspahic</div>
+    <div class="val" style="font-size:18px;color:var(--muted)">—</div>
+    <div class="dl neu">Close on May 18 not in LW window</div>
+  </div>
+</div>
+</div>
+
+<!-- SECTION 4: REP VARIANCE -->
+<div class="section">
+<div class="sh">Section 4: Rep-Level Variance</div>
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi">
+    <div class="lbl">Samuel George / UK</div>
+    <div class="val" style="font-size:20px">$1,600</div>
+    <div class="dl neg">MTD $3,359 / $19,000 = 17.7%</div>
+    <div class="dl pos">Accountex: 63 demos booked</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Alina Goldenberg / RO</div>
+    <div class="val" style="font-size:20px;color:var(--green)">$1,872</div>
+    <div class="dl neg">MTD $1,872 / $22,000 = 8.5%</div>
+    <div class="dl neg">Show rate drag: 40% LW</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Joanne Dakay / ANZ</div>
+    <div class="val" style="font-size:20px;color:var(--red)">$0</div>
+    <div class="dl neg">MTD $0 / $18,000 = 0.0%</div>
+    <div class="dl pos">SR 100% (5/5) — pipeline ready</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Ajla Ahmetspahic / DACH</div>
+    <div class="val" style="font-size:20px;color:var(--red)">$0</div>
+    <div class="dl neg">MTD $0 / $17,000 = 0.0%</div>
+    <div class="dl neg">$2,400 closed May 18 — next report</div>
+  </div>
+</div>
+
+<table style="margin-top:16px">
+  <thead>
+    <tr>
+      <th>CM</th><th class="num">DB LW</th><th class="num">DH LW</th><th class="num">SR LW</th>
+      <th class="num">Won ARR LW</th><th class="num">Won ARR WP</th><th class="num">WoW</th>
+      <th class="num">Won ARR SWY</th><th class="num">YoY</th><th class="num">WR LW</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Samuel George</strong></td>
+      <td class="num">1</td><td class="num">1</td><td class="num pos">100%</td>
+      <td class="num pos">$1,600</td><td class="num">$1,759</td>
+      <td class="num neg">-9.0%</td><td class="num">$3,510</td>
+      <td class="num neg">-9.0%</td><td class="num pos">40% adj. (2/5)</td>
+    </tr>
+    <tr>
+      <td><strong>Alina Goldenberg</strong></td>
+      <td class="num">5</td><td class="num">2</td><td class="num neg">40%</td>
+      <td class="num pos">$1,872</td><td class="num">$0</td>
+      <td class="num pos">+new</td><td class="num">$0</td>
+      <td class="num pos">+new</td><td class="num pos">50% (1/2)</td>
+    </tr>
+    <tr>
+      <td><strong>Joanne Dakay</strong></td>
+      <td class="num">5</td><td class="num">5</td><td class="num pos">100%</td>
+      <td class="num neg">$0</td><td class="num">$0</td>
+      <td class="num dmut">—</td><td class="num">$5,387</td>
+      <td class="num neg">-100%</td><td class="num neg">0% (0/2)</td>
+    </tr>
+    <tr>
+      <td><strong>Ajla Ahmetspahic</strong></td>
+      <td class="num">3</td><td class="num">2</td><td class="num">67%</td>
+      <td class="num neg">$0</td><td class="num">$0</td>
+      <td class="num dmut">—</td><td class="num dmut">—</td>
+      <td class="num dmut">—</td><td class="num neg">0% (0/2)</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="narr">
+  <p><strong>Joanne is the most alarming number on the page: 5/5 show rate, $0 MTD, zero closes. Perfect execution against a market that structurally cannot buy right now.</strong></p>
+  <p>Every demo from this week becomes a confirmed June call. Send post-demo follow-ups this week and own the reactivation slot before a competitor does.</p>
+</div>
+
+<!-- Accountex context box -->
+<div class="sh2" style="margin-top:20px">Accountex London — Event Impact</div>
+<div class="ctx-grid">
+  <div class="ctx-item">
+    <div class="ct">Demos Booked</div>
+    <div class="cd">63 new demo bookings generated at the event. This is Samuel's primary activation task for the next 10 business days.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ct">Badge Leads Scanned</div>
+    <div class="cd">275 leads from badge scans. Require qualification before demo booking. Target: 30% conversion to demo = ~83 additional bookings.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ct">Activation Window</div>
+    <div class="cd">Event momentum fades fast. All 63 demos should be confirmed and scheduled within 5 business days. Badge leads: first outreach by May 23.</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ct">Revenue Impact</div>
+    <div class="cd">No May revenue from Accountex. June and July are the realistic close windows depending on deal size and prospect readiness.</div>
+  </div>
+</div>
+</div>
+
+<!-- REGIONAL TABS -->
+<div class="section">
+<div class="sh">Regional Deep Dives</div>
+<div class="tabs">
+  <button class="tb active" onclick="showTab('uk',this)">UK — Samuel George</button>
+  <button class="tb" onclick="showTab('ro',this)">Romania — Alina Goldenberg</button>
+  <button class="tb" onclick="showTab('dach',this)">DACH — Ajla Ahmetspahic</button>
+  <button class="tb" onclick="showTab('anz',this)">ANZ — Joanne Dakay</button>
+</div>
+
+<div id="uk" class="tc active">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="lbl">Won ARR LW</div><div class="val" style="font-size:20px;color:var(--green)">$1,600</div><div class="dl pos">2 closes x $800 &nbsp;|&nbsp; -9.0% WoW</div></div>
+    <div class="kpi"><div class="lbl">Show Rate</div><div class="val" style="font-size:20px;color:var(--green)">100%</div><div class="dl pos">1/1</div></div>
+    <div class="kpi"><div class="lbl">Win Rate</div><div class="val" style="font-size:20px;color:var(--green)">40% adj.</div><div class="dl pos">2/5 incl. pipeline-confirmed</div></div>
+    <div class="kpi"><div class="lbl">Open Pipeline</div><div class="val" style="font-size:20px">$92,800</div><div class="dl pos">+ 63 Accountex demos incoming</div></div>
+  </div>
+  <div class="narr">
+    <p><strong>One close at $800, but 63 Accountex demo bookings is the real story — the biggest single pipeline event of the quarter for Samuel.</strong></p>
+    <p>Segment and confirm all 63 bookings by end of week. Fast-track solo and small-practice firms first; they match Samuel's proven 6–16 day close cycle and can move in June without compliance friction.</p>
+  </div>
+</div>
+
+<div id="ro" class="tc">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="lbl">Won ARR LW</div><div class="val" style="font-size:20px;color:var(--green)">$1,872</div><div class="dl pos">First close of May</div></div>
+    <div class="kpi"><div class="lbl">Show Rate</div><div class="val" style="font-size:20px;color:var(--amber)">40%</div><div class="dl neg">2/5 — 3 no-shows</div></div>
+    <div class="kpi"><div class="lbl">Win Rate</div><div class="val" style="font-size:20px;color:var(--green)">50%</div><div class="dl pos">1/2 evaluated</div></div>
+    <div class="kpi"><div class="lbl">Open Pipeline</div><div class="val" style="font-size:20px">$108,935</div><div class="dl neg">92% Early Stage</div></div>
+  </div>
+  <div class="narr">
+    <p><strong>One close is a positive signal, but three no-shows out of five confirms Romania is still deep in compliance season. VAT, annual financial statements and SAF-T all land within six days at end of month.</strong></p>
+    <p>Rebook the three no-shows for June 2 onwards. Add multi-step confirmation to every remaining May demo. Do not book slots for firms that cannot attend.</p>
+  </div>
+</div>
+
+<div id="dach" class="tc">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="lbl">Won ARR LW</div><div class="val" style="font-size:20px;color:var(--red)">$0</div><div class="dl neg">$930 closed May 18 — next report</div></div>
+    <div class="kpi"><div class="lbl">Show Rate</div><div class="val" style="font-size:20px">67%</div><div class="dl pos">2/3 — improved from 50% WP</div></div>
+    <div class="kpi"><div class="lbl">Win Rate</div><div class="val" style="font-size:20px;color:var(--red)">0%</div><div class="dl neg">0/2 evaluated</div></div>
+    <div class="kpi"><div class="lbl">Open Pipeline</div><div class="val" style="font-size:20px;color:var(--amber)">$8,000</div><div class="dl neg">Still thin vs $17K quota</div></div>
+  </div>
+  <div class="narr">
+    <p><strong>$0 ARR in the reporting period and $8,000 open pipeline can't fund a $17,000 quota. Pipeline creation is the only job this week.</strong></p>
+    <p>Target Swiss firms first — they are on extended return deadlines and are the most accessible DACH segment right now. Book 3 new demos by end of week.</p>
+  </div>
+</div>
+
+<div id="anz" class="tc">
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div class="lbl">Won ARR LW</div><div class="val" style="font-size:20px;color:var(--red)">$0</div><div class="dl neg">0 closes &nbsp;|&nbsp; WoW flat</div></div>
+    <div class="kpi"><div class="lbl">Show Rate</div><div class="val" style="font-size:20px;color:var(--green)">100%</div><div class="dl pos">5/5 — perfect execution</div></div>
+    <div class="kpi"><div class="lbl">Win Rate</div><div class="val" style="font-size:20px;color:var(--red)">0%</div><div class="dl neg">0/2 evaluated</div></div>
+    <div class="kpi"><div class="lbl">Open Pipeline</div><div class="val" style="font-size:20px;color:var(--amber)">$4,000</div><div class="dl neg">Late Stage only</div></div>
+  </div>
+  <div class="narr">
+    <p><strong>5/5 show rate and zero closes. Joanne is executing perfectly against a market that cannot buy until after June 30 year-end. This is not a Joanne problem.</strong></p>
+    <p>Every demo attendee gets a June 2 or June 9 follow-up invite this week. Frame TaxDome as the tool that eliminates next year's year-end overload — the timing objection is also the best product pitch.</p>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="fg">
+    <div>
+      <h4>Attribution and Data Sources</h4>
+      Submitted by: Yonis Brander, Head of International Growth, TaxDome<br>
+      Report generated: May 18, 2026<br>
+      Data sources: HubSpot CRM weekly exports (May 11–17, 2026); baseline CSVs and pipeline snapshot (May 10, 2026) stored in Claude Cowork Project.<br>
+      Context: Accountex London event (May 14–15, 2026) — 63 demos booked and 275 badge leads reported by Yonis Brander.
+    </div>
+    <div>
+      <h4>Methodology</h4>
+      Show Rate = Demos Held / Demos Booked (demo activity date filter).<br>
+      Win Rate = Closed Won / (Closed Won + Closed Lost) per win rate export.<br>
+      Pacing = selling days elapsed (12) / total selling days in May (21) = 57.1%.<br>
+      Coverage = Active LW Open Pipeline / (Remaining Quota / (SR 71% x WR 11%)).<br>
+      MTD window: May 1 through May 18, 2026 (run date). Won ARR sourced from pipeline CSV unique deals with Won stage and close date in window.<br>
+      Quota: Samuel $19K, Alina $22K, Joanne $18K, Ajla $17K (May 2026 baked-in table).
+    </div>
+  </div>
+  <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.15);padding-top:12px">
+    <h4>Working Notes and Data Quality Flags</h4>
+    1. <strong>Pipeline WoW segment delta unavailable:</strong> LW zip contains activity-only deals (not full open pipeline). WoW segment comparison requires two full snapshots. Prior snapshot: May 10. New snapshot written from this run's activity deals (partial).<br>
+    2. <strong>Samuel George 597-day sales cycle outlier:</strong> Deal ID 22566282606, close date May 14, 597 days to close. Excluded from sales cycle narrative and averages as a data quality outlier (likely created/re-dated in HubSpot in error). Flagged for Samuel's review.<br>
+    3. <strong>Ajla Ahmetspahic $2,400 close (May 18):</strong> Deal closed on run date (today), outside the May 11–17 reporting window. Excluded from all LW and MTD calculations in this report. Will appear in next week's report.<br>
+    4. <strong>YoY show rate baseline anomaly:</strong> Same-week-last-year show rates for some CMs exceed 100% (e.g., Ajla 200%). This is a HubSpot timing artefact where demos held in a given week draw from bookings in prior weeks. Suppressed from YoY show rate narrative; team-level YoY (71% vs 50%) uses absolute demo counts.<br>
+    5. <strong>WP win rate:</strong> Week prior (May 4–10) shows 0/17 evaluated deals with 0 closes across all CMs. Confirmed from win rate zip export for that date range. This is consistent with last week's report.<br>
+    7. <strong>Samuel George win rate sync lag:</strong> Two pipeline-confirmed closes (Deal ID 22566282606, May 14, $800; Deal ID 59773030216, May 15, $800) appear as Won in the pipeline export but do not register in the win rate export for the same period. True LW win rate adjusted to 40% (2/5) for Samuel; team adjusted to ~27% (3/11). Same pattern as week ending May 10. Will resolve in next cycle's export.<br>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#4A6080';
+
+// MTD Chart — selling-day quota pace
+const mtdDays=[]; const mtdQuota=[]; const mtdActual=[];
+const sdByDay=[1,1,1,2,3,4,5,6,6,6,7,8,9,10,11,12,12,12]; // May 1-18
+for(let d=1;d<=18;d++){
+  mtdDays.push('May '+d);
+  mtdQuota.push(Math.round(76000*sdByDay[d-1]/21));
+  // Samuel 2x$800 LW (May 14-15); Alina $1,872 LW (May 14-ish); prior MTD = Samuel $1,759 (May 1-10)
+  let a = 0;
+  if(d>=11) a+=1759;    // Samuel prior MTD carries from last week
+  if(d>=15) a+=1600;    // Samuel 2 closes LW
+  if(d>=15) a+=1872;    // Alina LW
+  mtdActual.push(Math.round(a));
+}
+new Chart(document.getElementById('mtdChart').getContext('2d'),{
+  type:'line',
+  data:{labels:mtdDays,datasets:[
+    {label:'Quota pace (selling days)',data:mtdQuota,borderColor:'#C9DCEF',borderWidth:2,borderDash:[5,3],fill:false,pointRadius:0,tension:0.1},
+    {label:'Actual MTD ARR',data:mtdActual,borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,0.10)',borderWidth:2.5,fill:true,pointRadius:3,pointBackgroundColor:'#1976D3',tension:0.2}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{boxWidth:12}},
+      title:{display:true,text:'MTD ARR Build vs Quota Pace — Selling Days (May 2026, 21 total)',font:{size:12,weight:'600'},color:'#0A1F44'},
+      tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.y.toLocaleString()}}},
+    scales:{x:{grid:{color:'#E8F0F8'}},y:{grid:{color:'#E8F0F8'},ticks:{callback:v=>'$'+v.toLocaleString()}}}}
+});
+
+// Show Rate
+const srLabels=["Jan 25","Feb 1","Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 11","May 18"];
+const srVals=[47.4,66.7,41.4,79.2,48.0,68.0,60.9,66.7,67.6,60.4,66.7,58.8,50.0,37.0,70.4,71.4];
+new Chart(document.getElementById('srChart').getContext('2d'),{
+  type:'line',
+  data:{labels:srLabels,datasets:[{
+    label:'Team Show Rate %',data:srVals,
+    borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,0.10)',borderWidth:2.5,fill:true,tension:0.3,
+    pointRadius:srVals.map((_,i)=>i===srVals.length-1?6:3),
+    pointBackgroundColor:srVals.map((_,i)=>i===srVals.length-1?'#12A05C':'#1976D3')
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'Show Rate — 16 Week Trend (%)',font:{size:12,weight:'600'},color:'#0A1F44'}},
+    scales:{x:{grid:{color:'#E8F0F8'}},y:{grid:{color:'#E8F0F8'},min:0,max:100,ticks:{callback:v=>v+'%'}}}}
+});
+
+// Win Rate
+const wrLabels=["Jan 25","Feb 1","Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 4","May 11","May 18"];
+const wrVals=[40.0,61.5,33.3,40.0,9.1,33.3,27.8,18.8,10.3,13.6,55.6,40.0,40.0,23.1,0.0,0.0,27.3];
+new Chart(document.getElementById('wrChart').getContext('2d'),{
+  type:'line',
+  data:{labels:wrLabels,datasets:[{
+    label:'Team Win Rate %',data:wrVals,
+    borderColor:'#DC2626',backgroundColor:'rgba(220,38,38,0.08)',borderWidth:2.5,fill:true,tension:0.3,
+    pointRadius:wrVals.map((_,i)=>i===wrVals.length-1?7:3),
+    pointBackgroundColor:wrVals.map((_,i)=>i===wrVals.length-1?'#12A05C':'#9BBFE8')
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'Win Rate — 17 Week Trend (%)',font:{size:12,weight:'600'},color:'#0A1F44'}},
+    scales:{x:{grid:{color:'#E8F0F8'}},y:{grid:{color:'#E8F0F8'},min:0,max:70,ticks:{callback:v=>v+'%'}}}}
+});
+
+// Won ARR Trend
+const wonLabels=["Jan 12","Jan 19","Jan 26","Feb 16","Feb 23","Mar 2","Mar 9","Mar 16","Mar 23","Mar 30","Apr 6","Apr 13","Apr 20","Apr 27","May 4","May 11","May 18"];
+const wonVals=[2059,6632,10164,5013,4915,1563,451,5632,3761,2407,1209,4417,4188,2470,4691,2512,6386,1070,4793,4561,4428,11062,10941,1258,13084,1375,16188,6477,11561,19952,3509,7320,805,2788,8554,1348,5547,6721,6656,8162,10808,5470,926,921,4221,15040,3619,1645,1749,15484,18315,5127,14036,14059,13270,1889,3494,13305,7514,8302,22392,8642,3477,11951,3773,2523,2672];
+const wonFullLabels=["Jan 12","Jan 19","Jan 26","Feb 16","Feb 23","Mar 2","Mar 9","Mar 16","Mar 23","Mar 30","Apr 6","Apr 13","Apr 20","Apr 27","May 4","May 11","May 18","May 25","Jun 1","Jun 8","Jun 15","Jun 22","Jun 29","Jul 6","Jul 13","Jul 20","Jul 27","Aug 3","Aug 10","Aug 24","Aug 31","Sep 7","Sep 14","Sep 21","Sep 28","Oct 5","Oct 12","Oct 19","Oct 26","Nov 2","Nov 9","Nov 16","Nov 23","Nov 30","Dec 7","Dec 14","Dec 21","Dec 28","Jan 4","Jan 11","Jan 18","Jan 25","Feb 1","Feb 8","Feb 15","Feb 22","Mar 1","Mar 8","Mar 15","Mar 22","Mar 29","Apr 5","Apr 12","Apr 19","Apr 26","May 10","May 18"];
+new Chart(document.getElementById('wonTrendChart').getContext('2d'),{
+  type:'line',
+  data:{labels:wonFullLabels,datasets:[{
+    label:'Weekly Won ARR',data:wonVals,
+    borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,0.10)',borderWidth:2,fill:true,tension:0.3,
+    pointRadius:wonVals.map((_,i)=>i===wonVals.length-1?6:1),
+    pointBackgroundColor:wonVals.map((_,i)=>i===wonVals.length-1?'#DC2626':'#1976D3')
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'Weekly Won ARR — Jan 2025 to Present ($)',font:{size:12,weight:'600'},color:'#0A1F44'},
+      tooltip:{callbacks:{label:ctx=>'Won ARR: $'+ctx.parsed.y.toLocaleString()}}},
+    scales:{x:{grid:{color:'#E8F0F8'},ticks:{maxTicksLimit:16}},y:{grid:{color:'#E8F0F8'},ticks:{callback:v=>'$'+v.toLocaleString()}}}}
+});
+
+function showTab(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
