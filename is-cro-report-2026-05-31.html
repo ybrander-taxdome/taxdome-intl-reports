@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>International Sales Weekly Review: Week Ending 2026-05-31</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --td-primary:#1976D3; --td-dark:#004392;
+ --bg:#F4F8FD; --card:#FFFFFF; --border:#C9DCEF;
+ --text:#0A1F44; --muted:#4A6080;
+ --green:#12A05C; --amber:#D97706; --red:#DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:22px}
+.wrap{max-width:1180px;margin:0 auto}
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;border-radius:12px;padding:32px 28px;margin-bottom:20px}
+.header h1{font-size:24px;font-weight:700;letter-spacing:-0.3px}
+.header .sub{font-size:13px;opacity:.92;margin-top:6px;font-weight:500}
+.header .meta{font-size:12px;opacity:.85;margin-top:10px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:20px}
+.kpi{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:14px}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.4px;opacity:.85;font-weight:500}
+.kpi .v{font-size:22px;font-weight:700;margin-top:6px}
+.kpi .d{font-size:12px;margin-top:3px;font-weight:600}
+.takeaway{background:#FEF2F2;border-left:5px solid var(--red);border-radius:8px;padding:16px 18px;margin-bottom:22px}
+.takeaway .tag{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--red);font-weight:700}
+.takeaway h2{font-size:18px;font-weight:700;margin:6px 0 8px}
+.takeaway p{font-size:14px;color:var(--text)}
+.takeaway .act{margin-top:10px;font-size:13px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.takeaway .act b{color:var(--td-dark)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:18px}
+h3.sec{font-size:16px;font-weight:700;color:var(--td-dark);margin-bottom:4px}
+.sec-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+th{background:#EBF3FB;text-transform:uppercase;font-size:11px;letter-spacing:.4px;color:var(--muted);font-weight:600;text-align:left;padding:9px 10px;border:1px solid var(--border)}
+td{padding:9px 10px;border:1px solid var(--border)}
+td.r,th.r{text-align:right}
+.up{color:var(--green);font-weight:600}.down{color:var(--red);font-weight:600}.flat{color:var(--muted)}
+.chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.c-green{background:#D1FAE5;color:#065F46}.c-amber{background:#FEF3C7;color:#92400E}.c-red{background:#FEE2E2;color:#991B1B}
+.narr{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 6px 6px 0;margin-top:14px}
+.narr .a{font-weight:700;font-size:14px;margin-bottom:8px;color:var(--text)}
+.narr .row{font-size:13px;margin-bottom:5px}
+.narr .row b{color:var(--td-dark);font-weight:600}
+.chartbox{position:relative;height:300px;margin:6px 0 4px}
+.cardgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px}
+.mini{border:1px solid var(--border);border-radius:8px;padding:13px}
+.mini .n{font-size:12px;font-weight:600;color:var(--td-dark)}
+.mini .reg{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.mini .v{font-size:19px;font-weight:700;margin-top:6px}
+.mini .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.tab.active{background:var(--td-primary);color:#fff;border-color:var(--td-primary)}
+.tabpane{display:none}.tabpane.active{display:block}
+.foot{font-size:11.5px;color:var(--muted);margin-top:8px}
+.foot h4{font-size:12px;color:var(--td-dark);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 5px}
+.foot ul{margin-left:16px}.foot li{margin-bottom:3px}
+.bench{font-size:11px;color:var(--muted);font-weight:600}
+.smgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 2px}
+.smcard{border:1px solid var(--border);border-radius:8px;padding:12px}
+.smhead{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.smname{font-size:12px;font-weight:600;color:var(--td-dark)}
+.smval{font-size:18px;font-weight:700}
+.smsub{font-size:11px;color:var(--muted);margin:4px 0 6px}
+.smchart{position:relative;height:96px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.cardgrid{grid-template-columns:repeat(2,1fr)}.smgrid{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body><div class="wrap">
+
+<div class="header">
+ <h1>International Sales: Weekly Review</h1>
+ <div class="sub">Last Week: 2026-05-25 to 2026-05-31 &nbsp;|&nbsp; Full month: May 2026 &nbsp;|&nbsp; Submitted by: Yonis Brander, Head of International Growth, TaxDome</div>
+ <div class="meta">Generated 2026-06-01 &nbsp;|&nbsp; Source: HubSpot CRM (full 2025 + 2026 export) &nbsp;|&nbsp; Show Rate target 80% · Win Rate target 35%</div>
+ <div class="kpis" id="kpis"></div>
+</div>
+
+<div class="takeaway">
+ <div class="tag">Key takeaway</div>
+ <h2>Per-CM growth is real, but four CMs are not yet replacing the 2025 roster. Total International ARR fell about 25% year over year, and the retained CMs closed just 44% of quota.</h2>
+ <p>Total International closed $34,545 in May against $46,013 last May, down 24.9%, because the 2025 book came from nine deal owners and today four key-market CMs carry it. Those four grew their own contribution 73.7% ($19,452 to $33,780), but that gain did not cover the $26,561 that departed reps produced last May. Within the key-market book the climb is also capped by conversion: Show Rate 60.2% against an 80% target and Win Rate 23.8% against a 35% target, both flat-to-down YoY, with Romania (8.5% attainment on the largest quota) and the UK (38.5%) carrying the quota miss. Reina Kurosawa's Japan deal ($765) sits in the International total but outside the key-market CM breakdown.</p>
+ <div class="act"><b>Action:</b> Treat the controllable lever first. Run a two-week mid-funnel intervention on no-shows and demo-to-close in Romania and the UK to move Show Rate toward 80% and Win Rate toward 35%; in parallel, size the capacity gap left by the departed contributors, because per-CM productivity alone will not close a 25% roster-driven shortfall.</div>
+</div>
+
+<!-- KEY METRICS -->
+<div class="card">
+ <h3 class="sec">Key Metrics Snapshot</h3>
+ <div class="sec-sub">Total International ARR (all deal owners) shown first; the detailed tables below cover the four key-market CMs only, the scope of the quota and the funnel data.</div>
+ <div class="narr" style="border-left-color:var(--amber);background:#FFFBEB">
+  <div class="a">Total International ARR, May: $34,545 in 2026 against $46,013 in 2025, down 24.9% year over year.</div>
+  <div class="row">The 2025 total came from nine deal owners. Five (Maria Mazur, Bogdan Bratu, Piera Bellelli, Hiro Ito, Louis Bellhouse) contributed $26,561 last May and are no longer carrying quota. In 2026 the only contribution outside the four key-market CMs is Reina Kurosawa's Japan deal ($765). The tables below isolate the four current CMs.</div>
+ </div>
+ <table id="km_lw"></table>
+ <div style="height:14px"></div>
+ <table id="km_may"></table>
+</div>
+
+<!-- SECTION 1 -->
+<div class="card">
+ <h3 class="sec">Section 1: Revenue and Quota Pacing</h3>
+ <div class="sec-sub">Key-market CM closed-won ARR build through May against the $76,000 team target.</div>
+ <div class="chartbox"><canvas id="c_may"></canvas></div>
+ <div class="narr">
+  <div class="a">The retained CMs are growing fast and still missing the number. The four key-market CMs closed at 44.4% of quota in May, up 73.7% on their own May 2025 contribution.</div>
+  <div class="row"><b>Why.</b> The cohort result is being set by the bottom half of the roster. Two CMs cleared 70% of quota; two did not, and the two that missed hold 54% of the team target between them. The quota and this build cover the four key-market CMs only; Reina's Japan deal is additive to the International total, not to this quota.</div>
+  <div class="row"><b>Evidence.</b> The four CMs closed $33,780 against $76,000, a $42,220 gap. DACH ($11,959, 70.3%) and ANZ ($12,641, 70.2%) carried the month; Romania booked one deal all month ($1,872, 8.5%) and the UK reached 38.5%.</div>
+  <div class="row"><b>Action.</b> Put Romania on a weekly named-deal close plan with deal-desk checkpoints, and hold the UK to a demo-to-close standard given its 94.7-day cycle.</div>
+ </div>
+ <table id="cov"></table>
+</div>
+
+<!-- SECTION 2 -->
+<div class="card">
+ <h3 class="sec">Section 2: Execution: Show Rate and Win Rate</h3>
+ <div class="sec-sub">Key-market CM monthly trend, January 2025 to May 2026, against the 80% Show Rate and 35% Win Rate benchmarks.</div>
+ <div class="chartbox"><canvas id="c_exec"></canvas></div>
+ <div class="narr">
+  <div class="a">Show Rate is stuck at 60% and has not moved in a year. That is 20 points of demand leaking before the demo starts.</div>
+  <div class="row"><b>Why.</b> A confirm-and-remind discipline is applied inconsistently across regions, and a large no-show backlog now dominates open pipeline.</div>
+  <div class="row"><b>Evidence.</b> May Show Rate 60.2% (68 demos held of 113 booked) against 60.5% last May; Last Week slipped to 51.4%. The UK (55.6%) and Romania (58.5%) sit furthest from the 80% bar.</div>
+  <div class="row"><b>Action.</b> Standardize a 24-hour confirm-and-remind cadence team-wide and target 80% by end of June, starting with the UK and Romania.</div>
+ </div>
+ <div class="narr">
+  <div class="a">Win Rate at 24% is the single biggest lever on the number, and only DACH is clearing the bar.</div>
+  <div class="row"><b>Why.</b> Closed-deal conversion sits below the 35% benchmark in every region except DACH, pointing to a qualification and close-discipline gap rather than a lead-quality one.</div>
+  <div class="row"><b>Evidence.</b> May Win Rate 23.8% (10 won of 42 closed) against a 35% target and 25.0% last May. DACH converts at 60.0%; Romania 11.1%, ANZ 20.0%, UK 23.1%.</div>
+  <div class="row"><b>Action.</b> Port DACH's qualification and close motion into the UK and Romania, and require a documented next step on every demo-held deal.</div>
+ </div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="card">
+ <h3 class="sec">Section 3: Sales Cycle Trend</h3>
+ <div class="sec-sub">Key-market CM average sales cycle by month, 2025 versus 2026.</div>
+ <div class="chartbox"><canvas id="c_cyc"></canvas></div>
+ <div class="narr">
+  <div class="a">Deals are closing faster, the one clear tailwind this month. Cycle fell to 59 days from 78.</div>
+  <div class="row"><b>Why.</b> Faster DACH and ANZ motions are pulling the average down while the UK remains the drag.</div>
+  <div class="row"><b>Evidence.</b> May sales cycle 59.4 days against 77.8 last May, a 24% improvement; Last Week 13.8 days. The UK at 94.7 days is more than five times DACH's 18.0.</div>
+  <div class="row"><b>Action.</b> Apply DACH's compressed-cycle playbook to the UK and set a 45-day close-by-default target on new UK demos.</div>
+ </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="card">
+ <h3 class="sec">Section 4: Rep-Level Variance</h3>
+ <div class="sec-sub">May ARR, attainment and Last Week movement by Country Manager.</div>
+ <div class="cardgrid" id="repcards"></div>
+ <table id="rep"></table>
+ <div class="narr">
+  <div class="a">DACH is the model; Romania is the risk. The spread between the top and bottom CM is the whole story.</div>
+  <div class="row"><b>Why.</b> Ajla converts at 60% and closes in 18 days; Alina booked a single deal on the team's largest quota.</div>
+  <div class="row"><b>Evidence.</b> DACH closed $11,959 (70.3% of quota) on a strong Last Week; Romania closed $1,872 (8.5%); the UK closed eight deals but at a 94.7-day cycle and 23.1% win rate.</div>
+  <div class="row"><b>Action.</b> Put Romania on a weekly named-deal close plan and pair Alina with Ajla on qualification. The largest quota cannot run on one deal a month.</div>
+ </div>
+</div>
+
+<!-- SECTION 5: Show & Win by CM MoM -->
+<div class="card">
+ <h3 class="sec">Section 5: Show Rate and Win Rate by CM (Month over Month)</h3>
+ <div class="sec-sub">One mini-chart per CM, last 12 months, each line shown alone against its benchmark. The big number is May; green means at or above target, red below.</div>
+ <div style="font-size:13px;font-weight:600;color:var(--td-dark);margin:6px 0 8px">Show Rate vs 80% target</div>
+ <div class="smgrid" id="sm_show"></div>
+ <div class="narr">
+  <div class="a">Show Rate splits cleanly by CM, and the two quota-misses are the two lowest. This is a coachable gap, not a market one.</div>
+  <div class="row"><b>Why.</b> ANZ and DACH hold demo discipline; the UK and Romania let confirmed demos slip to no-shows, which is exactly where attainment is weakest.</div>
+  <div class="row"><b>Evidence.</b> In May, ANZ ran 70.6% and DACH 70.0%, while the UK sat at 55.6% and Romania at 58.5%, all short of the 80% target. DACH held near 100% earlier in the year before normalizing.</div>
+  <div class="row"><b>Action.</b> Have the UK and Romania adopt the ANZ confirm-and-remind cadence and review every no-show weekly until both clear 70%, then push the team to 80%.</div>
+ </div>
+ <div style="height:14px"></div>
+ <div style="font-size:13px;font-weight:600;color:var(--td-dark);margin:6px 0 8px">Win Rate vs 35% target</div>
+ <div class="smgrid" id="sm_win"></div>
+ <div class="sec-sub" style="margin-top:8px">Monthly deal counts per CM are small, so single months swing hard. Read the level and direction, not individual spikes.</div>
+ <div class="narr">
+  <div class="a">Only DACH holds the win-rate bar with any consistency. Everyone else swings around it on small samples.</div>
+  <div class="row"><b>Why.</b> DACH's qualification filters out weak demos; the other regions convert in bursts tied to one or two deals a month, so the rate whipsaws.</div>
+  <div class="row"><b>Evidence.</b> DACH closed at 60.0% in May and has cleared 35% in most recent months; ANZ fell to 20.0% in May; Romania's April reading came from a single deal; the UK is climbing but still at 23.1%.</div>
+  <div class="row"><b>Action.</b> Port DACH's qualification checklist into the UK and Romania and require a documented next step on every demo-held deal, so win rate stops depending on one deal a month.</div>
+ </div>
+</div>
+
+<!-- REGIONAL -->
+<div class="card">
+ <h3 class="sec">Regional Deep Dives</h3>
+ <div class="sec-sub">Select a region.</div>
+ <div class="tabs" id="tabs"></div>
+ <div id="panes"></div>
+</div>
+
+<div class="card">
+ <h3 class="sec">Footer and Methodology</h3>
+ <div class="foot">
+  <p><b>Submitted by:</b> Yonis Brander, Head of International Growth, TaxDome. <b>Data source:</b> HubSpot CRM. The row-level export supplied this run covers the four key-market CMs, so baseline files were not needed for Week Prior or Same Week Last Year. Total International ARR (all deal owners) is taken from the HubSpot Deal Owner May exports for 2025 and 2026.</p>
+  <h4>Period definitions</h4>
+  <ul>
+   <li>Last Week: 2026-05-25 to 2026-05-31. Week Prior: 2026-05-18 to 2026-05-24. Same Week Last Year: 2025-05-26 to 2025-06-01.</li>
+   <li>Full month: May 2026 (complete), compared to May 2025. MTD window covers period start through run date (2026-06-01); May closed on 2026-05-31, so the month is complete.</li>
+  </ul>
+  <h4>Calculations</h4>
+  <ul>
+   <li>Closed Won ARR = ARR of Int - Won and Int - Upsell deals by close date. ASP = mean won-deal ARR. Show Rate = Demos Held / Demos Booked on demo activity date. Win Rate = Won / (Won + Lost) by close date. Sales Cycle = mean days to close.</li>
+   <li>Deduplication: ARR, deal counts and sales cycle deduped by Deal ID; demos deduped by Deal ID plus Custom Activity ID. Source rows duplicate a single deal across multiple associated contacts.</li>
+   <li>Quota source: baked-in 2026 reference table, May column. Team May target $76,000 (UK $19,000, Romania $22,000, ANZ $18,000, DACH $17,000).</li>
+   <li>Status thresholds adapted for a completed month: attainment GREEN at or above 90%, AMBER 60 to 89%, RED below 60%. Forward coverage multiples are not applied because May has closed.</li>
+  </ul>
+  <h4>Working notes and data quality flags</h4>
+  <ul>
+   <li><b>YoY scope (important):</b> the row-level export supplied this run is scoped to the four current key-market CMs, so all per-CM, weekly and monthly trend figures, and the funnel metrics, reflect that cohort only. Total International ARR includes deal owners outside the four CMs and is taken from the authoritative HubSpot Deal Owner exports: May 2025 $46,013.12 (25 deals, nine owners) versus May 2026 $34,545.05 (16 deals), down 24.9%. The 2025 total included five reps no longer carrying quota (Maria Mazur, Bogdan Bratu, Piera Bellelli, Hiro Ito, Louis Bellhouse), who contributed $26,561 that month. The four retained CMs grew their own contribution from $19,452 to $33,780 (+73.7%). Total International ARR did not grow year over year; only the retained quota-carriers did.</li>
+   <li><b>Reina Kurosawa Japan deal:</b> $764.84 closed in May 2026 is included in Total International ARR but excluded from the key-market CM breakdown and from quota pacing, as it sits outside the four key markets.</li>
+   <li>Per-CM May figures reconcile exactly to the HubSpot Deal Owner export (Samuel $7,308.31, Alina $1,872.24, Joanne $12,640.88, Ajla $11,958.78). HubSpot exports are authoritative.</li>
+   <li><b>Early/Late stage pipeline removed:</b> open-pipeline segment reporting (Early Stage, Late Stage) has been dropped. The pipeline export is keyed on close month, and a deal's stage is overwritten each time it advances, so any historical or point-in-time open-pipeline segmentation is unreliable. Closed Won ARR, ASP, Show Rate, Win Rate and Sales Cycle are all keyed on close or demo date and are unaffected.</li>
+   <li><b>Win Rate, Last Week:</b> 100% reflects a four-deal sample (4 of 4) and is not annotated as a trend.</li>
+   <li>Week-level year-over-year deltas are volatile on small weekly samples and are shown for completeness.</li>
+   <li>Pipeline segment snapshot is no longer written to the Cowork Project, as Early/Late segment tracking has been removed for the reason above.</li>
+   <li>No internal stage codes, API keys, contact details or raw Deal IDs appear in this report.</li>
+  </ul>
+ </div>
+</div>
+
+</div>
+
+<script id="chartdata" type="application/json">{"labels": ["Jan 25", "Feb 25", "Mar 25", "Apr 25", "May 25", "Jun 25", "Jul 25", "Aug 25", "Sep 25", "Oct 25", "Nov 25", "Dec 25", "Jan 26", "Feb 26", "Mar 26", "Apr 26", "May 26"], "won_arr": [18855.3, 11491.0, 13460.0, 11075.2, 19452.1, 31457.2, 35365.0, 37572.8, 20814.7, 27086.4, 18126.2, 25466.9, 53768.4, 32712.7, 55631.9, 33388.3, 33780.2], "show": [100.0, 95.3, 70.2, 75.2, 60.5, 59.6, 78.3, 75.0, 89.8, 66.7, 70.0, 72.3, 65.7, 57.4, 65.8, 61.3, 60.2], "win": [20.0, 27.3, 32.6, 21.6, 25.0, 34.6, 38.7, 34.1, 27.3, 15.1, 25.0, 36.4, 53.5, 28.6, 18.2, 32.7, 23.8], "cycle": [13.0, 54.5, 21.7, 37.8, 77.8, 70.4, 66.8, 19.1, 54.4, 59.4, 83.6, 116.0, 55.0, 35.4, 82.0, 108.5, 59.4], "early": [0.0, 0.0, 17600.0, 1600.0, 39200.0, 0.0, 0.0, 13600.0, 3200.0, 41600.0, 9600.0, 16800.0, 28800.0, 21600.0, 88800.0, 96800.0, 225600.0], "won_seg": [18855.3, 11491.0, 13460.0, 11075.2, 19452.1, 31457.2, 35365.0, 37572.8, 20814.7, 27086.4, 18126.2, 25466.9, 53768.4, 32712.7, 55631.9, 33388.3, 33780.2], "may_days": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31], "may_cum": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 942.0, 1758.7, 1758.7, 1758.7, 1758.7, 1758.7, 1758.7, 4440.7, 8248.7, 8248.7, 8248.7, 9179.0, 9983.3, 10786.9, 10786.9, 19353.7, 19353.7, 19353.7, 24010.6, 30382.2, 31908.1, 32975.2, 33780.2, 33780.2, 33780.2], "may_quota": 76000, "show_by_cm": {"Samuel George": [100.0, 100.0, 57.4, 67.9, 63.3, 36.7, 57.9, 64.3, 87.5, 80.0, 78.8, 82.8, 78.3, 58.0, 62.7, 63.9, 55.6], "Alina Goldenberg": [100.0, 88.2, 77.8, 85.7, 38.1, 100.0, 90.0, 84.6, 75.0, 50.0, 57.1, 60.0, 55.8, 33.3, 46.5, 48.8, 58.5], "Joanne Dakay": [100.0, 96.0, 76.2, 82.8, 75.7, 76.2, 84.6, 76.5, 100.0, 92.9, 69.2, 66.7, 63.2, 59.1, 82.2, 72.0, 70.6], "Ajla Ahmetspahic": [100.0, 100.0, 100.0, 80.0, 87.5, 100.0, 100.0, 75.0, 94.7, 61.5, 75.0, 84.6, 78.6, 75.0, 100.0, 100.0, 70.0]}, "win_by_cm": {"Samuel George": [28.6, 20.0, 21.4, 15.0, 8.7, 13.0, 20.0, 12.5, 16.7, 25.0, 14.3, 17.6, 54.5, 23.1, 7.4, 20.8, 23.1], "Alina Goldenberg": [0.0, 100.0, 33.3, 40.0, 33.3, 75.0, 100.0, 100.0, 100.0, 66.7, 50.0, 60.0, 43.8, 66.7, 8.5, 80.0, 11.1], "Joanne Dakay": [25.0, 25.0, 42.9, 27.3, 50.0, 42.9, 26.7, 50.0, 28.6, 4.0, 50.0, 0.0, 57.1, 21.4, 53.8, 36.4, 20.0], "Ajla Ahmetspahic": [0.0, 0.0, 0.0, 0.0, 50.0, null, 100.0, 36.4, 25.0, 7.1, 25.0, 53.8, 66.7, 50.0, 54.5, 25.0, 60.0]}}</script>
+<script id="bundledata" type="application/json">{"team": {"won_arr": {"LW": 14426.5, "WP": 11105.0, "SWLY": 4792.9, "MAY26": 33780.2, "MAY25": 19452.1}, "won_cnt": {"LW": 5, "WP": 4, "SWLY": 4, "MAY26": 15, "MAY25": 13}, "show": {"LW": [35, 18, 51.4], "WP": [34, 19, 55.9], "SWLY": [27, 18, 66.7], "MAY26": [113, 68, 60.2], "MAY25": [147, 89, 60.5]}, "win": {"LW": [4, 4, 100.0], "WP": [4, 8, 50.0], "SWLY": [3, 11, 27.3], "MAY26": [10, 42, 23.8], "MAY25": [10, 40, 25.0]}, "cycle": {"LW": 13.8, "WP": 15.2, "SWLY": 101.3, "MAY26": 59.4, "MAY25": 77.8}, "asp": {"LW": 2885.3, "WP": 2776.2, "SWLY": 1198.2, "MAY26": 2252.0, "MAY25": 1496.3}, "early": {"LW": 84800.0, "WP": 90400.0, "SWLY": 6400.0, "MAY26": 225600.0, "MAY25": 39200.0}, "won_arr_wow": 29.9, "won_arr_yoy_wk": 201.0, "may_attain": 44.4, "may_gap": 42219.8, "may_yoy": 73.7}, "percm": {"Samuel George": {"region": "UK", "quota": 19000, "may_arr": 7308.3, "may_cnt": 8, "attain": 38.5, "status": "RED", "may_win": [3, 13, 23.1], "may_show": [45, 25, 55.6], "may_cyc": 94.7, "may_asp": 913.5, "lw_arr": 2331.0, "wp_arr": 1607.9, "swly_arr": 0.0, "lw_cnt": 2, "wp_cnt": 2, "lw_show": [17, 10, 58.8], "lw_win": [1, 1, 100.0], "lw_cyc": 3.0, "wow": 45.0, "yoy": null}, "Alina Goldenberg": {"region": "RO", "quota": 22000, "may_arr": 1872.2, "may_cnt": 1, "attain": 8.5, "status": "RED", "may_win": [1, 9, 11.1], "may_show": [41, 24, 58.5], "may_cyc": 37.0, "may_asp": 1872.2, "lw_arr": 0.0, "wp_arr": 0.0, "swly_arr": 674.4, "lw_cnt": 0, "wp_cnt": 0, "lw_show": [13, 7, 53.8], "lw_win": [0, 0, null], "lw_cyc": null, "wow": null, "yoy": -100.0}, "Joanne Dakay": {"region": "ANZ", "quota": 18000, "may_arr": 12640.9, "may_cnt": 3, "attain": 70.2, "status": "AMBER", "may_win": [3, 15, 20.0], "may_show": [17, 12, 70.6], "may_cyc": 25.7, "may_asp": 4213.6, "lw_arr": 1067.1, "wp_arr": 8566.8, "swly_arr": 4118.5, "lw_cnt": 1, "wp_cnt": 1, "lw_show": [4, 1, 25.0], "lw_win": [1, 1, 100.0], "lw_cyc": 7.0, "wow": -87.5, "yoy": -74.1}, "Ajla Ahmetspahic": {"region": "DACH", "quota": 17000, "may_arr": 11958.8, "may_cnt": 3, "attain": 70.3, "status": "AMBER", "may_win": [3, 5, 60.0], "may_show": [10, 7, 70.0], "may_cyc": 18.0, "may_asp": 3986.3, "lw_arr": 11028.5, "wp_arr": 930.3, "swly_arr": 0.0, "lw_cnt": 2, "wp_cnt": 1, "lw_show": [1, 0, 0.0], "lw_win": [2, 2, 100.0], "lw_cyc": 22.5, "wow": 1085.5, "yoy": null}}, "mayq": {"Samuel George": 19000, "Alina Goldenberg": 22000, "Joanne Dakay": 18000, "Ajla Ahmetspahic": 17000}, "team_quota": 76000, "total_intl": {"may26": 34545.05, "may25": 46013.12, "yoy": -24.9, "reina_may26": 764.84, "cm_yoy": 73.7}}</script>
+<script>
+const C=JSON.parse(document.getElementById('chartdata').textContent);
+const B=JSON.parse(document.getElementById('bundledata').textContent);
+const T=B.team, CM=B.percm;
+const money=x=>'$'+Math.round(x).toLocaleString();
+const dpct=x=>x==null?'n/a':(x>=0?'+':'')+x.toFixed(1)+'%';
+const cls=x=>x==null?'flat':(x>0?'up':(x<0?'down':'flat'));
+const order=['Samuel George','Alina Goldenberg','Joanne Dakay','Ajla Ahmetspahic'];
+
+// KPIs
+const TI=B.total_intl;
+const kpis=[
+ ['Total Intl May ARR',money(TI.may26),'YoY '+dpct(TI.yoy)],
+ ['Key-market CMs May ARR',money(T.won_arr.MAY26),'YoY '+dpct(TI.cm_yoy)],
+ ['May Attainment (CMs)',T.may_attain.toFixed(1)+'%','of '+money(B.team_quota)+' quota'],
+ ['May Quota Gap (CMs)',money(T.may_gap),'to month target'],
+ ['Last Week ARR (CMs)',money(T.won_arr.LW),'WoW '+dpct(T.won_arr_wow)],
+ ['May Show / Win (CMs)','60.2% / 23.8%','targets 80% / 35%'],
+];
+document.getElementById('kpis').innerHTML=kpis.map(k=>`<div class="kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="d">${k[2]}</div></div>`).join('');
+
+// Key metrics tables
+function deltaCell(v){return `<td class="r ${cls(v)}">${dpct(v)}</td>`;}
+function pp(a,b){return a==null||b==null?null:+(a-b).toFixed(1);}
+const lwRows=[
+ ['Closed Won ARR',money(T.won_arr.LW),money(T.won_arr.WP),T.won_arr_wow,money(T.won_arr.SWLY),T.won_arr_yoy_wk],
+ ['ASP',money(T.asp.LW),money(T.asp.WP),pctd(T.asp.LW,T.asp.WP),money(T.asp.SWLY),pctd(T.asp.LW,T.asp.SWLY)],
+ ['Show Rate',T.show.LW[2]+'%',T.show.WP[2]+'%',pp(T.show.LW[2],T.show.WP[2]),T.show.SWLY[2]+'%',pp(T.show.LW[2],T.show.SWLY[2])],
+ ['Win Rate',T.win.LW[2]+'%',T.win.WP[2]+'%',pp(T.win.LW[2],T.win.WP[2]),T.win.SWLY[2]+'%',pp(T.win.LW[2],T.win.SWLY[2])],
+ ['Sales Cycle (days)',T.cycle.LW,T.cycle.WP,pctd(T.cycle.LW,T.cycle.WP),T.cycle.SWLY,pctd(T.cycle.LW,T.cycle.SWLY)],
+];
+function pctd(a,b){return (b==0||b==null||a==null)?null:+(((a-b)/b)*100).toFixed(1);}
+function tbl(id,head,rows,ppmetrics){
+ let h='<tr>'+head.map((x,i)=>`<th class="${i>0?'r':''}">${x}</th>`).join('')+'</tr>';
+ rows.forEach(r=>{
+   h+='<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r">'+r[2]+'</td>';
+   const d1=r[3]; h+= d1==null?'<td class="r flat">n/a</td>':`<td class="r ${cls(d1)}">${(ppmetrics&&ppmetrics.includes(r[0]))?((d1>=0?'+':'')+d1+' pts'):dpct(d1)}</td>`;
+   h+='<td class="r">'+r[4]+'</td>';
+   const d2=r[5]; h+= d2==null?'<td class="r flat">n/a</td>':`<td class="r ${cls(d2)}">${(ppmetrics&&ppmetrics.includes(r[0]))?((d2>=0?'+':'')+d2+' pts'):dpct(d2)}</td>`;
+   h+='</tr>';
+ });
+ document.getElementById(id).innerHTML=h;
+}
+tbl('km_lw',['Metric: Last Week','Last Week','Week Prior','Δ WoW','Same Wk 2025','Δ YoY'],lwRows,['Show Rate','Win Rate']);
+
+const mayRows=[
+ ['Closed Won ARR',money(T.won_arr.MAY26),money(T.won_arr.MAY25),T.may_yoy],
+ ['ASP',money(T.asp.MAY26),money(T.asp.MAY25),pctd(T.asp.MAY26,T.asp.MAY25)],
+ ['Show Rate',T.show.MAY26[2]+'%',T.show.MAY25[2]+'%',pp(T.show.MAY26[2],T.show.MAY25[2])],
+ ['Win Rate',T.win.MAY26[2]+'%',T.win.MAY25[2]+'%',pp(T.win.MAY26[2],T.win.MAY25[2])],
+ ['Sales Cycle (days)',T.cycle.MAY26,T.cycle.MAY25,pctd(T.cycle.MAY26,T.cycle.MAY25)],
+];
+(function(){
+ let head=['Metric: May (full month)','May 2026','May 2025','Δ YoY'];
+ let h='<tr>'+head.map((x,i)=>`<th class="${i>0?'r':''}">${x}</th>`).join('')+'</tr>';
+ const ppm=['Show Rate','Win Rate'];
+ mayRows.forEach(r=>{h+='<tr><td>'+r[0]+'</td><td class="r">'+r[1]+'</td><td class="r">'+r[2]+'</td>';
+  const d=r[3]; h+= d==null?'<td class="r flat">n/a</td>':`<td class="r ${cls(d)}">${ppm.includes(r[0])?((d>=0?'+':'')+d+' pts'):dpct(d)}</td>`;h+='</tr>';});
+ document.getElementById('km_may').innerHTML=h;
+})();
+
+// Coverage table
+(function(){
+ let h='<tr><th>Country Manager</th><th>Region</th><th class="r">May Quota</th><th class="r">May ARR</th><th class="r">Attainment</th><th class="r">Win Rate</th><th class="r">Show Rate</th><th>Status</th></tr>';
+ order.forEach(n=>{const c=CM[n];const chip=c.status=='GREEN'?'c-green':(c.status=='AMBER'?'c-amber':'c-red');
+  h+=`<tr><td>${n}</td><td>${c.region}</td><td class="r">${money(c.quota)}</td><td class="r">${money(c.may_arr)}</td><td class="r">${c.attain}%</td><td class="r">${c.may_win[2]}%</td><td class="r">${c.may_show[2]}%</td><td><span class="chip ${chip}">${c.status}</span></td></tr>`;});
+ const c=CM; const tq=B.team_quota;
+ h+=`<tr style="font-weight:700;background:#F4F8FD"><td>Team</td><td></td><td class="r">${money(tq)}</td><td class="r">${money(T.won_arr.MAY26)}</td><td class="r">${T.may_attain}%</td><td class="r">${T.win.MAY26[2]}%</td><td class="r">${T.show.MAY26[2]}%</td><td><span class="chip c-red">RED</span></td></tr>`;
+ document.getElementById('cov').innerHTML=h;
+})();
+
+// Rep cards + table
+(function(){
+ document.getElementById('repcards').innerHTML=order.map(n=>{const c=CM[n];
+  return `<div class="mini"><div class="reg">${c.region}</div><div class="n">${n}</div><div class="v">${money(c.lw_arr)}</div><div class="sub">Last Week · WoW <span class="${cls(c.wow)}">${dpct(c.wow)}</span></div><div class="sub">May ${money(c.may_arr)} · ${c.attain}%</div></div>`;}).join('');
+ let h='<tr><th>CM</th><th class="r">Deals LW</th><th class="r">Deals WP</th><th class="r">ARR LW</th><th class="r">ARR WP</th><th class="r">Δ WoW</th><th class="r">ARR SWY</th><th class="r">Δ YoY</th><th class="r">May Win</th><th class="r">May Cycle</th></tr>';
+ order.forEach(n=>{const c=CM[n];
+  h+=`<tr><td>${n}</td><td class="r">${c.lw_cnt}</td><td class="r">${c.wp_cnt}</td><td class="r">${money(c.lw_arr)}</td><td class="r">${money(c.wp_arr)}</td><td class="r ${cls(c.wow)}">${dpct(c.wow)}</td><td class="r">${money(c.swly_arr)}</td><td class="r ${cls(c.yoy)}">${dpct(c.yoy)}</td><td class="r">${c.may_win[2]}%</td><td class="r">${c.may_cyc==null?'n/a':c.may_cyc+'d'}</td></tr>`;});
+ document.getElementById('rep').innerHTML=h;
+})();
+
+// Regional tabs
+const regNarr={
+ 'Samuel George':'UK closed eight deals in May but at a 94.7-day cycle and a 23.1% win rate, leaving attainment at 38.5%. Volume is present; conversion speed and rate are the constraint. Apply the DACH close motion and set a 45-day close-by-default target.',
+ 'Alina Goldenberg':'Romania closed one deal in May on the largest quota in the team ($22,000), landing at 8.5% attainment. Show Rate (58.5%) and Win Rate (11.1%) are both well below benchmark. Put the region on a weekly named-deal close plan and pair on qualification with DACH.',
+ 'Joanne Dakay':'ANZ reached 70.2% of quota in May ($12,641) with the team-high Show Rate of 70.6%. Last Week was quiet (one deal, $1,067) after a strong Week Prior. Hold the show-rate discipline and rebuild the weekly close cadence to clear quota in June.',
+ 'Ajla Ahmetspahic':'DACH is the conversion model: 60.0% Win Rate, 18.0-day cycle, 70.3% of quota ($11,959) and a standout Last Week ($11,029). The single gap is Show Rate at 70.0%, still short of 80%. Reinforce what is working and lift confirmations to close the last ten points.'
+};
+const tabs=document.getElementById('tabs'),panes=document.getElementById('panes');
+order.forEach((n,i)=>{const c=CM[n];
+ const tb=document.createElement('div');tb.className='tab'+(i==0?' active':'');tb.textContent=c.region;tb.onclick=()=>{
+   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+   document.querySelectorAll('.tabpane').forEach(x=>x.classList.remove('active'));
+   tb.classList.add('active');document.getElementById('pane'+i).classList.add('active');};
+ tabs.appendChild(tb);
+ const pane=document.createElement('div');pane.className='tabpane'+(i==0?' active':'');pane.id='pane'+i;
+ pane.innerHTML=`<div class="cardgrid">
+   <div class="mini"><div class="reg">May ARR</div><div class="v">${money(c.may_arr)}</div><div class="sub">${c.may_cnt} deals · ${c.attain}% of quota</div></div>
+   <div class="mini"><div class="reg">Win Rate (May)</div><div class="v">${c.may_win[2]}%</div><div class="sub bench">target 35%</div></div>
+   <div class="mini"><div class="reg">Show Rate (May)</div><div class="v">${c.may_show[2]}%</div><div class="sub bench">target 80%</div></div>
+   <div class="mini"><div class="reg">Sales Cycle (May)</div><div class="v">${c.may_cyc==null?'n/a':c.may_cyc+'d'}</div><div class="sub">${money(c.may_asp)} ASP</div></div>
+ </div>
+ <div class="narr"><div class="a">${c.region}: ${n}</div><div class="row">${regNarr[n]}</div></div>`;
+ panes.appendChild(pane);
+});
+
+// CHARTS
+Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.color='#4A6080';
+const grid={color:'#E8F0F8'};const tip={backgroundColor:'#004392'};
+new Chart(c_may,{type:'line',data:{labels:C.may_days,datasets:[
+ {label:'May closed-won ARR (cumulative)',data:C.may_cum,borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,.12)',fill:true,tension:.25,pointRadius:0},
+ {label:'Quota target ($76,000)',data:C.may_days.map(d=>Math.round(C.may_quota*d/31)),borderColor:'#DC2626',borderDash:[6,4],fill:false,pointRadius:0}
+]},options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom'},tooltip:tip},scales:{x:{title:{display:true,text:'Day of May'},grid:{display:false}},y:{grid,ticks:{callback:v=>'$'+v/1000+'k'}}}}});
+
+new Chart(c_exec,{type:'line',data:{labels:C.labels,datasets:[
+ {label:'Show Rate',data:C.show,borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,.08)',tension:.25,fill:false,pointRadius:2},
+ {label:'Win Rate',data:C.win,borderColor:'#9BBFE8',tension:.25,fill:false,pointRadius:2},
+ {label:'Show target 80%',data:C.labels.map(_=>80),borderColor:'#12A05C',borderDash:[5,4],pointRadius:0,fill:false},
+ {label:'Win target 35%',data:C.labels.map(_=>35),borderColor:'#D97706',borderDash:[5,4],pointRadius:0,fill:false}
+]},options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom'},tooltip:tip},scales:{x:{grid:{display:false}},y:{grid,min:0,max:100,ticks:{callback:v=>v+'%'}}}}});
+
+new Chart(c_cyc,{type:'line',data:{labels:C.labels,datasets:[
+ {label:'Avg Sales Cycle (days)',data:C.cycle,borderColor:'#1976D3',backgroundColor:'rgba(25,118,211,.10)',fill:true,tension:.3,pointRadius:2}
+]},options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom'},tooltip:tip},scales:{x:{grid:{display:false}},y:{grid,title:{display:true,text:'Days'}}}}});
+
+// Per-CM small multiples: one mini line per CM vs benchmark
+const cmOrder=['Samuel George','Alina Goldenberg','Joanne Dakay','Ajla Ahmetspahic'];
+const N=12; // last 12 months
+const smLabels=C.labels.slice(-N);
+function buildSmall(containerId,map,target){
+ const host=document.getElementById(containerId);
+ host.innerHTML=cmOrder.map((n,i)=>{
+   const region=CM[n].region;
+   const v=map[n].slice(-N);
+   const last=v[v.length-1];
+   const ok=last!=null&&last>=target;
+   const chip=last==null?'flat':(ok?'up':'down');
+   const valtxt=last==null?'n/a':last.toFixed(0)+'%';
+   const gap=last==null?null:+(last-target).toFixed(0);
+   const gaptxt=gap==null?'no data':(gap>=0?'+':'')+gap+' pts vs '+target+'%';
+   return `<div class="smcard">
+     <div class="smhead"><span class="smname">${n.split(' ')[0]} (${region})</span><span class="smval ${chip}">${valtxt}</span></div>
+     <div class="smsub">${gaptxt}</div>
+     <div class="smchart"><canvas id="${containerId}_${i}"></canvas></div>
+   </div>`;
+ }).join('');
+ cmOrder.forEach((n,i)=>{
+   const v=map[n].slice(-N);
+   const last=v[v.length-1];
+   const ok=last!=null&&last>=target;
+   const line=ok?'#12A05C':'#DC2626';
+   const fill=ok?'rgba(18,160,92,.10)':'rgba(220,38,38,.08)';
+   new Chart(document.getElementById(containerId+'_'+i),{type:'line',
+     data:{labels:smLabels,datasets:[
+       {data:v,borderColor:line,backgroundColor:fill,fill:true,tension:.3,pointRadius:0,borderWidth:2,spanGaps:true},
+       {data:smLabels.map(_=>target),borderColor:'#9AA8BD',borderDash:[4,3],pointRadius:0,borderWidth:1,fill:false}
+     ]},
+     options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#004392',callbacks:{title:it=>it[0].label,label:it=>it.datasetIndex===0?(it.parsed.y==null?'no data':it.parsed.y+'%'):'target '+target+'%'}}},
+       scales:{x:{grid:{display:false},ticks:{font:{size:9},maxTicksLimit:4,color:'#94A3B8'}},
+               y:{min:0,max:100,grid:{color:'#EEF4FB'},ticks:{font:{size:9},stepSize:50,color:'#94A3B8',callback:v=>v+'%'}}}}});
+ });
+}
+buildSmall('sm_show',C.show_by_cm,80);
+buildSmall('sm_win',C.win_by_cm,35);
+</script>
+</body></html>
