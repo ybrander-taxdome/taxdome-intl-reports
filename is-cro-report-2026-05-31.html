@@ -59,12 +59,13 @@ td.r,th.r{text-align:right}
 .foot ul{margin-left:16px}.foot li{margin-bottom:3px}
 .bench{font-size:11px;color:var(--muted);font-weight:600}
 .smgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 2px}
-.smcard{border:1px solid var(--border);border-radius:8px;padding:12px}
+.smcard{border:1px solid var(--border);border-radius:8px;padding:12px;min-width:0}
 .smhead{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .smname{font-size:12px;font-weight:600;color:var(--td-dark)}
 .smval{font-size:18px;font-weight:700}
 .smsub{font-size:11px;color:var(--muted);margin:4px 0 6px}
-.smchart{position:relative;height:96px}
+.smchart{position:relative;height:96px;min-width:0;width:100%}
+.smchart canvas{max-width:100%}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.cardgrid{grid-template-columns:repeat(2,1fr)}.smgrid{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body><div class="wrap">
