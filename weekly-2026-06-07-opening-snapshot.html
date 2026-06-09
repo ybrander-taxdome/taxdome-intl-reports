@@ -123,7 +123,7 @@ tr:hover td{background:#F8FBFF}
 </div>
 
 <div class="section">
-  <div class="section-title">Unit Economics <span class="tag">intl book · SARR actuals</span></div>
+  <div class="section-title">Unit Economics <span class="tag">intl book · SARR as of 31 May 2026</span></div>
   <div class="chart-wrap">
     <div class="chart-title">International ARR run-rate, trailing 12 months</div>
     <canvas id="arrTrendChart" height="110"></canvas>
@@ -132,7 +132,7 @@ tr:hover td{background:#F8FBFF}
     <div class="kpi-card">
       <div class="kpi-label">Run-Rate ARR</div>
       <div class="kpi-value">$1,101,396</div>
-      <div class="kpi-sub">495 active customers · May 2026 intl book</div>
+      <div class="kpi-sub">495 active customers · as of 31 May 2026 (latest SARR snapshot)</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Net Revenue Retention (TTM)</div>
@@ -173,7 +173,7 @@ tr:hover td{background:#F8FBFF}
     </div>
   </div>
   <div class="note">
-    <strong>Source:</strong> SARR by Customer book, international only. Excludes USA, Canada and all US territories (Puerto Rico, US Virgin Islands, USA Minor Outlying Islands); 525 rows with missing or malformed country are dropped as unattributable, since the book is predominantly US and including them would contaminate the international figures. Figures use the monthly ARR run-rate columns; current month is May 2026 (latest in the file).<br>
+    <strong>Source:</strong> SARR by Customer book, international only. Excludes USA, Canada and all US territories (Puerto Rico, US Virgin Islands, USA Minor Outlying Islands); 525 rows with missing or malformed country are dropped as unattributable, since the book is predominantly US and including them would contaminate the international figures. The SARR book is a month-end snapshot and its most recent column is May 2026, so all installed-base metrics here (ARR, NRR, GRR, ARPA, LTV) are struck as of 31 May 2026; June is not yet a closed snapshot. The deal-level YTD metrics elsewhere in this report (funnel, new ARR, churn and expansion events) run through 9 June 2026.<br>
     <strong>NRR and GRR</strong> are trailing-12-month, measured on the cohort active in May 2025 ($577,925 base): NRR 106.1% (now $613,222) nets expansion and price realization against churn and contraction; GRR 76.0% strips out expansion to show gross leakage. <strong>ARPA</strong> = current ARR ÷ 495 active customers. <strong>LTV</strong> = ARPA ÷ 24.0% annual gross revenue churn (about a 3.8-year average life); at an assumed 80% gross margin, roughly $7,425.<br>
     <strong>Reconciliation:</strong> the Customer Success section below shows a deal-level net of &minus;$71,434 (logged churn $107K vs logged expansion $35.7K). That understates true retention, because seat and price expansion captured in the SARR book is not all logged as a CSAM expansion deal. The SARR-based NRR of 106.1% is the authoritative net figure; use the CS section for per-CSAM and per-country operational detail.<br>
     <strong>Read:</strong> net retention is positive and total ARR is growing, but gross churn of 24.0% is the real drag, masked by expansion and new logos. Every point of GRR improvement converts almost directly to ARR and LTV; this is the highest-value retention lever and the primary constraint above.
