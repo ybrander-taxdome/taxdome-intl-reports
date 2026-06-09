@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Report, Opening Snapshot, W/E 7 Jun 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --td-primary:#1976D3;--td-dark:#004392;
+  --bg:#F4F8FD;--card:#FFFFFF;--border:#C9DCEF;
+  --text:#0A1F44;--muted:#4A6080;
+  --green:#12A05C;--amber:#D97706;--red:#DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;padding:32px 28px;border-radius:12px;margin-bottom:24px}
+.header h1{font-size:24px;font-weight:700;margin-bottom:6px}
+.header .sub{font-size:14px;opacity:.85;margin-bottom:4px}
+.header .meta{font-size:12px;opacity:.7}
+.section{margin-bottom:36px}
+.section-title{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:16px;padding-bottom:7px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tag{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:#EBF3FB;color:var(--td-primary);letter-spacing:.04em}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.kpi-label{font-size:11px;font-weight:500;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:8px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--text);line-height:1.1}
+.kpi-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.constraint{background:var(--card);border:1px solid var(--border);border-radius:0 10px 10px 0;padding:20px 24px;margin-bottom:16px}
+.constraint-primary{border-left:5px solid var(--td-primary)}
+.constraint-secondary{border-left:5px solid var(--amber)}
+.constraint-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.constraint-primary .constraint-tag{color:var(--td-primary)}
+.constraint-secondary .constraint-tag{color:var(--amber)}
+.constraint-prose{font-size:15px;color:var(--text);line-height:1.7;margin-bottom:16px}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mini-card{border-radius:8px;padding:14px;border:1px solid}
+.mini-card.red{background:#FEF2F2;border-color:#FECACA}
+.mini-card.amber{background:#FFFBEB;border-color:#FDE68A}
+.mini-card.green{background:#F0FDF4;border-color:#BBF7D0}
+.mini-card.blue{background:#EBF3FB;border-color:var(--border)}
+.mini-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.mini-card.red .mini-label{color:var(--red)}
+.mini-card.amber .mini-label{color:var(--amber)}
+.mini-card.green .mini-label{color:var(--green)}
+.mini-card.blue .mini-label{color:var(--td-primary)}
+.mini-value{font-size:20px;font-weight:700;color:var(--text)}
+.mini-value.green{color:var(--green)}
+.mini-value.red{color:var(--red)}
+.mini-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:16px}
+.chart-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#EBF3FB;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;letter-spacing:.03em}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FBFF}
+.tfoot-row td{font-weight:700;background:#F4F8FD;border-top:2px solid var(--border)}
+.table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.note{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 8px 8px 0;font-size:12px;color:var(--muted);line-height:1.8}
+.note strong{color:var(--text)}
+.footer{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:12px;color:var(--muted);text-align:center;margin-top:32px}
+.rate-green{color:var(--green);font-weight:600}
+.rate-amber{color:var(--amber);font-weight:600}
+.rate-red{color:var(--red);font-weight:600}
+.target-badge{font-size:10px;padding:1px 6px;border-radius:8px;background:#EBF3FB;color:var(--td-primary);font-weight:600;margin-left:4px;vertical-align:middle}
+.sub-heading{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:24px 0 12px 0}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.mini-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="sub">Weekly Report, Opening Snapshot</div>
+  <h1>International Growth · Year-to-date through 9 June 2026</h1>
+  <div class="meta">Published 9 June 2026 &nbsp;·&nbsp; YTD 1 Jan &rarr; 9 Jun 2026 &nbsp;·&nbsp; Intl-only (excludes US/Canada) &nbsp;·&nbsp; Yonis Brander, Head of International Growth, TaxDome</div>
+</div>
+
+<div class="constraint constraint-primary">
+  <div class="constraint-tag">GTM Bowtie, Primary Constraint</div>
+  <div class="constraint-prose">On a net dollar basis the base is holding; trailing-12-month NRR of 106.1% means surviving customers spend more than they did a year ago, and total international ARR has grown to $1.10M. The problem hides underneath that number. Gross revenue retention is only 76.0%, so roughly a quarter of the book, about $206K annualized, churns or contracts every year and is being papered over by expansion and new logos. Picture a bucket that looks full only because the tap is running hard enough to mask a steady leak. More than a quarter of the customers active a year ago are gone today, an average customer life of just 3.8 years. Every point of gross-churn improvement drops almost directly to ARR and lifts LTV; this is the highest-value retention lever and it is invisible in the net number.</div>
+  <div class="mini-grid">
+    <div class="mini-card amber">
+      <div class="mini-label">NRR (TTM)</div>
+      <div class="mini-value">106.1%</div>
+      <div class="mini-sub">Surviving-cohort dollar retention · below 110% best-in-class</div>
+    </div>
+    <div class="mini-card red">
+      <div class="mini-label">GRR (TTM)</div>
+      <div class="mini-value red">76.0%</div>
+      <div class="mini-sub">24.0% of cohort ARR lost to churn + contraction</div>
+    </div>
+    <div class="mini-card red">
+      <div class="mini-label">Annual Logo Churn</div>
+      <div class="mini-value red">26.6%</div>
+      <div class="mini-sub">99 of 372 logos · 3.8yr average customer life</div>
+    </div>
+  </div>
+</div>
+
+<div class="constraint constraint-secondary">
+  <div class="constraint-tag">GTM Bowtie, Secondary Constraint</div>
+  <div class="constraint-prose">The new-business engine converts a smaller share of late-stage demand than it should. YTD we put 328 qualified opportunities into closing discussions and won 88, a 26.8% Win Rate that sits 8.2pp below the 35% target. Picture a closer who lands a quarter of his shots and never adjusts the range; the leads and demos feeding him are healthy, the shot conversion is not. Lifting Win Rate from 26.8% to 35% on the YTD pipeline run unlocks roughly $54,700 of additional ARR with no change in booking volume, enough to offset more than three-quarters of the CS-side leak quantified above. The cheapest ARR available right now is the deals already in the room.</div>
+  <div class="mini-grid">
+    <div class="mini-card amber">
+      <div class="mini-label">Current (26.8% Win Rate)</div>
+      <div class="mini-value">88 wins</div>
+      <div class="mini-sub">on 328 closeable · $212,880 ARR YTD</div>
+    </div>
+    <div class="mini-card green">
+      <div class="mini-label">At Target (35% Win Rate)</div>
+      <div class="mini-value">115 wins</div>
+      <div class="mini-sub">27 additional · booking volume unchanged</div>
+    </div>
+    <div class="mini-card blue">
+      <div class="mini-label">Opportunity</div>
+      <div class="mini-value green">+$54,700</div>
+      <div class="mini-sub">+27 wins · offsets 77% of CS leak</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Unit Economics <span class="tag">intl book · SARR actuals</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">International ARR run-rate, trailing 12 months</div>
+    <canvas id="arrTrendChart" height="110"></canvas>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Run-Rate ARR</div>
+      <div class="kpi-value">$1,101,396</div>
+      <div class="kpi-sub">495 active customers · May 2026 intl book</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Net Revenue Retention (TTM)</div>
+      <div class="kpi-value rate-green">106.1%</div>
+      <div class="kpi-sub">Surviving-cohort dollar retention · GRR 76.0%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">ARPA</div>
+      <div class="kpi-value">$2,225</div>
+      <div class="kpi-sub">Avg ARR per active customer · intl book</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Customer LTV</div>
+      <div class="kpi-value">$9,282</div>
+      <div class="kpi-sub">ARPA ÷ 24.0% gross rev churn · ~$7,425 at 80% margin</div>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Active Customers</div>
+      <div class="kpi-value" style="color:var(--green)">495</div>
+      <div class="kpi-sub">+69 YTD from 426 at Dec 2025</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Gross Revenue Retention (TTM)</div>
+      <div class="kpi-value rate-red">76.0%</div>
+      <div class="kpi-sub">24.0% of cohort ARR lost to churn + contraction</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Annual Logo Churn</div>
+      <div class="kpi-value rate-red">26.6%</div>
+      <div class="kpi-sub">99 of 372 logos · 3.8yr average customer life</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">YTD Base Growth</div>
+      <div class="kpi-value" style="color:var(--green)">+$244,066</div>
+      <div class="kpi-sub">Dec 2025 $857K &rarr; May 2026 $1.10M</div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>Source:</strong> SARR by Customer book, international only. Excludes USA, Canada and all US territories (Puerto Rico, US Virgin Islands, USA Minor Outlying Islands); 525 rows with missing or malformed country are dropped as unattributable, since the book is predominantly US and including them would contaminate the international figures. Figures use the monthly ARR run-rate columns; current month is May 2026 (latest in the file).<br>
+    <strong>NRR and GRR</strong> are trailing-12-month, measured on the cohort active in May 2025 ($577,925 base): NRR 106.1% (now $613,222) nets expansion and price realization against churn and contraction; GRR 76.0% strips out expansion to show gross leakage. <strong>ARPA</strong> = current ARR ÷ 495 active customers. <strong>LTV</strong> = ARPA ÷ 24.0% annual gross revenue churn (about a 3.8-year average life); at an assumed 80% gross margin, roughly $7,425.<br>
+    <strong>Reconciliation:</strong> the Customer Success section below shows a deal-level net of &minus;$71,434 (logged churn $107K vs logged expansion $35.7K). That understates true retention, because seat and price expansion captured in the SARR book is not all logged as a CSAM expansion deal. The SARR-based NRR of 106.1% is the authoritative net figure; use the CS section for per-CSAM and per-country operational detail.<br>
+    <strong>Read:</strong> net retention is positive and total ARR is growing, but gross churn of 24.0% is the real drag, masked by expansion and new logos. Every point of GRR improvement converts almost directly to ARR and LTV; this is the highest-value retention lever and the primary constraint above.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Marketing <span class="tag">YTD</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">Full-funnel volume, Lead to Close</div>
+    <canvas id="funnelChart" height="110"></canvas>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">New Leads</div>
+      <div class="kpi-value">2,518</div>
+      <div class="kpi-sub">International top-of-funnel</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MQLs</div>
+      <div class="kpi-value">1,659</div>
+      <div class="kpi-sub">Lead-to-MQL: <strong>65.9%</strong> · 659 reached SQL</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">MQL-to-Demo Booked</div>
+      <div class="kpi-value">36.7%</div>
+      <div class="kpi-sub">609 demos booked from 1,659 MQLs</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Show Rate <span class="target-badge">target 80%</span></div>
+      <div class="kpi-value rate-amber">62.7%</div>
+      <div class="kpi-sub">382 held from 609 booked</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Sales <span class="tag">YTD</span></div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Demos Held</div>
+      <div class="kpi-value">382</div>
+      <div class="kpi-sub">Show Rate: <span class="rate-amber">62.7%</span> <span class="target-badge">target 80%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Deals Won</div>
+      <div class="kpi-value">88</div>
+      <div class="kpi-sub">Win Rate: <span class="rate-amber">26.8%</span> <span class="target-badge">target 35%</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">New ARR</div>
+      <div class="kpi-value">$212,880</div>
+      <div class="kpi-sub">105 closes incl. upsell · avg deal $2,027 · avg cycle 66d</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Open Pipeline</div>
+      <div class="kpi-value">$829,171</div>
+      <div class="kpi-sub">121 deals · Early $811,200 / Late $17,971</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Customer Success <span class="tag">YTD</span></div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Churned ARR</div>
+      <div class="kpi-value" style="color:var(--red)">$107,087</div>
+      <div class="kpi-sub">56 churn events</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Expansion ARR</div>
+      <div class="kpi-value" style="color:var(--amber)">$35,653</div>
+      <div class="kpi-sub">41 expansion events</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Net ARR Delta</div>
+      <div class="kpi-value" style="color:var(--red)">&minus;$71,434</div>
+      <div class="kpi-sub">Retention motion erosion YTD</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Expansion Coverage</div>
+      <div class="kpi-value rate-red">33.3%</div>
+      <div class="kpi-sub">Expansion ÷ Churn · 66.7% short of full coverage</div>
+    </div>
+  </div>
+  <div class="note">
+    <strong>This section is the deal-level operational view</strong> of churn and expansion events logged by CSAMs; it nets to &minus;$71,434 YTD. The authoritative retention read is in Unit Economics above, computed from the SARR customer book: trailing-12-month NRR 106.1%, GRR 76.0%. The deal-level net is more conservative because not all seat and price expansion is logged as a CSAM expansion deal. Use NRR/GRR for the headline retention picture and this section for per-CSAM and per-country detail on where churn is concentrated.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Regional Breakdown, Marketing <span class="tag">YTD · sorted by pipeline ARR</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">Marketing-sourced Pipeline ARR by region</div>
+    <canvas id="mktgRegionChart" height="120"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Region</th><th>New Leads</th><th>SQLs</th>
+          <th>Lead-to-SQL</th><th>Demos Sourced</th><th>Pipeline ARR Generated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>UK</strong></td><td>499</td><td>214</td><td><span class="rate-green">42.9%</span></td><td>146</td><td><strong>$749,490</strong></td></tr>
+        <tr><td><strong>Other</strong></td><td>641</td><td>93</td><td><span class="rate-red">14.5%</span></td><td>88</td><td><strong>$692,775</strong></td></tr>
+        <tr><td><strong>Romania</strong></td><td>453</td><td>119</td><td><span class="rate-amber">26.3%</span></td><td>84</td><td><strong>$508,963</strong></td></tr>
+        <tr><td><strong>ANZ</strong></td><td>328</td><td>142</td><td><span class="rate-green">43.3%</span></td><td>103</td><td><strong>$457,828</strong></td></tr>
+        <tr><td><strong>DACH</strong></td><td>208</td><td>81</td><td><span class="rate-amber">38.9%</span></td><td>50</td><td><strong>$332,930</strong></td></tr>
+        <tr><td><strong>Unattributed</strong></td><td>389</td><td>10</td><td><span class="rate-red">2.6%</span></td><td>3</td><td><strong>$4,800</strong></td></tr>
+        <tr class="tfoot-row">
+          <td><strong>Team Total</strong></td><td><strong>2,518</strong></td><td><strong>659</strong></td>
+          <td><span class="rate-amber"><strong>26.2%</strong></span></td><td><strong>474</strong></td><td><strong>$2,746,787</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Lead-to-SQL color:</strong> GREEN ≥ 40%, AMBER 20 to 39%, RED &lt; 20%.<br>
+    <strong>UK:</strong> Leads the funnel on every measure, 499 leads, 146 sourced demos and $749K of sourced pipeline, but the 20.9% UK sales win rate (see Regional Sales) converts that supply thinly. Marketing volume is not the UK constraint; close conversion is.<br>
+    <strong>ANZ:</strong> Best lead-to-SQL on the team (43.3%) on healthy volume; marketing efficiency is strong and matches Joanne's relatively higher close rate.<br>
+    <strong>Romania:</strong> Solid lead volume (453) but a 26.3% lead-to-SQL trails ANZ and UK, an early-funnel qualification gap that compounds the known close-rate problem downstream.<br>
+    <strong>DACH:</strong> Smallest lead volume (208) but feeds the team's most efficient sales conversion; inbound quality over quantity, consistent with the inbound-only motion.<br>
+    <strong>Other and Unattributed:</strong> $693K of sourced pipeline sits in non-managed markets, with Spain prominent, an expansion-interest signal rather than managed-region pipeline. A further 389 leads (15% of the total) carry no region tag and are bucketed as Unattributed; cleaning lead geo-tagging would sharpen this view.<br>
+    <strong>Note:</strong> MQLs are not region-tagged in this export, so the regional funnel runs Leads to SQLs to Demos. Lead and SQL counts are international-wide and broader than the four managed sales regions.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Regional Breakdown, Sales <span class="tag">YTD · sorted by new ARR</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">CM positioning, Win Rate vs Show Rate (bubble = New ARR) &nbsp;·&nbsp; dashed red lines = targets (WR 35% / SR 80%)</div>
+    <canvas id="cmBubbleChart" height="200"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th><th>Demos Booked</th><th>Demos Held</th>
+          <th>Deals Won</th><th>New ARR</th><th>Avg Deal</th>
+          <th>Show Rate <span class="target-badge">80%</span></th>
+          <th>Win Rate <span class="target-badge">35%</span></th>
+          <th>Avg Cycle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+          <td>182</td><td>97</td>
+          <td>20</td>
+          <td><strong>$70,404</strong></td>
+          <td>$3,520</td>
+          <td><span class="rate-red">53.3%</span></td>
+          <td><span class="rate-amber">20.0%</span></td>
+          <td>65d</td>
+        </tr>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+          <td>39</td><td>32</td>
+          <td>19</td>
+          <td><strong>$58,290</strong></td>
+          <td>$3,068</td>
+          <td><span class="rate-green">82.1%</span></td>
+          <td><span class="rate-green">52.8%</span></td>
+          <td>50d</td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+          <td>141</td><td>101</td>
+          <td>25</td>
+          <td><strong>$48,096</strong></td>
+          <td>$1,924</td>
+          <td><span class="rate-amber">71.6%</span></td>
+          <td><span class="rate-amber">32.5%</span></td>
+          <td>83d</td>
+        </tr>
+        <tr>
+          <td><strong>Samuel George</strong></td><td>UK</td>
+          <td>247</td><td>152</td>
+          <td>24</td>
+          <td><strong>$36,091</strong></td>
+          <td>$1,504</td>
+          <td><span class="rate-amber">61.5%</span></td>
+          <td><span class="rate-amber">20.9%</span></td>
+          <td>65d</td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Team Total</strong></td>
+          <td><strong>609</strong></td><td><strong>382</strong></td>
+          <td><strong>88</strong></td>
+          <td><strong>$212,880</strong></td><td><strong>$2,027</strong></td>
+          <td><span class="rate-amber"><strong>62.7%</strong></span></td>
+          <td><span class="rate-amber"><strong>26.8%</strong></span></td>
+          <td><strong>66d</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Show Rate color:</strong> GREEN ≥ 80%, AMBER 60 to 79%, RED &lt; 60%. <strong>Win Rate color:</strong> GREEN ≥ 35%, AMBER 20 to 34%, RED &lt; 20%.<br>
+    <strong>Alina / RO:</strong> Largest ARR contributor at $70,404, but Show Rate 53.3% sits 26.7pp below target; 182 demos booked YTD, only 97 held. Lifting show rate toward 80% recovers roughly 50 held demos, but at a 20.0% Win Rate that converts to about 10 wins. Conversion, not booking volume, is the Romania bottleneck.<br>
+    <strong>Ajla / DACH:</strong> Both rates above target (SR 82.1%, WR 52.8%). Inbound-only, the lowest volume on the team but the most efficient conversion. Treat as the model to copy, not the outlier to discount.<br>
+    <strong>Joanne / ANZ:</strong> Show Rate 71.6% and Win Rate 32.5% both sit just under target. Stable, no urgency; keep booking volume up and the region clears target with a small conversion nudge.<br>
+    <strong>Samuel / UK:</strong> Highest booking volume (247) but Show Rate 61.5% means roughly 95 demos lost to no-shows YTD, and Win Rate 20.9% is the team's lowest tier. Two priorities: pre-demo confirmation cadence (show-rate lift) and lost-reason coaching (win-rate lift). Scale is not converting to ARR efficiently.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Regional Breakdown, Customer Success <span class="tag">YTD · sorted by churned ARR</span></div>
+  <div class="chart-wrap">
+    <div class="chart-title">Churned ARR vs Expansion ARR by CSAM</div>
+    <canvas id="csChart" height="140"></canvas>
+  </div>
+
+  <div class="sub-heading">By CSAM (primary view)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CSAM</th><th>Region</th><th>Churn Events</th><th>Churned ARR</th>
+          <th>Expansion Events</th><th>Expansion ARR</th><th>Net ARR Delta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Valentina Manta</strong></td><td>Romania</td>
+          <td>10</td><td><span class="rate-red">$34,690</span></td>
+          <td>4</td><td><span class="rate-green">$5,513</span></td>
+          <td><span class="rate-red">&minus;$29,177</span></td>
+        </tr>
+        <tr>
+          <td><strong>Other</strong></td><td>Rest of world</td>
+          <td>10</td><td><span class="rate-red">$30,586</span></td>
+          <td>6</td><td><span class="rate-green">$6,683</span></td>
+          <td><span class="rate-red">&minus;$23,903</span></td>
+        </tr>
+        <tr>
+          <td><strong>Piera Bellelli</strong></td><td>UK/Italy</td>
+          <td>14</td><td><span class="rate-red">$17,575</span></td>
+          <td>6</td><td><span class="rate-green">$3,250</span></td>
+          <td><span class="rate-red">&minus;$14,325</span></td>
+        </tr>
+        <tr>
+          <td><strong>Maria Mazur, Julia Seitz</strong></td><td>DACH</td>
+          <td>12</td><td><span class="rate-red">$15,223</span></td>
+          <td>13</td><td><span class="rate-green">$9,324</span></td>
+          <td><span class="rate-red">&minus;$5,899</span></td>
+        </tr>
+        <tr>
+          <td><strong>Paolo Zafra</strong></td><td>ANZ</td>
+          <td>10</td><td><span class="rate-red">$9,013</span></td>
+          <td>9</td><td><span class="rate-green">$8,861</span></td>
+          <td><span class="rate-red">&minus;$152</span></td>
+        </tr>
+        <tr>
+          <td><strong>Reina Kurosawa</strong></td><td>Japan</td>
+          <td>0</td><td><span class="rate-red">$0</span></td>
+          <td>3</td><td><span class="rate-green">$2,021</span></td>
+          <td><span class="rate-green">+$2,021</span></td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Total</strong></td>
+          <td><strong>56</strong></td>
+          <td><span class="rate-red"><strong>$107,087</strong></span></td>
+          <td><strong>41</strong></td>
+          <td><span class="rate-green"><strong>$35,653</strong></span></td>
+          <td><span class="rate-red"><strong>&minus;$71,434</strong></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading">By Country (secondary view)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Country</th><th>Churn Events</th><th>Churned ARR</th>
+          <th>Expansion Events</th><th>Expansion ARR</th><th>Net ARR Delta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Romania</strong></td><td>10</td><td><span class="rate-red">$34,690</span></td><td>4</td><td><span class="rate-green">$5,513</span></td><td><span class="rate-red">&minus;$29,177</span></td></tr>
+        <tr><td><strong>India</strong></td><td>1</td><td><span class="rate-red">$18,000</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$18,000</span></td></tr>
+        <tr><td><strong>Germany</strong></td><td>6</td><td><span class="rate-red">$11,205</span></td><td>10</td><td><span class="rate-green">$7,663</span></td><td><span class="rate-red">&minus;$3,542</span></td></tr>
+        <tr><td><strong>Italy</strong></td><td>5</td><td><span class="rate-red">$9,367</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$9,367</span></td></tr>
+        <tr><td><strong>Australia</strong></td><td>10</td><td><span class="rate-red">$9,013</span></td><td>8</td><td><span class="rate-green">$7,989</span></td><td><span class="rate-red">&minus;$1,024</span></td></tr>
+        <tr><td><strong>United Kingdom</strong></td><td>9</td><td><span class="rate-red">$8,208</span></td><td>6</td><td><span class="rate-green">$3,250</span></td><td><span class="rate-red">&minus;$4,958</span></td></tr>
+        <tr><td><strong>Bosnia and Herzegovina</strong></td><td>2</td><td><span class="rate-red">$6,059</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$6,059</span></td></tr>
+        <tr><td><strong>United Arab Emirates</strong></td><td>1</td><td><span class="rate-red">$2,400</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$2,400</span></td></tr>
+        <tr><td><strong>Switzerland</strong></td><td>3</td><td><span class="rate-red">$2,164</span></td><td>2</td><td><span class="rate-green">$1,662</span></td><td><span class="rate-red">&minus;$502</span></td></tr>
+        <tr><td><strong>Austria</strong></td><td>3</td><td><span class="rate-red">$1,854</span></td><td>1</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$1,854</span></td></tr>
+        <tr><td><strong>Ecuador</strong></td><td>1</td><td><span class="rate-red">$1,600</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$1,600</span></td></tr>
+        <tr><td><strong>Luxembourg</strong></td><td>1</td><td><span class="rate-red">$927</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$927</span></td></tr>
+        <tr><td><strong>Philippines</strong></td><td>1</td><td><span class="rate-red">$800</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$800</span></td></tr>
+        <tr><td><strong>Turkey</strong></td><td>1</td><td><span class="rate-red">$800</span></td><td>0</td><td><span class="rate-green">$0</span></td><td><span class="rate-red">&minus;$800</span></td></tr>
+        <tr><td><strong>Denmark</strong></td><td>1</td><td><span class="rate-red">$0</span></td><td>4</td><td><span class="rate-green">$5,704</span></td><td><span class="rate-green">+$5,704</span></td></tr>
+        <tr><td><strong>Japan</strong></td><td>0</td><td><span class="rate-red">$0</span></td><td>3</td><td><span class="rate-green">$2,021</span></td><td><span class="rate-green">+$2,021</span></td></tr>
+        <tr><td><strong>New Zealand</strong></td><td>0</td><td><span class="rate-red">$0</span></td><td>1</td><td><span class="rate-green">$872</span></td><td><span class="rate-green">+$872</span></td></tr>
+        <tr><td><strong>Netherlands</strong></td><td>1</td><td><span class="rate-red">$0</span></td><td>1</td><td><span class="rate-green">$579</span></td><td><span class="rate-green">+$579</span></td></tr>
+        <tr><td><strong>Israel</strong></td><td>0</td><td><span class="rate-red">$0</span></td><td>1</td><td><span class="rate-green">$400</span></td><td><span class="rate-green">+$400</span></td></tr>
+        <tr class="tfoot-row">
+          <td><strong>Total</strong></td>
+          <td><strong>56</strong></td><td><span class="rate-red"><strong>$107,087</strong></span></td>
+          <td><strong>41</strong></td><td><span class="rate-green"><strong>$35,653</strong></span></td>
+          <td><span class="rate-red"><strong>&minus;$71,434</strong></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Valentina / Romania:</strong> Net delta of &minus;$29,177 on 10 churns against only 4 expansion events; expansion covers 16% of Romania churn, the worst ratio among managed CSAMs. Romania is losing customers at roughly the rate Alina signs them on the new-business side.<br>
+    <strong>Other / Rest of world:</strong> $30,586 of churn sits in markets with no dedicated CSAM, the single largest unmanaged retention leak. India alone ($18,000) is the largest country churn YTD. This book needs interim coverage assigned to its highest-ARR accounts.<br>
+    <strong>Piera / UK and Italy:</strong> 14 churn events, the highest count by CSAM, on only 6 expansions; net &minus;$14,325. Italy carries $9,367 of churn with zero expansion.<br>
+    <strong>Maria + Julia / DACH:</strong> 12 churns and 13 expansions, count-for-count balanced, but expansion dollars are roughly 60% of churn dollars ($9,324 vs $15,223). Note prior DACH churn was traced to bad-fit deals, not CS execution.<br>
+    <strong>Paolo / ANZ:</strong> Essentially break-even (net &minus;$152), the only managed region where expansion nearly matches churn. Replicable motion to study for other regions.<br>
+    <strong>Reina / Japan:</strong> Only growing region by net delta (+$2,021); three expansion events, zero churn YTD. Small base, positive trajectory.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Working Notes</div>
+  <div class="note">
+    <strong>Coverage window:</strong> 1 Jan 2026 &rarr; 9 Jun 2026 (today). MTD/YTD windows run to today, not to last week's end.<br>
+    <strong>Intl-only scope:</strong> Companies with country = United States, USA, or Canada are excluded across all metrics. Residual contamination risk roughly 5 to 8% from ambiguous fields like "OR" or "CA".<br>
+    <strong>Leads, MQLs, SQLs:</strong> From the lifecycle exports, deduplicated by Contact ID; leads dated by create date, MQL/SQL by lifecycle-stage entry date. These are international-wide top-of-funnel; roughly 42% of leads carry no Country/Region tag and Spain is a large source (expansion-market interest, not a managed market). Treat lead and MQL volumes as funnel context, broader than the four managed sales regions, not region-attributable pipeline.<br>
+    <strong>Demos Booked, Demos Held, Show Rate:</strong> From ig-mom-show-rate, deduplicated by Custom Activity ID, keyed by 1:1 upcoming demo date.<br>
+    <strong>Wins, Total, Win Rate:</strong> From ig-mom-win-rate, keyed by close date; Win Rate = Won ÷ (Won + Lost).<br>
+    <strong>New ARR and Open Pipeline:</strong> From ig-mom-pipeline-volume, deduplicated by Deal ID. New ARR includes closed-won and upsell deals (105 closes). Open stages exclude won, upsell, and lost. Early = Demo Booked, Rebooked Demo, Demo Not Shown; Late = Demo Held. Note: Early is inflated by 90 "Demo Not Shown" no-show deals carrying $567,200; these are open but stalled and should be scrubbed for genuine viability before counting as coverage.<br>
+    <strong>Avg Cycle:</strong> Mean Days to Close on YTD closed-won deals, from ig-mom-sales-cycle.<br>
+    <strong>Churned and Expansion ARR:</strong> From int-l-cs-mom-churned-arr-by and int-l-cs-mom-expansion-arr, deal-level by Close Date, US/Canada excluded. CSAM mapping: Romania = Valentina Manta; DACH = Maria Mazur and Julia Seitz; UK/Italy = Piera Bellelli; ANZ = Paolo Zafra; Japan = Reina Kurosawa; all other markets = Other (no dedicated CSAM).<br>
+    <strong>Net ARR Delta:</strong> Expansion ARR &minus; Churned ARR. <strong>Expansion Coverage:</strong> Expansion ARR ÷ Churned ARR × 100.<br>
+    <strong>NRR percentage:</strong> Not computed; requires a Starting ARR baseline not in the current data drop. Active Customers and Retained ARR are likewise unavailable.
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Yonis Brander</strong> · Head of International Growth, TaxDome<br>
+  Source: HubSpot CRM · Weekly data drop 9 Jun 2026<br>
+  Generated 9 June 2026
+</div>
+
+</div>
+
+<script>
+const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+new Chart(funnelCtx, {
+  type: 'line',
+  data: {
+    labels: ["New Leads", "MQLs", "Demos Booked", "Demos Held", "Deals Won"],
+    datasets: [{
+      label: 'Volume',
+      data: [2518, 1659, 609, 382, 88],
+      borderColor: '#1976D3',
+      backgroundColor: 'rgba(25,118,211,0.10)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#1976D3', pointBorderColor: '#fff',
+      pointBorderWidth: 2, pointRadius: 7, pointHoverRadius: 9,
+      fill: true, tension: 0.3,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#004392',
+        callbacks: {
+          label: ctx => {
+            const stages = [2518, 1659, 609, 382, 88];
+            const pct = ctx.dataIndex > 0 ? ' (' + ((ctx.raw / stages[ctx.dataIndex-1]) * 100).toFixed(1) + '% of prior stage)' : '';
+            return ' ' + ctx.raw.toLocaleString() + pct;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#4A6080', font: { size: 12, weight: '500' } } },
+      y: { type: 'logarithmic', grid: { color: '#E8F0F8' }, ticks: { color: '#4A6080', font: { size: 11 } } }
+    }
+  }
+});
+
+const bubbleCtx = document.getElementById('cmBubbleChart').getContext('2d');
+const cmData = [
+  {"label": "Alina / Romania", "x": 20.0, "y": 53.3, "arr": 70404, "color": "#1976D3"},
+  {"label": "Ajla / DACH", "x": 52.8, "y": 82.1, "arr": 58290, "color": "#12A05C"},
+  {"label": "Joanne / ANZ", "x": 32.5, "y": 71.6, "arr": 48096, "color": "#D97706"},
+  {"label": "Samuel / UK", "x": 20.9, "y": 61.5, "arr": 36091, "color": "#DC2626"}
+];
+const arrs = cmData.map(d => d.arr);
+const minARR = Math.min(...arrs); const maxARR = Math.max(...arrs);
+const scaleR = arr => maxARR > minARR ? 16 + ((arr - minARR) / (maxARR - minARR)) * 18 : 22;
+const wrLine = { type:'line', label:'_wr', data:[{x:35,y:0},{x:35,y:105}], borderColor:'rgba(220,38,38,0.45)', borderDash:[5,4], borderWidth:1.5, pointRadius:0, fill:false };
+const srLine = { type:'line', label:'_sr', data:[{x:0,y:80},{x:80,y:80}], borderColor:'rgba(220,38,38,0.45)', borderDash:[5,4], borderWidth:1.5, pointRadius:0, fill:false };
+const bubbleDatasets = cmData.map(cm => ({
+  type:'bubble', label:cm.label,
+  data: [{x: cm.x, y: cm.y, r: scaleR(cm.arr)}],
+  backgroundColor: cm.color + 'BB', borderColor: cm.color, borderWidth: 2,
+}));
+new Chart(bubbleCtx, {
+  type: 'scatter',
+  data: { datasets: [...bubbleDatasets, wrLine, srLine] },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position:'bottom', labels: { color:'#4A6080', font:{size:12}, padding:16, filter: item => !item.text.startsWith('_') } },
+      tooltip: {
+        backgroundColor: '#004392',
+        filter: item => item.dataset.type === 'bubble',
+        callbacks: {
+          label: ctx => {
+            const cm = cmData[ctx.datasetIndex];
+            return [' ' + cm.label, ' Win Rate: ' + ctx.parsed.x.toFixed(1) + '%', ' Show Rate: ' + ctx.parsed.y.toFixed(1) + '%', ' New ARR: $' + cm.arr.toLocaleString()];
+          }
+        }
+      }
+    },
+    scales: {
+      x: { title: { display:true, text:'Win Rate (%)', color:'#4A6080', font:{size:11} }, min:0, max:75, grid:{color:'#E8F0F8'}, ticks:{color:'#4A6080', font:{size:11}, callback: v => v + '%'} },
+      y: { title: { display:true, text:'Show Rate (%)', color:'#4A6080', font:{size:11} }, min:0, max:105, grid:{color:'#E8F0F8'}, ticks:{color:'#4A6080', font:{size:11}, callback: v => v + '%'} }
+    }
+  }
+});
+
+const csCtx = document.getElementById('csChart').getContext('2d');
+new Chart(csCtx, {
+  type: 'line',
+  data: {
+    labels: ["Valentina (Romania)", "Other (RoW)", "Piera (UK/Italy)", "Maria+Julia (DACH)", "Paolo (ANZ)", "Reina (Japan)"],
+    datasets: [
+      { label:'Churned ARR', data: [34690, 30586, 17575, 15223, 9013, 0],
+         borderColor:'#DC2626', backgroundColor:'rgba(220,38,38,0.07)', borderWidth:2.5,
+         pointBackgroundColor:'#DC2626', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:7,
+         fill:true, tension:0.3 },
+      { label:'Expansion ARR', data: [5513, 6683, 3250, 9324, 8861, 2021],
+         borderColor:'#12A05C', backgroundColor:'rgba(18,160,92,0.07)', borderWidth:2.5,
+         pointBackgroundColor:'#12A05C', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:7,
+         fill:true, tension:0.3 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position:'bottom', labels: { color:'#4A6080', font:{size:12}, padding:16 } },
+      tooltip: { backgroundColor:'#004392', callbacks: { label: ctx => ' ' + ctx.dataset.label + ': $' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks: {color:'#4A6080', font:{size:12}} },
+      y: { grid: {color:'#E8F0F8'}, ticks: {color:'#4A6080', font:{size:11}, callback: v => '$' + (v/1000).toFixed(0) + 'K' }, min:0 }
+    }
+  }
+});
+
+const arrCtx = document.getElementById('arrTrendChart').getContext('2d');
+new Chart(arrCtx, {
+  type: 'line',
+  data: {
+    labels: ["Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25","Dec 25","Jan 26","Feb 26","Mar 26","Apr 26","May 26"],
+    datasets: [{
+      label: 'Intl ARR run-rate',
+      data: [611013, 653563, 725019, 761403, 792741, 837552, 857330, 915482, 944555, 999780, 1062487, 1101396],
+      borderColor: '#1976D3',
+      backgroundColor: 'rgba(25,118,211,0.12)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#1976D3', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 8,
+      fill: true, tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor:'#004392', callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks: {color:'#4A6080', font:{size:11}} },
+      y: { grid: {color:'#E8F0F8'}, ticks: {color:'#4A6080', font:{size:11}, callback: v => '$' + (v/1000000).toFixed(2) + 'M' } }
+    }
+  }
+});
+
+const mkCtx = document.getElementById('mktgRegionChart').getContext('2d');
+new Chart(mkCtx, {
+  type: 'bar',
+  data: {
+    labels: ["UK", "Other", "Romania", "ANZ", "DACH", "Unattributed"],
+    datasets: [{
+      label: 'Pipeline ARR Generated',
+      data: [749490, 692775, 508963, 457828, 332930, 4800],
+      backgroundColor: ['#1976D3','#9BBFE8','#1976D3','#1976D3','#1976D3','#C9DCEF'],
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor:'#004392', callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString() } }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks: {color:'#4A6080', font:{size:12, weight:'500'}} },
+      y: { grid: {color:'#E8F0F8'}, ticks: {color:'#4A6080', font:{size:11}, callback: v => '$' + (v/1000).toFixed(0) + 'K' }, min:0 }
+    }
+  }
+});
+</script>
+</body>
+</html>

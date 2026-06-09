@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Report, Sales Segment, W/E 7 Jun 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --td-primary:#1976D3;--td-dark:#004392;
+  --bg:#F4F8FD;--card:#FFFFFF;--border:#C9DCEF;
+  --text:#0A1F44;--muted:#4A6080;
+  --green:#12A05C;--amber:#D97706;--red:#DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#004392 0%,#1976D3 100%);color:#fff;padding:32px 28px;border-radius:12px;margin-bottom:24px}
+.header h1{font-size:24px;font-weight:700;margin-bottom:6px}
+.header .sub{font-size:14px;opacity:.85;margin-bottom:4px}
+.header .meta{font-size:12px;opacity:.7}
+.section{margin-bottom:32px}
+.section-title{font-size:12px;font-weight:600;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.tag{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:#EBF3FB;color:var(--td-primary);letter-spacing:.04em}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.kpi-label{font-size:11px;font-weight:500;text-transform:uppercase;color:var(--muted);letter-spacing:.05em;margin-bottom:8px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--text);line-height:1.1}
+.kpi-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.kpi-delta{font-size:12px;font-weight:600;margin-top:4px}
+.delta-up{color:var(--green)}.delta-down{color:var(--red)}.delta-flat{color:var(--muted)}
+.takeaway{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--td-primary);border-radius:0 10px 10px 0;padding:20px 24px;margin-bottom:14px}
+.takeaway-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--td-primary);margin-bottom:10px}
+.takeaway-prose{font-size:15px;color:var(--text);line-height:1.7}
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#EBF3FB;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;letter-spacing:.03em}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FBFF}
+.tfoot-row td{font-weight:700;background:#F4F8FD;border-top:2px solid var(--border)}
+.table-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0;overflow:hidden}
+.note{border-left:4px solid var(--td-primary);background:#F4F8FD;padding:14px 18px;border-radius:0 8px 8px 0;font-size:12px;color:var(--muted);line-height:1.8;margin-top:12px}
+.note strong{color:var(--text)}
+.footer{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:12px;color:var(--muted);text-align:center;margin-top:32px}
+.progress-bg{background:#EBF3FB;border-radius:4px;height:8px;width:100%;min-width:80px}
+.progress-bar{height:8px;border-radius:4px}
+.rate-green{color:var(--green);font-weight:600}
+.rate-amber{color:var(--amber);font-weight:600}
+.rate-red{color:var(--red);font-weight:600}
+.target-badge{font-size:10px;padding:1px 6px;border-radius:8px;background:#EBF3FB;color:var(--td-primary);font-weight:600;margin-left:4px;vertical-align:middle}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="sub">Weekly Report, Sales Segment</div>
+  <h1>International Growth · Week ending 7 June 2026</h1>
+  <div class="meta">Published 9 June 2026 &nbsp;·&nbsp; MTD June, day 9 of 30 &nbsp;·&nbsp; WoW: 1 Jun&ndash;7 Jun vs 25 May&ndash;31 May &nbsp;·&nbsp; Yonis Brander, Head of International Growth, TaxDome</div>
+</div>
+
+<div class="takeaway">
+  <div class="takeaway-tag">Takeaway · 1 of 3</div>
+  <div class="takeaway-prose">New ARR fell 75% WoW to $3,598 on 3 closed deals, the weakest weekly print in over a month. The drop is almost entirely Ajla's; DACH delivered $11,029 the week prior and zero last week, so the team's apparent collapse is really one inbound burst not repeating. Alina was the only CM up WoW, and only barely ($1,859 on a single deal). Show rate and win rate both actually ticked up last week, which means this is a deal-volume and deal-size story, not a conversion regression. The signal to watch is not the percentage drop, it is that three of four CMs closed almost nothing in the first week of the year's biggest quota month.</div>
+</div>
+
+<div class="takeaway">
+  <div class="takeaway-tag">Takeaway · 2 of 3</div>
+  <div class="takeaway-prose">June will be won or lost on the back half of the month. With $3,598 booked of a $91,000 team quota through day 9, the team sits at 4.0% attainment against a 30% time-elapsed pace, a gap of $87,402 to close in 21 days. Joanne and Ajla have not closed a single June deal yet, so their full quotas are unworked. The math is not hopeless: Joanne sits on $213,600 of open pipeline against $77,401 required, the healthiest coverage on the team. The blocker is conversion timing, not pipeline supply for ANZ; for DACH it is the opposite, Ajla has only $34,400 open against a $39,257 requirement and needs new pipeline pulled in, not just deals closed.</div>
+</div>
+
+<div class="takeaway" style="margin-bottom:28px">
+  <div class="takeaway-tag">Takeaway · 3 of 3</div>
+  <div class="takeaway-prose">Team open pipeline of $829K against $612K required looks adequate in aggregate at 1.36× coverage, but the shape is the problem. Romania holds 39% of the team's open pipeline yet sits at 0.93× coverage because its 20% YTD win rate inflates the pipeline it needs; the UK holds another 31% at 1.74×. The two CMs sitting on 70% of the inventory carry the team's two lowest win rates, both around 20%. Conversely Ajla's 52.8% win rate runs on just $34K of pipeline. The risk is not total pipeline; it is that win rate is least efficient exactly where the pipeline is most concentrated. Note that $567K of the team's open pipeline sits in "Demo Not Shown" no-show deals and should be scrubbed before it is trusted as coverage.</div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">New ARR, Last Week</div>
+    <div class="kpi-value">$3,598</div>
+    <div class="kpi-sub">3 deals &nbsp;·&nbsp; avg $1,199</div>
+    <div class="kpi-delta delta-down">&#9660; &minus;75.1% vs week prior ($14,427)</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">New ARR, MTD (June)</div>
+    <div class="kpi-value">$3,598</div>
+    <div class="kpi-sub">Day 9 of 30 &nbsp;·&nbsp; 3 deals &nbsp;·&nbsp; 30.0% through month</div>
+    <div class="kpi-delta delta-flat">Projected pace $11,994</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Team Quota Attainment (MTD)</div>
+    <div class="kpi-value" style="color:var(--red)">4.0%</div>
+    <div class="kpi-sub">$3,598 of $91,000 &nbsp;·&nbsp; pace target: 30.0%</div>
+    <div class="kpi-delta delta-down">Behind pace by 26.0pp</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Pipeline Coverage (June)</div>
+    <div class="kpi-value" style="color:var(--red)">1.36×</div>
+    <div class="kpi-sub">$829,171 open / $611,702 required</div>
+    <div class="kpi-delta delta-down">RED, below 1.5× threshold &nbsp;·&nbsp; concentration in RO and UK</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">CM Quota and Coverage <span class="tag">MTD · June 2026</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th><th>June Quota</th><th>MTD ARR</th><th>Attainment</th>
+          <th>Req. Pipeline</th><th>Open Pipeline</th><th>Coverage</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td>Romania</td><td>$37,000</td><td>$1,859</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="progress-bg"><div class="progress-bar" style="width:5%;background:#DC2626"></div></div>
+              <span style="font-weight:600;white-space:nowrap">5%</span>
+            </div>
+          </td>
+          <td>$347,124</td><td>$324,371</td>
+          <td><strong style="color:var(--red)">0.93×</strong></td>
+          <td><span style="padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FEE2E2;color:#991B1B">At Risk</span></td>
+        </tr>
+        <tr>
+          <td><strong>Samuel George</strong></td><td>UK</td><td>$19,000</td><td>$1,740</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="progress-bg"><div class="progress-bar" style="width:9.2%;background:#DC2626"></div></div>
+              <span style="font-weight:600;white-space:nowrap">9%</span>
+            </div>
+          </td>
+          <td>$147,920</td><td>$256,800</td>
+          <td><strong style="color:var(--amber)">1.74×</strong></td>
+          <td><span style="padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E">Watch</span></td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td>ANZ</td><td>$18,000</td><td>$0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="progress-bg"><div class="progress-bar" style="width:2%;background:#DC2626"></div></div>
+              <span style="font-weight:600;white-space:nowrap">0%</span>
+            </div>
+          </td>
+          <td>$77,401</td><td>$213,600</td>
+          <td><strong style="color:var(--amber)">2.76×</strong></td>
+          <td><span style="padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E">Watch</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td><td>$17,000</td><td>$0</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="progress-bg"><div class="progress-bar" style="width:2%;background:#DC2626"></div></div>
+              <span style="font-weight:600;white-space:nowrap">0%</span>
+            </div>
+          </td>
+          <td>$39,257</td><td>$34,400</td>
+          <td><strong style="color:var(--red)">0.88×</strong></td>
+          <td><span style="padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FEE2E2;color:#991B1B">At Risk</span></td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Team Total</strong></td><td><strong>$91,000</strong></td><td><strong>$3,598</strong></td>
+          <td><strong>4.0%</strong></td>
+          <td><strong>$611,702</strong></td><td><strong>$829,171</strong></td>
+          <td><strong style="color:var(--red)">1.36×</strong></td>
+          <td><span style="padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:#FEE2E2;color:#991B1B">At Risk</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Coverage formula:</strong> Required Pipeline = Monthly Quota ÷ (Show Rate × Win Rate), using YTD CM rates where Demos Held ≥ 10, otherwise team-blended. Coverage = Open Pipeline ÷ Required Pipeline. Thresholds: RED &lt; 1.5×, AMBER 1.5&ndash;2.9×, GREEN ≥ 3.0×. June carries the year's largest team quota ($91,000).<br>
+    <strong>Alina / RO:</strong> Coverage 0.93× (AT RISK). Largest open pipeline on the team ($324K) but the 20.0% YTD win rate requires $347K, so even her big book is short. MTD attainment 5.0%; a concrete close-this-week list is needed today, and the underlying conversion problem is structural, not a volume gap.<br>
+    <strong>Samuel / UK:</strong> Coverage 1.74× (WATCH). $256K open pipeline, but the 20.9% YTD win rate inflates the requirement to $148K. Closing more deals is not enough; conversion lift is the only sustainable fix.<br>
+    <strong>Joanne / ANZ:</strong> Coverage 2.76× (WATCH), the healthiest on the team. The constraint is timing, not supply; zero June closes so far against $213K of open pipeline. Her late-stage deals are the most convertible path to team recovery this month.<br>
+    <strong>Ajla / DACH:</strong> Coverage 0.88× (AT RISK). DACH is inbound-only with no SDR volume; $34K open is below the $39K required. The constraint is next month's pipeline, not conversion; her structurally high inbound rates make coverage sensitive to small pipeline changes.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Show Rate and Win Rate <span class="tag">WoW</span></div>
+  <div class="chart-wrap">
+    <canvas id="srWrChart" height="100"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Last Week (1 Jun&ndash;7 Jun)</th>
+          <th>Week Prior (25 May&ndash;31 May)</th>
+          <th>WoW Delta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Demos Booked</td><td>36</td><td>37</td><td style="color:var(--red)"><strong>&minus;1</strong></td></tr>
+        <tr><td>Demos Held</td><td>21</td><td>20</td><td style="color:var(--green)"><strong>+1</strong></td></tr>
+        <tr><td>Show Rate</td><td><strong class="rate-red">58.3%</strong></td><td><strong class="rate-red">54.1%</strong></td><td style="color:var(--green)"><strong>+4.2pp</strong></td></tr>
+        <tr><td>Deals Closed (Won+Lost)</td><td>12</td><td>17</td><td style="color:var(--red)"><strong>&minus;5</strong></td></tr>
+        <tr><td>Deals Won</td><td>3</td><td>4</td><td style="color:var(--red)"><strong>&minus;1</strong></td></tr>
+        <tr><td>Win Rate</td><td><strong class="rate-amber">25.0%</strong></td><td><strong class="rate-amber">23.5%</strong></td><td style="color:var(--green)"><strong>+1.5pp</strong></td></tr>
+        <tr><td>New ARR</td><td><strong>$3,598</strong></td><td><strong>$14,427</strong></td><td style="color:var(--red)"><strong>&minus;$10,829 (&minus;75.1%)</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Conversion held, dollars did not:</strong> Both show rate (+4.2pp) and win rate (+1.5pp) improved WoW, so the New ARR drop is a deal-size and volume effect, not a conversion regression. Last week's 3 wins averaged $1,199 versus $2,885 the prior week. Action: confirm whether larger deals slipped to a later close date rather than being lost, and check the late-stage June pipeline still carries the deal sizes needed to hit quota.<br>
+    <strong>Show Rate context:</strong> 58.3% remains below the 60% floor and well under the 80% target; no-show triage stays a standing priority, especially in the UK where booked volume is highest.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Deal Activity by CM <span class="tag">WoW</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th>
+          <th>Deals LW</th><th>ARR LW</th>
+          <th>Deals WP</th><th>ARR WP</th>
+          <th>Win Rate LW</th><th>Win Rate WP</th>
+          <th>ARR WoW Δ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+          <td>0 won / 0 closed</td><td>$0</td>
+          <td>2 won / 2 closed</td><td>$11,029</td>
+          <td><span style="color:var(--muted)">n/a</span></td><td><span class="rate-green"><strong>100.0%</strong></span></td>
+          <td><span style="color:var(--red)"><strong>&minus;$11,029</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+          <td>1 won / 2 closed</td><td>$1,859</td>
+          <td>0 won / 3 closed</td><td>$0</td>
+          <td><span class="rate-green"><strong>50.0%</strong></span></td><td><span class="rate-red"><strong>0.0%</strong></span></td>
+          <td><span style="color:var(--green)"><strong>+$1,859</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+          <td>0 won / 1 closed</td><td>$0</td>
+          <td>1 won / 8 closed</td><td>$1,067</td>
+          <td><span class="rate-red"><strong>0.0%</strong></span></td><td><span class="rate-amber"><strong>12.5%</strong></span></td>
+          <td><span style="color:var(--red)"><strong>&minus;$1,067</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong>Samuel George</strong></td><td>UK</td>
+          <td>2 won / 9 closed</td><td>$1,740</td>
+          <td>1 won / 4 closed</td><td>$2,331</td>
+          <td><span class="rate-amber"><strong>22.2%</strong></span></td><td><span class="rate-amber"><strong>25.0%</strong></span></td>
+          <td><span style="color:var(--red)"><strong>&minus;$591</strong></span></td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Team Total</strong></td>
+          <td><strong>3 / 12</strong></td><td><strong>$3,598</strong></td>
+          <td><strong>4 / 17</strong></td><td><strong>$14,427</strong></td>
+          <td><strong class="rate-amber">25.0%</strong></td>
+          <td><strong class="rate-amber">23.5%</strong></td>
+          <td style="color:var(--red)"><strong>&minus;$10,829</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>Ajla / DACH:</strong> 2 wins on 2 closed the week prior ($11,029), zero last week. The week-prior burst was the largest single-CM print on the team; DACH inbound arrives in bursts, not steady flow, so a quiet week is expected variance, not a trend break.<br>
+    <strong>Alina / RO:</strong> The only CM up WoW, 1 win on 2 closed ($1,859). One deal does not fix a 5.0% MTD attainment; Romania needs a reviewed close-this-week list today against its $324K open pipeline.<br>
+    <strong>Joanne / ANZ:</strong> Zero closes last week after 8 closed attempts the prior week with only 1 win. Activity is there, conversion is not; her pipeline coverage is the team's best, so the focus is moving late-stage deals over the line.<br>
+    <strong>Samuel / UK:</strong> 2 wins on 9 closed (22.2%), the highest closing activity on the team but the lowest deal sizes ($1,740 on 2 wins). Volume is not the UK problem; deal size and win rate are.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">MTD Deal Mix by CM <span class="tag">MTD · June 2026</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CM</th><th>Region</th><th>Deals MTD</th><th>ARR MTD</th>
+          <th>Avg Deal Size</th><th>Open Pipeline</th>
+          <th>June Quota</th><th>Month-End Gap</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Samuel George</strong></td><td>UK</td>
+          <td>2</td><td>$1,740</td><td>$870</td><td>$256,800</td><td>$19,000</td>
+          <td><strong style="color:var(--red)">&minus;$17,260</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Alina Goldenberg</strong></td><td>Romania</td>
+          <td>1</td><td>$1,859</td><td>$1,859</td><td>$324,371</td><td>$37,000</td>
+          <td><strong style="color:var(--red)">&minus;$35,141</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Joanne Dakay</strong></td><td>ANZ</td>
+          <td>0</td><td>$0</td><td><span style="color:var(--muted)">n/a</span></td><td>$213,600</td><td>$18,000</td>
+          <td><strong style="color:var(--red)">&minus;$18,000</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Ajla Ahmetspahic</strong></td><td>DACH</td>
+          <td>0</td><td>$0</td><td><span style="color:var(--muted)">n/a</span></td><td>$34,400</td><td>$17,000</td>
+          <td><strong style="color:var(--red)">&minus;$17,000</strong></td>
+        </tr>
+        <tr class="tfoot-row">
+          <td colspan="2"><strong>Team Total</strong></td>
+          <td><strong>3</strong></td><td><strong>$3,598</strong></td>
+          <td><strong>$1,199</strong></td>
+          <td><strong>$829,171</strong></td><td><strong>$91,000</strong></td>
+          <td><strong style="color:var(--red)">&minus;$87,402</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>MTD context:</strong> Day 9 of 30, 30.0% through the month. Team is at 4.0% attainment vs the 30.0% pace target. Gap to close in the remaining 21 days = $87,402, against a $91,000 quota that is the year's heaviest.<br>
+    <strong>Joanne / ANZ and Alina / RO:</strong> Hold the two largest open pipelines ($213K and $324K). If both convert at their YTD win rates against current closable pipeline, they cover the bulk of the team gap; the question is timing within the month, not whether the inventory exists.<br>
+    <strong>Ajla / DACH:</strong> The only CM whose open pipeline ($34K) is below her monthly quota requirement. DACH needs new pipeline pulled in this week, not just deals closed.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Working Notes</div>
+  <div class="note">
+    <strong>WoW windows:</strong> Last Week = 1 Jun&ndash;7 Jun 2026 (Mon&ndash;Sun). Week Prior = 25 May&ndash;31 May 2026 (Mon&ndash;Sun). Close date is the anchor for won/lost deals; 1:1 upcoming demo date for show rate.<br>
+    <strong>MTD window:</strong> 1 Jun 2026 &rarr; 9 Jun 2026 (today), day 9 of 30. Includes any deal with HubSpot close date in this range.<br>
+    <strong>Required Pipeline formula:</strong> Monthly Quota ÷ (CM Show Rate × CM Win Rate). YTD rates used where Demos Held ≥ 10 for the CM; all four CMs qualify this period, so CM-specific rates are used throughout (no team blend).<br>
+    <strong>Coverage:</strong> Open Pipeline ÷ Required Pipeline, using total open pipeline (all open stages, deduplicated by Deal ID). Thresholds: RED &lt; 1.5×, AMBER 1.5&ndash;2.9×, GREEN ≥ 3.0×. Note $567,200 of team open pipeline is in "Demo Not Shown" no-show deals; scrub for viability before trusting coverage.<br>
+    <strong>DACH note:</strong> Ajla Ahmetspahic operates inbound-only; no SDR generates outbound demos in DACH. Coverage uses her structurally higher inbound conversion rates (82.1% show, 52.8% win), making required pipeline low and coverage sensitive to small pipeline changes.<br>
+    <strong>Show Rate &gt; 100%:</strong> Not applicable this week; no CM exceeded 100%.<br>
+    <strong>Win Rate LW by CM, sample sizes:</strong> Samuel 22.2% (9 closed), Alina 50% (2 closed), Joanne 0% (1 closed), Ajla n/a (0 closed). Small denominators make weekly CM rates directionally informative but not statistically reliable.<br>
+    <strong>Data deduplication:</strong> All deal metrics deduplicated by Deal ID; HubSpot exports carry multiple rows per deal from Contact/Activity associations.
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Yonis Brander</strong> · Head of International Growth, TaxDome<br>
+  Source: HubSpot CRM · Weekly data drop 9 Jun 2026<br>
+  Generated 9 June 2026
+</div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('srWrChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Show Rate', 'Win Rate'],
+    datasets: [
+      { label: 'Last Week (1 Jun–7 Jun)', data: [58.3, 25.0], backgroundColor: '#1976D3', borderRadius: 5 },
+      { label: 'Week Prior (25 May–31 May)', data: [54.1, 23.5], backgroundColor: '#9BBFE8', borderRadius: 5 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: {color:'#4A6080', font:{size:12}, padding:16} },
+      tooltip: { backgroundColor: '#004392', callbacks: { label: (c) => ' ' + c.dataset.label + ': ' + c.raw + '%' } }
+    },
+    scales: {
+      x: { grid: {display:false}, ticks: {color:'#4A6080', font:{size:13, weight:'500'}} },
+      y: { grid: {color:'#E8F0F8'}, ticks: {color:'#4A6080', font:{size:11}, callback: (v) => v + '%'}, min: 0, max: 100 }
+    }
+  }
+});
+</script>
+</body>
+</html>
