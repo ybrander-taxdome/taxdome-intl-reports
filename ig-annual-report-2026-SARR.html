@@ -1,0 +1,588 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Int'l Growth — 2026 Report (SARR)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ef;--surface:#fff;--surface-2:#f0ede8;--surface-3:#e8e4de;
+  --ink:#1a1814;--ink-muted:#6b6660;--ink-faint:#b5b0aa;
+  --accent:#1d6b4f;--accent-light:#e8f3ee;
+  --warn:#c45c2a;--warn-light:#fdf0e8;
+  --neutral:#8a6f5c;--border:#e2ded8;
+  --up:#1d6b4f;--down:#c45c2a;--blue:#2d5fa6;--blue-light:#e8eef8;
+  --forecast:#7b4f9e;--forecast-light:#f3eef8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;min-height:100vh;}
+
+/* ── TOP NAV ── */
+.top-nav{background:var(--ink);padding:0 24px;display:flex;align-items:center;gap:0;border-bottom:2px solid var(--ink);}
+.top-nav-brand{color:#fff;font-family:'Fraunces',serif;font-size:16px;font-weight:600;padding:14px 20px 14px 0;border-right:1px solid #3a3632;margin-right:4px;white-space:nowrap;}
+.top-nav-brand span{color:var(--accent-light);opacity:0.8;font-size:12px;font-family:'DM Mono',monospace;font-weight:400;margin-left:8px;}
+.top-tab{background:none;border:none;color:#888;font-family:'DM Mono',monospace;font-size:12px;padding:14px 18px;cursor:pointer;position:relative;transition:color 0.15s;white-space:nowrap;letter-spacing:0.03em;}
+.top-tab:hover{color:#fff;}
+.top-tab.active{color:#fff;}
+.top-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent-light);}
+.top-tab.ytd.active::after{background:#f0c040;}
+.top-tab.forecast.active::after{background:var(--forecast);}
+.top-tab.ytd{color:#f0c040;opacity:0.7;}
+.top-tab.ytd:hover,.top-tab.ytd.active{opacity:1;color:#f0c040;}
+.top-tab.forecast{color:#c4a0e8;opacity:0.7;}
+.top-tab.forecast:hover,.top-tab.forecast.active{opacity:1;color:#c4a0e8;}
+
+/* ── MONTH SUB-NAV ── */
+.month-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;align-items:center;}
+.month-tab{background:none;border:none;font-family:'DM Mono',monospace;font-size:11px;padding:10px 14px;cursor:pointer;color:var(--ink-muted);position:relative;transition:color 0.15s;letter-spacing:0.03em;}
+.month-tab:hover:not(.empty){color:var(--ink);}
+.month-tab.active{color:var(--ink);font-weight:500;}
+.month-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--blue);}
+.month-tab.empty{color:var(--ink-faint);cursor:not-allowed;}
+.month-tab.empty::after{display:none;}
+
+/* ── CONTENT ── */
+.panel{display:none;padding:28px 24px 48px;}
+.panel.active{display:block;}
+
+/* ── KPI CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 14px 12px;position:relative;overflow:hidden;transition:box-shadow 0.15s;cursor:default;}
+.kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.07);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.k-pipeline::before{background:var(--blue);}
+.kpi-card.k-newarr::before{background:var(--accent);}
+.kpi-card.k-churn::before{background:var(--warn);}
+.kpi-card.k-churnrate::before{background:var(--neutral);}
+.kpi-card.k-nrr::before{background:var(--forecast);}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:6px;}
+.kpi-value{font-family:'Fraunces',serif;font-size:22px;font-weight:600;letter-spacing:-0.5px;margin-bottom:5px;line-height:1;}
+.kpi-delta{font-size:10px;display:flex;gap:5px;flex-wrap:wrap;}
+.pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:20px;font-size:10px;font-weight:500;}
+.pill.up{background:var(--accent-light);color:var(--up);}
+.pill.down{background:var(--warn-light);color:var(--down);}
+.pill.na{background:var(--surface-2);color:var(--ink-muted);}
+.pill.fc{background:var(--forecast-light);color:var(--forecast);}
+
+/* ── SECTION LABEL ── */
+.slabel{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+.mb-10{margin-bottom:10px;}.mb-20{margin-bottom:20px;}.mb-24{margin-bottom:24px;}
+
+/* ── SUMMARY TABLE ── */
+.sum-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px;}
+.sum-table{width:100%;border-collapse:collapse;font-size:12px;}
+.sum-table th{background:var(--ink);color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;padding:9px 12px;font-weight:500;text-align:left;}
+.sum-table th.r{text-align:right;}
+.sum-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.sum-table td.r{text-align:right;}
+.sum-table tr:last-child td{border-bottom:none;}
+.sum-table tr:hover td{background:var(--surface-2);}
+.vp{color:var(--up);font-weight:500;}
+.vn{color:var(--down);font-weight:500;}
+.badge{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;}
+.badge.up{background:var(--accent-light);color:var(--up);}
+.badge.down{background:var(--warn-light);color:var(--down);}
+.badge.na{background:var(--surface-2);color:var(--ink-muted);}
+.badge.fc{background:var(--forecast-light);color:var(--forecast);}
+
+/* ── ACCORDION ── */
+.acc{margin-bottom:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.acc-trig{width:100%;background:var(--surface);border:none;text-align:left;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink);transition:background 0.15s;}
+.acc-trig:hover{background:var(--surface-2);}
+.acc-left{display:flex;align-items:center;gap:8px;}
+.dot{width:7px;height:7px;border-radius:50%;}
+.dot.blue{background:var(--blue);}
+.dot.green{background:var(--accent);}
+.dot.orange{background:var(--warn);}
+.acc-meta{font-size:10px;color:var(--ink-muted);font-weight:400;}
+.chev{font-size:10px;color:var(--ink-muted);transition:transform 0.2s;}
+.acc.open .chev{transform:rotate(180deg);}
+.acc-body{display:none;padding:18px;background:var(--surface);border-top:1px solid var(--border);}
+.acc.open .acc-body{display:block;}
+
+/* ── CHART GRID ── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ct{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:3px;}
+.cv{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:12px;}
+.cv.green{color:var(--accent);}
+.cv.warn{color:var(--warn);}
+.chart-wrap{position:relative;height:200px;}
+
+/* ── DATA TABLE ── */
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);padding:5px 7px;border-bottom:1px solid var(--border);font-weight:500;}
+.dt th.r{text-align:right;}
+.dt td{padding:7px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.dt tr:last-child td{border-bottom:none;}
+.dt td.r{text-align:right;}
+.dt tr.tot td{font-weight:500;background:var(--surface-2);font-family:'Fraunces',serif;font-size:13px;}
+.dt tr:not(.tot):hover td{background:var(--surface-2);}
+.bar-r{display:flex;align-items:center;gap:6px;}
+.bar-bg{width:50px;height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;flex-shrink:0;}
+.bar-f{height:100%;border-radius:2px;}
+.bar-f.blue{background:var(--blue);}
+.bar-f.green{background:var(--accent);}
+.bar-f.orange{background:var(--warn);}
+
+/* ── CHURN METRICS ── */
+.cm-grid{margin-top:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.cm-row{display:grid;grid-template-columns:1.8fr 2fr 1fr;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);align-items:center;}
+.cm-row:last-child{border-bottom:none;}
+.cm-row.hdr{background:var(--surface-2);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);font-weight:500;}
+.cm-lbl{font-weight:500;font-size:11px;}
+.cm-form{color:var(--ink-muted);font-size:10px;}
+.cm-val{font-family:'Fraunces',serif;font-size:13px;font-weight:600;text-align:right;}
+.cm-val.warn{color:var(--down);}
+.cm-val.good{color:var(--up);}
+.cm-val.muted{color:var(--ink-muted);font-size:11px;font-family:'DM Mono',monospace;font-weight:400;}
+.cm-sub{font-size:9px;color:var(--ink-faint);font-family:'DM Mono',monospace;font-weight:400;}
+
+/* ── NRR / EXPANSION ── */
+.exp-section{margin-top:18px;border-top:1px solid var(--border);padding-top:18px;}
+
+/* ── YTD PANEL ── */
+.ytd-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.ytd-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+.ytd-card-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:6px;}
+.ytd-card-value{font-family:'Fraunces',serif;font-size:28px;font-weight:600;margin-bottom:4px;}
+.ytd-card-sub{font-size:11px;color:var(--ink-muted);}
+.trend-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.trend-chart-wrap{position:relative;height:180px;}
+
+/* ── FORECAST PANEL ── */
+.fc-note{background:var(--forecast-light);border:1px solid #d4b8f0;border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:12px;color:var(--forecast);line-height:1.6;}
+.fc-note strong{font-weight:500;}
+.fc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.fc-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;}
+.fc-card-label{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-muted);margin-bottom:4px;}
+.fc-card-value{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:2px;}
+.fc-card-sub{font-size:11px;color:var(--ink-muted);}
+.fc-actual{color:var(--ink-muted);}
+.fc-projected{color:var(--forecast);}
+
+.footnote{font-size:10px;color:var(--ink-faint);margin-top:28px;padding-top:14px;border-top:1px solid var(--border);}
+</style></head><body>
+<div class="top-nav">
+  <div class="top-nav-brand">Int'l Growth <span>2026</span></div>
+  <button class="top-tab arr active" onclick="showSection('arr')">ARR · SARR</button>
+  <button class="top-tab" onclick="showSection('monthly')">Monthly · HubSpot</button>
+  <button class="top-tab ytd" onclick="showSection('ytd')">Year to Date</button>
+  <button class="top-tab forecast" onclick="showSection('forecast')">Forecast</button>
+</div>
+<div class="src-banner"><span><b>SARR (Stripe)</b> = ARR &amp; retention truth</span><span class="tag">Opening $857,330 → May $1,101,396 (+28.5%)</span><span class="tag">NRR 102.9% · GRR 92.6%</span><span class="tag amber">HubSpot = GTM activity only (overstates churn)</span></div>
+<div class="month-nav" id="monthNav" style="display:none">
+  <button class="month-tab active" onclick="showMonth('jan')">Jan</button>
+  <button class="month-tab" onclick="showMonth('feb')">Feb</button>
+  <button class="month-tab" onclick="showMonth('mar')">Mar</button>
+  <button class="month-tab" onclick="showMonth('apr')">Apr</button>
+  <button class="month-tab" onclick="showMonth('may')">May</button>
+  <button class="month-tab empty" title="Not closed">Jun</button>
+  <button class="month-tab empty" title="Not closed">Jul</button>
+  <button class="month-tab empty" title="Not closed">Aug</button>
+  <button class="month-tab empty" title="Not closed">Sep</button>
+  <button class="month-tab empty" title="Not closed">Oct</button>
+  <button class="month-tab empty" title="Not closed">Nov</button>
+  <button class="month-tab empty" title="Not closed">Dec</button>
+</div>
+<div class="panel active" id="panel-arr">
+ <div class="ytd-hero">
+  <div class="ytd-card"><div class="ytd-card-label">2026 Opening ARR (Dec '25)</div><div class="ytd-card-value">$857k</div><div class="ytd-card-sub">SARR · Stripe</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">Current ARR (May '26)</div><div class="ytd-card-value" style="color:var(--accent)">$1.10M</div><div class="ytd-card-sub">495 active customers</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">YTD Growth (5 mo)</div><div class="ytd-card-value" style="color:var(--accent)">+28.5%</div><div class="ytd-card-sub">+$244,066 · ~5.2%/mo</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">NRR / GRR (YTD)</div><div class="ytd-card-value" style="color:var(--forecast)">102.9%</div><div class="ytd-card-sub">GRR 92.6% · SARR bowtie</div></div>
+ </div>
+ <div class="note-box"><strong>Data hierarchy.</strong> <b>SARR (Stripe billed ARR via BigQuery) is the single source of truth</b> for ARR, growth and retention — filtered to international (excl USA, Canada, US territories, blanks). HubSpot deal reports (Monthly tab) are <strong>GTM activity</strong> — pipeline generation and sales bookings — and run materially higher than billed ARR; they are directional only. Prior reports used a $744,578 opening guesstimate; the true SARR opening is $857,330.</div>
+ <div class="slabel mb-10">ARR Trajectory — Actual (SARR) + Forecast</div>
+ <div class="trend-grid mb-20"><div style="grid-column:1 / -1"><div class="ct mb-10">Monthly ARR · Dec 2025 → Dec 2026 (forecast dashed)</div><div class="trend-chart-wrap" style="height:240px"><canvas id="c-ov-trend"></canvas></div></div></div>
+ <div class="slabel mb-10">ARR by Region — Dec '25 → May '26</div>
+ <div class="cgrid mb-20">
+  <div class="sum-wrap"><table class="sum-table"><thead><tr><th>Region</th><th class="r">Dec '25</th><th class="r">May '26</th><th class="r">YTD</th><th class="r">Cust</th><th class="r">ARR/Cust</th></tr></thead><tbody>
+  <tr><td>Romania</td><td class="r">$202,791</td><td class="r">$274,246</td><td class="r"><span class="badge up">+35.2%</span></td><td class="r">79</td><td class="r">$3,471</td></tr>
+<tr><td>DACH</td><td class="r">$157,063</td><td class="r">$207,532</td><td class="r"><span class="badge up">+32.1%</span></td><td class="r">101</td><td class="r">$2,055</td></tr>
+<tr><td>UK</td><td class="r">$113,215</td><td class="r">$152,614</td><td class="r"><span class="badge up">+34.8%</span></td><td class="r">70</td><td class="r">$2,180</td></tr>
+<tr><td>ANZ</td><td class="r">$117,615</td><td class="r">$185,569</td><td class="r"><span class="badge up">+57.8%</span></td><td class="r">118</td><td class="r">$1,573</td></tr>
+<tr><td>Japan</td><td class="r">$25,116</td><td class="r">$28,205</td><td class="r"><span class="badge up">+12.3%</span></td><td class="r">12</td><td class="r">$2,350</td></tr>
+<tr><td>Other</td><td class="r">$241,531</td><td class="r">$253,231</td><td class="r"><span class="badge up">+4.8%</span></td><td class="r">115</td><td class="r">$2,202</td></tr>
+<tr class="tot" style="background:var(--surface-2)"><td><strong>Total</strong></td><td class="r"><strong>$857,330</strong></td><td class="r"><strong>$1,101,396</strong></td><td class="r"><strong>+28.5%</strong></td><td class="r"><strong>495</strong></td><td class="r"><strong>$2,225</strong></td></tr></tbody></table></div>
+  <div><div class="ct mb-10">May '26 ARR by Region</div><div class="reg-bar-wrap"><canvas id="c-ov-reg"></canvas></div></div>
+ </div>
+ <div class="slabel mb-10">SARR Bowtie — Monthly (Jan–May 2026)</div>
+ <div class="sum-wrap mb-20"><table class="sum-table"><thead><tr><th>Month</th><th class="r">Beg ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">End ARR</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead><tbody>
+ <tr><td>Jan</td><td class="r">$857,330</td><td class="r vp">+$58,642</td><td class="r vp">+$12,210</td><td class="r vn">−$5,016</td><td class="r vn">−$7,683</td><td class="r">$915,482</td><td class="r"><strong>99.9%</strong></td><td class="r">98.5%</td></tr>
+<tr><td>Feb</td><td class="r">$915,482</td><td class="r vp">+$32,213</td><td class="r vp">+$12,135</td><td class="r vn">−$1,575</td><td class="r vn">−$13,701</td><td class="r">$944,555</td><td class="r"><strong>99.7%</strong></td><td class="r">98.3%</td></tr>
+<tr><td>Mar</td><td class="r">$944,555</td><td class="r vp">+$51,849</td><td class="r vp">+$22,902</td><td class="r vn">−$5,984</td><td class="r vn">−$13,542</td><td class="r">$999,780</td><td class="r"><strong>100.4%</strong></td><td class="r">97.9%</td></tr>
+<tr><td>Apr</td><td class="r">$999,780</td><td class="r vp">+$41,949</td><td class="r vp">+$28,386</td><td class="r vn">−$3,316</td><td class="r vn">−$4,312</td><td class="r">$1,062,487</td><td class="r"><strong>102.1%</strong></td><td class="r">99.2%</td></tr>
+<tr><td>May</td><td class="r">$1,062,487</td><td class="r vp">+$34,710</td><td class="r vp">+$12,693</td><td class="r vn">−$1,025</td><td class="r vn">−$7,469</td><td class="r">$1,101,396</td><td class="r"><strong>100.4%</strong></td><td class="r">99.2%</td></tr>
+<tr class="tot" style="background:var(--surface-2)"><td><strong>YTD</strong></td><td class="r"><strong>$857,330</strong></td><td class="r vp"><strong>+$219,363</strong></td><td class="r vp"><strong>+$88,326</strong></td><td class="r vn"><strong>−$16,916</strong></td><td class="r vn"><strong>−$46,706</strong></td><td class="r"><strong>$1,101,396</strong></td><td class="r"><strong>102.9%</strong></td><td class="r"><strong>92.6%</strong></td></tr></tbody></table></div>
+ <div class="footnote">SARR source: "SARR by Customer [2023-01+]" (Stripe via BigQuery), exclusion filter {USA, Canada, Puerto Rico, Virgin Islands (US), USA Minor Outlying Is., blanks, %}. 666 included customers, 495 active in May. Regions: DACH incl. Liechtenstein; Ireland & International → Other.</div>
+</div>
+<div class="panel" id="panel-jan">
+<div class="kpi-row">
+ <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline · HS</div><div class="kpi-value">$405k</div><div class="kpi-delta"><span class="pill up">↑ +1336% YoY</span></div></div>
+ <div class="kpi-card k-newarr"><div class="kpi-label">New Bookings · HS</div><div class="kpi-value">$55k</div><div class="kpi-delta"><span class="pill up">↑ +53% YoY</span></div></div>
+ <div class="kpi-card k-churn"><div class="kpi-label">Expansion · HS-logged</div><div class="kpi-value">$5k</div><div class="kpi-delta"><span class="pill na">CRM activity</span></div></div>
+ <div class="kpi-card k-nrr"><div class="kpi-label">SARR ARR · end of mo</div><div class="kpi-value">$915k</div><div class="kpi-delta"><span class="pill up">↑ +6.8% MoM</span></div></div>
+ <div class="kpi-card k-churnrate"><div class="kpi-label">SARR NRR / GRR</div><div class="kpi-value">99.9%</div><div class="kpi-delta"><span class="pill na">GRR 98.5%</span></div></div>
+</div>
+<div class="slabel mb-10">SARR — Authoritative ARR &amp; Retention (Stripe)</div>
+<div class="sum-wrap mb-20" style="border-color:#bcd0ee;">
+<table class="sum-table"><thead><tr><th>Beginning ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">Ending ARR</th><th class="r">Net Δ</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead>
+<tbody><tr><td>$857,330</td><td class="r vp">+$58,642</td><td class="r vp">+$12,210</td><td class="r vn">−$5,016</td><td class="r vn">−$7,683</td><td class="r"><strong>$915,482</strong></td><td class="r vp">+$58,152</td><td class="r"><strong>99.9%</strong></td><td class="r">98.5%</td></tr></tbody></table></div>
+<div class="note-box"><strong>Below: HubSpot GTM activity (directional).</strong> Pipeline (demo-date based, snapshot-sensitive), new bookings &amp; logged churn/expansion are CRM operational signals — they do <strong>not</strong> equal billed ARR. ARR &amp; retention truth is the SARR strip above. HubSpot logs more churn than Stripe (downgrades/non-renewals still billing).</div>
+<div class="slabel mb-10">GTM Activity by Country — HubSpot</div>
+<div class="acc open" id="acc-jan-mkt"><button class="acc-trig" onclick="toggleAcc('acc-jan-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — Generated Pipeline ARR</span><span class="acc-meta">$404,904 &nbsp;·&nbsp; Jan '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Pipeline by Country</div><div class="cv">$404,904</div><div class="chart-wrap"><canvas id="c-jan-pipe"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Jan '26</th><th class="r">Jan '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇯🇵 Japan</td><td class="r">$104,765</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$56,800</td><td class="r">$5,125</td><td class="r"><span class="badge up">+1008%</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$49,686</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$48,976</td><td class="r">$1,802</td><td class="r"><span class="badge up">+2618%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$44,038</td><td class="r">$1,812</td><td class="r"><span class="badge up">+2330%</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$32,204</td><td class="r">$14,164</td><td class="r"><span class="badge up">+127%</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$23,358</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇧🇷 Brazil</td><td class="r">$16,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇸🇪 Sweden</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇫🇷 France</td><td class="r">$6,400</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇵🇹 Portugal</td><td class="r">$3,200</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇿🇦 South Africa</td><td class="r">$2,400</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$1,877</td><td class="r">$4,080</td><td class="r"><span class="badge down">-54%</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$1,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$404,904</td><td class="r">$28,205</td><td class="r"><span class="badge up">+1336%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-jan-sales"><button class="acc-trig" onclick="toggleAcc('acc-jan-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR Bookings</span><span class="acc-meta">$54,700 &nbsp;·&nbsp; Jan '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">New Bookings by Country</div><div class="cv">$54,700</div><div class="chart-wrap"><canvas id="c-jan-sales"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Jan '26</th><th class="r">Jan '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇷🇴 Romania</td><td class="r">$24,778</td><td class="r">$12,240</td><td class="r"><span class="badge up">+102%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$8,056</td><td class="r">$3,042</td><td class="r"><span class="badge up">+165%</span></td></tr>
+<tr><td>🇦🇹 Austria</td><td class="r">$7,470</td><td class="r">$621</td><td class="r"><span class="badge up">+1103%</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$4,871</td><td class="r">$1,171</td><td class="r"><span class="badge up">+316%</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$3,687</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$3,030</td><td class="r">$1,845</td><td class="r"><span class="badge up">+64%</span></td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$1,877</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$932</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$54,700</td><td class="r">$35,690</td><td class="r"><span class="badge up">+53%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-jan-cs"><button class="acc-trig" onclick="toggleAcc('acc-jan-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Logged Churn &amp; Expansion</span><span class="acc-meta">Churn $50,714 &nbsp;·&nbsp; Exp $4,801</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Logged Churn by Country</div><div class="cv warn">$50,714</div><div class="chart-wrap"><canvas id="c-jan-churn"></canvas></div></div>
+  <div><div class="ct">Logged Expansion by Country</div><div class="cv green">$4,801</div><table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th></tr></thead><tbody>
+   <tr><td>🇯🇵 Japan</td><td class="r">$2,021</td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$902</td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$682</td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$636</td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$559</td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$4,801</td></tr></tbody></table></div></div></div></div>
+<div class="footnote">SARR: Stripe via BigQuery (excl USA/Canada/territories) &nbsp;·&nbsp; SARR beg-of-month base: $857,330 &nbsp;·&nbsp; HubSpot Jan 1–31, 2026 &nbsp;·&nbsp; pipeline = demo-date metric (export 12 Jun)</div>
+</div><div class="panel" id="panel-feb">
+<div class="kpi-row">
+ <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline · HS</div><div class="kpi-value">$304k</div><div class="kpi-delta"><span class="pill up">↑ +1087% YoY</span></div></div>
+ <div class="kpi-card k-newarr"><div class="kpi-label">New Bookings · HS</div><div class="kpi-value">$33k</div><div class="kpi-delta"><span class="pill up">↑ +122% YoY</span></div></div>
+ <div class="kpi-card k-churn"><div class="kpi-label">Expansion · HS-logged</div><div class="kpi-value">$10k</div><div class="kpi-delta"><span class="pill na">CRM activity</span></div></div>
+ <div class="kpi-card k-nrr"><div class="kpi-label">SARR ARR · end of mo</div><div class="kpi-value">$945k</div><div class="kpi-delta"><span class="pill up">↑ +3.2% MoM</span></div></div>
+ <div class="kpi-card k-churnrate"><div class="kpi-label">SARR NRR / GRR</div><div class="kpi-value">99.7%</div><div class="kpi-delta"><span class="pill na">GRR 98.3%</span></div></div>
+</div>
+<div class="slabel mb-10">SARR — Authoritative ARR &amp; Retention (Stripe)</div>
+<div class="sum-wrap mb-20" style="border-color:#bcd0ee;">
+<table class="sum-table"><thead><tr><th>Beginning ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">Ending ARR</th><th class="r">Net Δ</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead>
+<tbody><tr><td>$915,482</td><td class="r vp">+$32,213</td><td class="r vp">+$12,135</td><td class="r vn">−$1,575</td><td class="r vn">−$13,701</td><td class="r"><strong>$944,555</strong></td><td class="r vp">+$29,073</td><td class="r"><strong>99.7%</strong></td><td class="r">98.3%</td></tr></tbody></table></div>
+<div class="note-box"><strong>Below: HubSpot GTM activity (directional).</strong> Pipeline (demo-date based, snapshot-sensitive), new bookings &amp; logged churn/expansion are CRM operational signals — they do <strong>not</strong> equal billed ARR. ARR &amp; retention truth is the SARR strip above. HubSpot logs more churn than Stripe (downgrades/non-renewals still billing).</div>
+<div class="slabel mb-10">GTM Activity by Country — HubSpot</div>
+<div class="acc open" id="acc-feb-mkt"><button class="acc-trig" onclick="toggleAcc('acc-feb-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — Generated Pipeline ARR</span><span class="acc-meta">$304,289 &nbsp;·&nbsp; Feb '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Pipeline by Country</div><div class="cv">$304,289</div><div class="chart-wrap"><canvas id="c-feb-pipe"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Feb '26</th><th class="r">Feb '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇬🇧 United Kingdom</td><td class="r">$156,880</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$54,549</td><td class="r">$623</td><td class="r"><span class="badge up">+8661%</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$46,377</td><td class="r">$1,074</td><td class="r"><span class="badge up">+4217%</span></td></tr>
+<tr><td>🇦🇪 United Arab Emirates</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$9,600</td><td class="r">$8,006</td><td class="r"><span class="badge up">+20%</span></td></tr>
+<tr><td>🇧🇷 Brazil</td><td class="r">$6,400</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$5,600</td><td class="r">$12,581</td><td class="r"><span class="badge down">-55%</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$4,800</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇭🇰 Hong Kong </td><td class="r">$4,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇫🇷 France</td><td class="r">$1,718</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇯🇵 Japan</td><td class="r">$765</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$304,289</td><td class="r">$25,626</td><td class="r"><span class="badge up">+1087%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-feb-sales"><button class="acc-trig" onclick="toggleAcc('acc-feb-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR Bookings</span><span class="acc-meta">$32,713 &nbsp;·&nbsp; Feb '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">New Bookings by Country</div><div class="cv">$32,713</div><div class="chart-wrap"><canvas id="c-feb-sales"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Feb '26</th><th class="r">Feb '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇬🇧 United Kingdom</td><td class="r">$9,771</td><td class="r">$1,197</td><td class="r"><span class="badge up">+716%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$7,595</td><td class="r">$1,863</td><td class="r"><span class="badge up">+308%</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$6,508</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$4,716</td><td class="r">$3,731</td><td class="r"><span class="badge up">+26%</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$3,172</td><td class="r">$2,483</td><td class="r"><span class="badge up">+28%</span></td></tr>
+<tr><td>🇮🇪 Ireland</td><td class="r">$951</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$32,713</td><td class="r">$14,733</td><td class="r"><span class="badge up">+122%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-feb-cs"><button class="acc-trig" onclick="toggleAcc('acc-feb-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Logged Churn &amp; Expansion</span><span class="acc-meta">Churn $17,013 &nbsp;·&nbsp; Exp $10,319</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Logged Churn by Country</div><div class="cv warn">$17,013</div><div class="chart-wrap"><canvas id="c-feb-churn"></canvas></div></div>
+  <div><div class="ct">Logged Expansion by Country</div><div class="cv green">$10,319</div><table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th></tr></thead><tbody>
+   <tr><td>🇦🇺 Australia</td><td class="r">$2,473</td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$2,200</td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$1,705</td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$1,662</td></tr>
+<tr><td>🇳🇿 New Zealand</td><td class="r">$872</td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$827</td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$579</td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$10,319</td></tr></tbody></table></div></div></div></div>
+<div class="footnote">SARR: Stripe via BigQuery (excl USA/Canada/territories) &nbsp;·&nbsp; SARR beg-of-month base: $915,482 &nbsp;·&nbsp; HubSpot Feb 1–28, 2026 &nbsp;·&nbsp; pipeline = demo-date metric (export 12 Jun)</div>
+</div><div class="panel" id="panel-mar">
+<div class="kpi-row">
+ <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline · HS</div><div class="kpi-value">$415k</div><div class="kpi-delta"><span class="pill up">↑ +1058% YoY</span></div></div>
+ <div class="kpi-card k-newarr"><div class="kpi-label">New Bookings · HS</div><div class="kpi-value">$56k</div><div class="kpi-delta"><span class="pill up">↑ +53% YoY</span></div></div>
+ <div class="kpi-card k-churn"><div class="kpi-label">Expansion · HS-logged</div><div class="kpi-value">$7k</div><div class="kpi-delta"><span class="pill na">CRM activity</span></div></div>
+ <div class="kpi-card k-nrr"><div class="kpi-label">SARR ARR · end of mo</div><div class="kpi-value">$1,000k</div><div class="kpi-delta"><span class="pill up">↑ +5.8% MoM</span></div></div>
+ <div class="kpi-card k-churnrate"><div class="kpi-label">SARR NRR / GRR</div><div class="kpi-value">100.4%</div><div class="kpi-delta"><span class="pill up">GRR 97.9%</span></div></div>
+</div>
+<div class="slabel mb-10">SARR — Authoritative ARR &amp; Retention (Stripe)</div>
+<div class="sum-wrap mb-20" style="border-color:#bcd0ee;">
+<table class="sum-table"><thead><tr><th>Beginning ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">Ending ARR</th><th class="r">Net Δ</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead>
+<tbody><tr><td>$944,555</td><td class="r vp">+$51,849</td><td class="r vp">+$22,902</td><td class="r vn">−$5,984</td><td class="r vn">−$13,542</td><td class="r"><strong>$999,780</strong></td><td class="r vp">+$55,225</td><td class="r"><strong>100.4%</strong></td><td class="r">97.9%</td></tr></tbody></table></div>
+<div class="note-box"><strong>Below: HubSpot GTM activity (directional).</strong> Pipeline (demo-date based, snapshot-sensitive), new bookings &amp; logged churn/expansion are CRM operational signals — they do <strong>not</strong> equal billed ARR. ARR &amp; retention truth is the SARR strip above. HubSpot logs more churn than Stripe (downgrades/non-renewals still billing).</div>
+<div class="slabel mb-10">GTM Activity by Country — HubSpot</div>
+<div class="acc open" id="acc-mar-mkt"><button class="acc-trig" onclick="toggleAcc('acc-mar-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — Generated Pipeline ARR</span><span class="acc-meta">$414,570 &nbsp;·&nbsp; Mar '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Pipeline by Country</div><div class="cv">$414,570</div><div class="chart-wrap"><canvas id="c-mar-pipe"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Mar '26</th><th class="r">Mar '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇬🇧 United Kingdom</td><td class="r">$105,385</td><td class="r">$8,700</td><td class="r"><span class="badge up">+1111%</span></td></tr>
+<tr><td>🇫🇷 France</td><td class="r">$49,718</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇧🇷 Brazil</td><td class="r">$45,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$44,697</td><td class="r">$17,817</td><td class="r"><span class="badge up">+151%</span></td></tr>
+<tr><td>🇰🇷 South Korea</td><td class="r">$40,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$38,965</td><td class="r">$5,935</td><td class="r"><span class="badge up">+557%</span></td></tr>
+<tr><td>🇵🇹 Portugal</td><td class="r">$32,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$20,000</td><td class="r">$671</td><td class="r"><span class="badge up">+2879%</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$19,200</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇪🇸 Spain</td><td class="r">$8,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$3,687</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$3,200</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$2,400</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇦🇹 Austria</td><td class="r">$918</td><td class="r">$1,933</td><td class="r"><span class="badge down">-52%</span></td></tr>
+<tr><td>🇧🇪 Belgium</td><td class="r">$800</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$414,570</td><td class="r">$35,807</td><td class="r"><span class="badge up">+1058%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-mar-sales"><button class="acc-trig" onclick="toggleAcc('acc-mar-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR Bookings</span><span class="acc-meta">$55,632 &nbsp;·&nbsp; Mar '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">New Bookings by Country</div><div class="cv">$55,632</div><div class="chart-wrap"><canvas id="c-mar-sales"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Mar '26</th><th class="r">Mar '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇷🇴 Romania</td><td class="r">$25,041</td><td class="r">$3,226</td><td class="r"><span class="badge up">+676%</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$15,021</td><td class="r">$10,207</td><td class="r"><span class="badge up">+47%</span></td></tr>
+<tr><td>🇦🇹 Austria</td><td class="r">$7,385</td><td class="r">$1,933</td><td class="r"><span class="badge up">+282%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$6,470</td><td class="r">$4,448</td><td class="r"><span class="badge up">+45%</span></td></tr>
+<tr><td>🇫🇷 France</td><td class="r">$918</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$799</td><td class="r">$9,234</td><td class="r"><span class="badge down">-91%</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$55,632</td><td class="r">$36,265</td><td class="r"><span class="badge up">+53%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-mar-cs"><button class="acc-trig" onclick="toggleAcc('acc-mar-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Logged Churn &amp; Expansion</span><span class="acc-meta">Churn $13,037 &nbsp;·&nbsp; Exp $6,994</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Logged Churn by Country</div><div class="cv warn">$13,037</div><div class="chart-wrap"><canvas id="c-mar-churn"></canvas></div></div>
+  <div><div class="ct">Logged Expansion by Country</div><div class="cv green">$6,994</div><table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th></tr></thead><tbody>
+   <tr><td>🇦🇺 Australia</td><td class="r">$3,377</td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$2,290</td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$927</td></tr>
+<tr><td>🇮🇱 Israel</td><td class="r">$400</td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$6,994</td></tr></tbody></table></div></div></div></div>
+<div class="footnote">SARR: Stripe via BigQuery (excl USA/Canada/territories) &nbsp;·&nbsp; SARR beg-of-month base: $944,555 &nbsp;·&nbsp; HubSpot Mar 1–31, 2026 &nbsp;·&nbsp; pipeline = demo-date metric (export 12 Jun)</div>
+</div><div class="panel" id="panel-apr">
+<div class="kpi-row">
+ <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline · HS</div><div class="kpi-value">$414k</div><div class="kpi-delta"><span class="pill up">↑ +168% YoY</span></div></div>
+ <div class="kpi-card k-newarr"><div class="kpi-label">New Bookings · HS</div><div class="kpi-value">$33k</div><div class="kpi-delta"><span class="pill up">↑ +129% YoY</span></div></div>
+ <div class="kpi-card k-churn"><div class="kpi-label">Expansion · HS-logged</div><div class="kpi-value">$9k</div><div class="kpi-delta"><span class="pill na">CRM activity</span></div></div>
+ <div class="kpi-card k-nrr"><div class="kpi-label">SARR ARR · end of mo</div><div class="kpi-value">$1.06M</div><div class="kpi-delta"><span class="pill up">↑ +6.3% MoM</span></div></div>
+ <div class="kpi-card k-churnrate"><div class="kpi-label">SARR NRR / GRR</div><div class="kpi-value">102.1%</div><div class="kpi-delta"><span class="pill up">GRR 99.2%</span></div></div>
+</div>
+<div class="slabel mb-10">SARR — Authoritative ARR &amp; Retention (Stripe)</div>
+<div class="sum-wrap mb-20" style="border-color:#bcd0ee;">
+<table class="sum-table"><thead><tr><th>Beginning ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">Ending ARR</th><th class="r">Net Δ</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead>
+<tbody><tr><td>$999,780</td><td class="r vp">+$41,949</td><td class="r vp">+$28,386</td><td class="r vn">−$3,316</td><td class="r vn">−$4,312</td><td class="r"><strong>$1,062,487</strong></td><td class="r vp">+$62,707</td><td class="r"><strong>102.1%</strong></td><td class="r">99.2%</td></tr></tbody></table></div>
+<div class="note-box"><strong>Below: HubSpot GTM activity (directional).</strong> Pipeline (demo-date based, snapshot-sensitive), new bookings &amp; logged churn/expansion are CRM operational signals — they do <strong>not</strong> equal billed ARR. ARR &amp; retention truth is the SARR strip above. HubSpot logs more churn than Stripe (downgrades/non-renewals still billing).</div>
+<div class="slabel mb-10">GTM Activity by Country — HubSpot</div>
+<div class="acc open" id="acc-apr-mkt"><button class="acc-trig" onclick="toggleAcc('acc-apr-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — Generated Pipeline ARR</span><span class="acc-meta">$414,259 &nbsp;·&nbsp; Apr '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Pipeline by Country</div><div class="cv">$414,259</div><div class="chart-wrap"><canvas id="c-apr-pipe"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Apr '26</th><th class="r">Apr '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇷🇴 Romania</td><td class="r">$116,998</td><td class="r">$7,315</td><td class="r"><span class="badge up">+1500%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$86,400</td><td class="r">$10,968</td><td class="r"><span class="badge up">+688%</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$85,439</td><td class="r">$7,426</td><td class="r"><span class="badge up">+1051%</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$84,885</td><td class="r">$15,632</td><td class="r"><span class="badge up">+443%</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$13,600</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$13,600</td><td class="r">$723</td><td class="r"><span class="badge up">+1782%</span></td></tr>
+<tr><td>🇫🇷 France</td><td class="r">$5,600</td><td class="r">$30,000</td><td class="r"><span class="badge down">-81%</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$5,200</td><td class="r">$800</td><td class="r"><span class="badge up">+550%</span></td></tr>
+<tr><td>🇯🇵 Japan</td><td class="r">$1,600</td><td class="r">$80,800</td><td class="r"><span class="badge down">-98%</span></td></tr>
+<tr><td>🇦🇹 Austria</td><td class="r">$936</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$414,259</td><td class="r">$154,324</td><td class="r"><span class="badge up">+168%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-apr-sales"><button class="acc-trig" onclick="toggleAcc('acc-apr-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR Bookings</span><span class="acc-meta">$33,388 &nbsp;·&nbsp; Apr '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">New Bookings by Country</div><div class="cv">$33,388</div><div class="chart-wrap"><canvas id="c-apr-sales"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">Apr '26</th><th class="r">Apr '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇦🇺 Australia</td><td class="r">$12,355</td><td class="r">$6,001</td><td class="r"><span class="badge up">+106%</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$12,139</td><td class="r">$1,984</td><td class="r"><span class="badge up">+512%</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$7,959</td><td class="r">$3,090</td><td class="r"><span class="badge up">+158%</span></td></tr>
+<tr><td>🇦🇹 Austria</td><td class="r">$936</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$33,388</td><td class="r">$14,582</td><td class="r"><span class="badge up">+129%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-apr-cs"><button class="acc-trig" onclick="toggleAcc('acc-apr-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Logged Churn &amp; Expansion</span><span class="acc-meta">Churn $10,401 &nbsp;·&nbsp; Exp $8,624</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Logged Churn by Country</div><div class="cv warn">$10,401</div><div class="chart-wrap"><canvas id="c-apr-churn"></canvas></div></div>
+  <div><div class="ct">Logged Expansion by Country</div><div class="cv green">$8,624</div><table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th></tr></thead><tbody>
+   <tr><td>🇩🇰 Denmark</td><td class="r">$3,452</td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$2,387</td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$1,505</td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$880</td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$401</td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$8,624</td></tr></tbody></table></div></div></div></div>
+<div class="footnote">SARR: Stripe via BigQuery (excl USA/Canada/territories) &nbsp;·&nbsp; SARR beg-of-month base: $999,780 &nbsp;·&nbsp; HubSpot Apr 1–30, 2026 &nbsp;·&nbsp; pipeline = demo-date metric (export 12 Jun)</div>
+</div><div class="panel" id="panel-may">
+<div class="kpi-row">
+ <div class="kpi-card k-pipeline"><div class="kpi-label">MKT Pipeline · HS</div><div class="kpi-value">$583k</div><div class="kpi-delta"><span class="pill up">↑ +516% YoY</span></div></div>
+ <div class="kpi-card k-newarr"><div class="kpi-label">New Bookings · HS</div><div class="kpi-value">$35k</div><div class="kpi-delta"><span class="pill down">↓ -24% YoY</span></div></div>
+ <div class="kpi-card k-churn"><div class="kpi-label">Expansion · HS-logged</div><div class="kpi-value">$5k</div><div class="kpi-delta"><span class="pill na">CRM activity</span></div></div>
+ <div class="kpi-card k-nrr"><div class="kpi-label">SARR ARR · end of mo</div><div class="kpi-value">$1.10M</div><div class="kpi-delta"><span class="pill up">↑ +3.7% MoM</span></div></div>
+ <div class="kpi-card k-churnrate"><div class="kpi-label">SARR NRR / GRR</div><div class="kpi-value">100.4%</div><div class="kpi-delta"><span class="pill up">GRR 99.2%</span></div></div>
+</div>
+<div class="slabel mb-10">SARR — Authoritative ARR &amp; Retention (Stripe)</div>
+<div class="sum-wrap mb-20" style="border-color:#bcd0ee;">
+<table class="sum-table"><thead><tr><th>Beginning ARR</th><th class="r">New</th><th class="r">Expansion</th><th class="r">Contraction</th><th class="r">Churn</th><th class="r">Ending ARR</th><th class="r">Net Δ</th><th class="r">NRR</th><th class="r">GRR</th></tr></thead>
+<tbody><tr><td>$1,062,487</td><td class="r vp">+$34,710</td><td class="r vp">+$12,693</td><td class="r vn">−$1,025</td><td class="r vn">−$7,469</td><td class="r"><strong>$1,101,396</strong></td><td class="r vp">+$38,909</td><td class="r"><strong>100.4%</strong></td><td class="r">99.2%</td></tr></tbody></table></div>
+<div class="note-box"><strong>Below: HubSpot GTM activity (directional).</strong> Pipeline (demo-date based, snapshot-sensitive), new bookings &amp; logged churn/expansion are CRM operational signals — they do <strong>not</strong> equal billed ARR. ARR &amp; retention truth is the SARR strip above. HubSpot logs more churn than Stripe (downgrades/non-renewals still billing).</div>
+<div class="slabel mb-10">GTM Activity by Country — HubSpot</div>
+<div class="acc open" id="acc-may-mkt"><button class="acc-trig" onclick="toggleAcc('acc-may-mkt')"><div class="acc-left"><span class="dot blue"></span><span>Marketing — Generated Pipeline ARR</span><span class="acc-meta">$583,031 &nbsp;·&nbsp; May '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Pipeline by Country</div><div class="cv">$583,031</div><div class="chart-wrap"><canvas id="c-may-pipe"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">May '26</th><th class="r">May '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇷🇴 Romania</td><td class="r">$223,569</td><td class="r">$27,466</td><td class="r"><span class="badge up">+714%</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$193,673</td><td class="r">$1,452</td><td class="r"><span class="badge up">+13237%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$50,604</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇮🇹 Italy</td><td class="r">$48,800</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$39,873</td><td class="r">$23,657</td><td class="r"><span class="badge up">+69%</span></td></tr>
+<tr><td>🇳🇿 New Zealand</td><td class="r">$11,245</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$8,772</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇧🇪 Belgium</td><td class="r">$4,000</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇯🇵 Japan</td><td class="r">$1,565</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$930</td><td class="r">$1,337</td><td class="r"><span class="badge down">-30%</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$583,031</td><td class="r">$94,584</td><td class="r"><span class="badge up">+516%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-may-sales"><button class="acc-trig" onclick="toggleAcc('acc-may-sales')"><div class="acc-left"><span class="dot green"></span><span>Sales — New ARR Bookings</span><span class="acc-meta">$34,545 &nbsp;·&nbsp; May '26</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">New Bookings by Country</div><div class="cv">$34,545</div><div class="chart-wrap"><canvas id="c-may-sales"></canvas></div></div>
+  <div><div class="ct">Country breakdown &amp; YoY</div><div class="cv" style="visibility:hidden">-</div><table class="dt"><thead><tr><th>Country</th><th class="r">May '26</th><th class="r">May '25</th><th class="r">YoY</th></tr></thead><tbody>
+   <tr><td>🇦🇺 Australia</td><td class="r">$12,641</td><td class="r">$11,185</td><td class="r"><span class="badge up">+13%</span></td></tr>
+<tr><td>🇨🇭 Switzerland</td><td class="r">$6,372</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇬🇧 United Kingdom</td><td class="r">$6,366</td><td class="r">$3,510</td><td class="r"><span class="badge up">+81%</span></td></tr>
+<tr><td>🇩🇪 Germany</td><td class="r">$4,657</td><td class="r">$10,291</td><td class="r"><span class="badge down">-55%</span></td></tr>
+<tr><td>🇷🇴 Romania</td><td class="r">$1,872</td><td class="r">$6,122</td><td class="r"><span class="badge down">-69%</span></td></tr>
+<tr><td>🇮🇪 Ireland</td><td class="r">$942</td><td class="r">—</td><td class="r"><span class="badge na">New</span></td></tr>
+<tr><td>🇳🇱 Netherlands</td><td class="r">$930</td><td class="r">$665</td><td class="r"><span class="badge up">+40%</span></td></tr>
+<tr><td>🇯🇵 Japan</td><td class="r">$765</td><td class="r">$3,468</td><td class="r"><span class="badge down">-78%</span></td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$34,545</td><td class="r">$45,413</td><td class="r"><span class="badge down">-24%</span></td></tr></tbody></table></div></div></div></div>
+<div class="acc open" id="acc-may-cs"><button class="acc-trig" onclick="toggleAcc('acc-may-cs')"><div class="acc-left"><span class="dot orange"></span><span>Customer Success — Logged Churn &amp; Expansion</span><span class="acc-meta">Churn $12,191 &nbsp;·&nbsp; Exp $4,916</span></div><span class="chev">▼</span></button>
+ <div class="acc-body"><div class="cgrid"><div><div class="ct">Logged Churn by Country</div><div class="cv warn">$12,191</div><div class="chart-wrap"><canvas id="c-may-churn"></canvas></div></div>
+  <div><div class="ct">Logged Expansion by Country</div><div class="cv green">$4,916</div><table class="dt"><thead><tr><th>Country</th><th class="r">Expansion</th></tr></thead><tbody>
+   <tr><td>🇩🇪 Germany</td><td class="r">$3,550</td></tr>
+<tr><td>🇩🇰 Denmark</td><td class="r">$743</td></tr>
+<tr><td>🇦🇺 Australia</td><td class="r">$623</td></tr>
+   <tr class="tot"><td>Total</td><td class="r">$4,916</td></tr></tbody></table></div></div></div></div>
+<div class="footnote">SARR: Stripe via BigQuery (excl USA/Canada/territories) &nbsp;·&nbsp; SARR beg-of-month base: $1,062,487 &nbsp;·&nbsp; HubSpot May 1–31, 2026 &nbsp;·&nbsp; pipeline = demo-date metric (export 12 Jun)</div>
+</div>
+<div class="panel" id="panel-ytd">
+ <div class="ytd-hero">
+  <div class="ytd-card"><div class="ytd-card-label">YTD New ARR (SARR)</div><div class="ytd-card-value" style="color:var(--accent)">$219k</div><div class="ytd-card-sub">new logos billed</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">YTD Expansion (SARR)</div><div class="ytd-card-value" style="color:var(--forecast)">$88k</div><div class="ytd-card-sub">net of contraction $17k</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">YTD Churn (SARR)</div><div class="ytd-card-value" style="color:var(--warn)">$47k</div><div class="ytd-card-sub">true billed churn</div></div>
+  <div class="ytd-card"><div class="ytd-card-label">Net ARR Change</div><div class="ytd-card-value" style="color:var(--accent)">+$244k</div><div class="ytd-card-sub">+28.5% · NRR 102.9%</div></div>
+ </div>
+ <div class="slabel mb-10">Monthly ARR &amp; Retention (SARR)</div>
+ <div class="sum-wrap mb-20"><table class="sum-table"><thead><tr><th>Metric</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">May</th><th class="r">YTD</th></tr></thead><tbody>
+  <tr><td>Ending ARR</td><td class="r">$915,482</td><td class="r">$944,555</td><td class="r">$999,780</td><td class="r">$1,062,487</td><td class="r">$1,101,396</td><td class="r"><strong>$1,101,396</strong></td></tr>
+  <tr><td>New ARR</td><td class="r">$58,642</td><td class="r">$32,213</td><td class="r">$51,849</td><td class="r">$41,949</td><td class="r">$34,710</td><td class="r"><strong>$219,363</strong></td></tr>
+  <tr><td>Expansion</td><td class="r">$12,210</td><td class="r">$12,135</td><td class="r">$22,902</td><td class="r">$28,386</td><td class="r">$12,693</td><td class="r"><strong>$88,326</strong></td></tr>
+  <tr><td>Contraction</td><td class="r">$5,016</td><td class="r">$1,575</td><td class="r">$5,984</td><td class="r">$3,316</td><td class="r">$1,025</td><td class="r"><strong>$16,916</strong></td></tr>
+  <tr><td>Churn</td><td class="r">$7,683</td><td class="r">$13,701</td><td class="r">$13,542</td><td class="r">$4,312</td><td class="r">$7,469</td><td class="r"><strong>$46,706</strong></td></tr>
+  <tr><td>NRR</td><td class="r">99.9%</td><td class="r">99.7%</td><td class="r">100.4%</td><td class="r">102.1%</td><td class="r">100.4%</td><td class="r"><strong>102.9%</strong></td></tr>
+  <tr><td>GRR</td><td class="r">98.5%</td><td class="r">98.3%</td><td class="r">97.9%</td><td class="r">99.2%</td><td class="r">99.2%</td><td class="r"><strong>92.6%</strong></td></tr>
+ </tbody></table></div>
+ <div class="slabel mb-10">Trends</div>
+ <div class="trend-grid mb-20">
+  <div><div class="ct mb-10">ARR — Monthly (SARR)</div><div class="trend-chart-wrap"><canvas id="c-ytd-arr"></canvas></div></div>
+  <div><div class="ct mb-10">NRR / GRR — Monthly</div><div class="trend-chart-wrap"><canvas id="c-ytd-nrr"></canvas></div></div>
+ </div>
+ <div class="slabel mb-10">Reconciliation — SARR vs HubSpot</div>
+ <div class="note-box warn"><strong>Why SARR and HubSpot don't tie.</strong> SARR (billed) grew <strong>+$244,066</strong> Jan–May. HubSpot recorded new bookings <strong>$210,978</strong>, logged expansion <strong>$35,653</strong>, logged churn <strong>$103,356</strong>. The two systems measure different things: HubSpot is a CRM bookings/activity ledger (multi-year, ramp, demo-date timing), and it actually <strong>over-states churn</strong> ($103,356 logged vs $46,706 true SARR churn — it logs downgrades/non-renewals that never zeroed out Stripe billing). Use SARR for ARR, NRR and GRR; use HubSpot only for GTM activity (pipeline, bookings volume).</div>
+ <div class="sum-wrap mb-20"><table class="sum-table"><thead><tr><th>Measure</th><th class="r">SARR (billed truth)</th><th class="r">HubSpot (GTM activity)</th></tr></thead><tbody>
+  <tr><td>New ARR (Jan–May)</td><td class="r">$219,363</td><td class="r">$210,978 <span style="color:var(--ink-muted)">bookings</span></td></tr>
+  <tr><td>Expansion</td><td class="r">$88,326</td><td class="r">$35,653</td></tr>
+  <tr><td>Churn</td><td class="r">$46,706</td><td class="r">$103,356 <span style="color:var(--warn)">overstated</span></td></tr>
+  <tr><td>Generated pipeline</td><td class="r">—</td><td class="r">$2,121,054</td></tr>
+ </tbody></table></div>
+ <div class="footnote">YTD = Jan 1 – May 31, 2026 · SARR opening $857,330 · NRR=(beg+exp−contraction−churn)/beg · GRR=(beg−contraction−churn)/beg</div>
+</div>
+<div class="panel" id="panel-forecast">
+ <div class="fc-note"><strong>Method:</strong> SARR ARR projected forward at the <strong>realized YTD average of +5.15%/month</strong> (Jan +6.8, Feb +3.2, Mar +5.8, Apr +6.3, May +3.7). This is the billed-ARR trajectory — distinct from sales bookings. Retention remains accretive (NRR &gt;100% since March).</div>
+ <div class="fc-grid">
+  <div class="fc-card"><div class="fc-card-label">Projected Dec '26 ARR</div><div class="fc-card-value" style="color:var(--accent)">$1.57M</div><div class="fc-card-sub"><span class="fc-actual">May actual $1.10M</span> → <span class="fc-projected">Dec $1.57M</span></div></div>
+  <div class="fc-card"><div class="fc-card-label">Full-Year Growth</div><div class="fc-card-value" style="color:var(--accent)">+83%</div><div class="fc-card-sub">$1.57M vs $857k opening</div></div>
+  <div class="fc-card"><div class="fc-card-label">Avg Monthly Growth</div><div class="fc-card-value" style="color:var(--blue)">+5.15%</div><div class="fc-card-sub">realized Jan–May, held flat</div></div>
+ </div>
+ <div class="slabel mb-10">ARR Projection by Month (SARR)</div>
+ <div class="sum-wrap mb-20"><table class="sum-table"><thead><tr><th>Month</th><th class="r">ARR</th><th class="r">MoM Growth</th><th class="r">Type</th></tr></thead><tbody>
+ <tr><td>Jan</td><td class="r">$915,482</td><td class="r">+6.8%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+<tr><td>Feb</td><td class="r">$944,555</td><td class="r">+3.2%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+<tr><td>Mar</td><td class="r">$999,780</td><td class="r">+5.8%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+<tr><td>Apr</td><td class="r">$1,062,487</td><td class="r">+6.3%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+<tr><td>May</td><td class="r">$1,101,396</td><td class="r">+3.7%</td><td class="r"><span class="badge up">Actual</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Jun</td><td class="r" style="color:var(--forecast)">$1,158,095</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Jul</td><td class="r" style="color:var(--forecast)">$1,217,712</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Aug</td><td class="r" style="color:var(--forecast)">$1,280,398</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Sep</td><td class="r" style="color:var(--forecast)">$1,346,312</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Oct</td><td class="r" style="color:var(--forecast)">$1,415,619</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Nov</td><td class="r" style="color:var(--forecast)">$1,488,493</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+<tr style="background:var(--forecast-light)"><td>Dec</td><td class="r" style="color:var(--forecast)">$1,565,119</td><td class="r" style="color:var(--forecast)">+5.1%</td><td class="r"><span class="badge fc">Forecast</span></td></tr>
+</tbody></table></div>
+ <div class="slabel mb-10">Trajectory</div>
+ <div class="trend-grid mb-20"><div style="grid-column:1 / -1"><div class="trend-chart-wrap" style="height:240px"><canvas id="c-fc-arr"></canvas></div></div></div>
+ <div class="note-box"><strong>Sensitivity.</strong> At the realized +5.15%/mo, year-end lands ~$1.57M (+83%). A more conservative +4%/mo gives ~$1.39M (+63%); a stronger +6%/mo gives ~$1.66M (+93%). Sales-bookings momentum (HubSpot) and the post-tax-season expansion pipeline are the main swing factors.</div>
+ <div class="footnote">Forecast = SARR May actual compounded at realized average growth. Re-base monthly as new SARR closes.</div>
+</div>
+<script>
+function showSection(s){
+  document.querySelectorAll('.top-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.top-tab[onclick*="\''+s+'\'"]').classList.add('active');
+  document.getElementById('monthNav').style.display = s==='monthly'?'flex':'none';
+  if(s==='monthly'){
+    const a=document.querySelector('.month-tab.active');
+    const m=a?a.getAttribute('onclick').match(/'(\w+)'/)[1]:'jan';
+    document.getElementById('panel-'+m).classList.add('active'); renderChartsForMonth(m);
+  } else {
+    document.getElementById('panel-'+s).classList.add('active');
+    if(s==='arr') renderOverview(); if(s==='ytd') renderYTD(); if(s==='forecast') renderFC();
+  }
+}
+function showMonth(m){
+  document.querySelectorAll('.month-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.month-tab[onclick*="\''+m+'\'"]').classList.add('active');
+  document.getElementById('panel-'+m).classList.add('active'); renderChartsForMonth(m);
+}
+function toggleAcc(id){document.getElementById(id).classList.toggle('open');}
+const C={blue:'#2d5fa6',green:'#1d6b4f',orange:'#c45c2a',purple:'#7b4f9e',grey:'#b5b0aa'};
+function barOpts(){return {indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1814',bodyFont:{family:'DM Mono',size:11},padding:8,callbacks:{label:c=>' $'+c.raw.toLocaleString()}}},scales:{x:{grid:{color:'#e2ded8'},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660',callback:v=>'$'+(v>=1000?Math.round(v/1000)+'k':v)},border:{display:false}},y:{grid:{display:false},ticks:{font:{family:'DM Mono',size:11},color:'#1a1814'},border:{display:false}}}};}
+function lineOpts(legend,fmt){return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:legend,labels:{font:{family:'DM Mono',size:10},boxWidth:10}},tooltip:{backgroundColor:'#1a1814',bodyFont:{family:'DM Mono',size:11},padding:8}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660'},border:{display:false}},y:{grid:{color:'#e2ded8'},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660',callback:v=>fmt?fmt(v):v},border:{display:false}}}};}
+const charts={};
+function makeChart(id,type,data,opts){if(charts[id])charts[id].destroy();const el=document.getElementById(id);if(!el)return;charts[id]=new Chart(el,{type,data,options:opts});}
+const monthData={"jan": {"pipe": {"l": ["JP", "IT", "UK", "AU", "DE", "RO", "NL", "BR", "SE", "FR", "PT", "ZA", "DK", "CH"], "d": [104765, 56800, 49686, 48976, 44038, 32204, 23358, 16000, 13600, 6400, 3200, 2400, 1877, 1600]}, "sales": {"l": ["RO", "DE", "AT", "UK", "NL", "AU", "DK", "IT"], "d": [24778, 8056, 7470, 4871, 3687, 3030, 1877, 932]}, "churn": {"l": ["RO", "IN", "BA", "UK", "CH", "AU", "IT", "AT", "DE", "LU", "PH", "TR"], "d": [21633, 18000, 1847, 1683, 1239, 1000, 931, 927, 927, 927, 800, 800]}}, "feb": {"pipe": {"l": ["UK", "DE", "AU", "UAE", "IT", "BR", "RO", "NL", "HK", "FR", "JP"], "d": [156880, 54549, 46377, 13600, 9600, 6400, 5600, 4800, 4000, 1718, 765]}, "sales": {"l": ["UK", "DE", "CH", "RO", "AU", "IE"], "d": [9771, 7595, 6508, 4716, 3172, 951]}, "churn": {"l": ["DE", "BA", "EC", "AU", "RO", "IT", "CH", "UK"], "d": [6570, 4211, 1600, 989, 944, 937, 925, 837]}}, "mar": {"pipe": {"l": ["UK", "FR", "BR", "AU", "KR", "RO", "PT", "CH", "IT", "ES", "DE", "DK", "NL", "AT", "BE"], "d": [105385, 49718, 45600, 44697, 40000, 38965, 32000, 20000, 19200, 8000, 3687, 3200, 2400, 918, 800]}, "sales": {"l": ["RO", "AU", "AT", "DE", "FR", "UK"], "d": [25041, 15021, 7385, 6470, 918, 799]}, "churn": {"l": ["IT", "DE", "AU", "UK"], "d": [6557, 3708, 1968, 804]}}, "apr": {"pipe": {"l": ["RO", "DE", "UK", "AU", "IT", "CH", "FR", "NL", "JP", "AT"], "d": [116998, 86400, 85439, 84885, 13600, 13600, 5600, 5200, 1600, 936]}, "sales": {"l": ["AU", "RO", "UK", "AT"], "d": [12355, 12139, 7959, 936]}, "churn": {"l": ["UK", "UAE", "AU", "RO"], "d": [4080, 2400, 2056, 1866]}}, "may": {"pipe": {"l": ["RO", "UK", "DE", "IT", "AU", "NZ", "CH", "BE", "JP", "NL"], "d": [223569, 193673, 50604, 48800, 39873, 11245, 8772, 4000, 1565, 930]}, "sales": {"l": ["AU", "CH", "UK", "DE", "RO", "IE", "NL", "JP"], "d": [12641, 6372, 6366, 4657, 1872, 942, 930, 765]}, "churn": {"l": ["RO", "AU", "IT"], "d": [10248, 1000, 943]}}};
+function renderChartsForMonth(m){const d=monthData[m];if(!d)return;
+ makeChart('c-'+m+'-pipe','bar',{labels:d.pipe.l,datasets:[{data:d.pipe.d,backgroundColor:C.blue,borderRadius:3,barThickness:14}]},barOpts());
+ makeChart('c-'+m+'-sales','bar',{labels:d.sales.l,datasets:[{data:d.sales.d,backgroundColor:C.green,borderRadius:3,barThickness:14}]},barOpts());
+ makeChart('c-'+m+'-churn','bar',{labels:d.churn.l,datasets:[{data:d.churn.d,backgroundColor:C.orange,borderRadius:3,barThickness:14}]},barOpts());
+}
+const ALLM=["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec "];
+function renderOverview(){
+ const fmt=v=>'$'+(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1000)+'k');
+ makeChart('c-ov-trend','line',{labels:ALLM,datasets:[
+  {label:'SARR Actual',data:[857330, 915482, 944555, 999780, 1062487, 1101396, null, null, null, null, null, null, null],borderColor:C.green,backgroundColor:C.green+'22',tension:0.3,fill:true,pointRadius:4,spanGaps:false},
+  {label:'Forecast (+5.15%/mo)',data:[null, null, null, null, null, 1101396, 1158095, 1217712, 1280398, 1346312, 1415619, 1488493, 1565119],borderColor:C.purple,backgroundColor:C.purple+'15',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+ ]},lineOpts(true,fmt));
+ makeChart('c-ov-reg','bar',{labels:["Romania", "DACH", "UK", "ANZ", "Japan", "Other"],datasets:[{data:[274246, 207532, 152614, 185569, 28205, 253231],backgroundColor:['#1d6b4f','#2d5fa6','#7b4f9e','#c45c2a','#b5740a','#8a6f5c'],borderRadius:3,barThickness:24}]},barOpts());
+}
+function renderYTD(){
+ const fmt=v=>'$'+(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1000)+'k');
+ makeChart('c-ytd-arr','bar',{labels:["Jan", "Feb", "Mar", "Apr", "May"],datasets:[{data:[915482, 944555, 999780, 1062487, 1101396],backgroundColor:C.green,borderRadius:3}]},{...lineOpts(false,fmt),indexAxis:'x'});
+ makeChart('c-ytd-nrr','line',{labels:["Jan", "Feb", "Mar", "Apr", "May"],datasets:[
+  {label:'NRR',data:[99.9, 99.7, 100.4, 102.1, 100.4],borderColor:C.purple,backgroundColor:C.purple+'22',tension:0.3,pointRadius:4},
+  {label:'GRR',data:[98.5, 98.3, 97.9, 99.2, 99.2],borderColor:C.orange,backgroundColor:C.orange+'11',tension:0.3,pointRadius:4}
+ ]},{...lineOpts(true,v=>v.toFixed(0)+'%'),scales:{x:{grid:{display:false},ticks:{font:{family:'DM Mono',size:10},color:'#6b6660'}},y:{min:90,max:104,grid:{color:'#e2ded8'},ticks:{callback:v=>v.toFixed(0)+'%',font:{family:'DM Mono',size:10},color:'#6b6660'}}}});
+}
+function renderFC(){
+ const fmt=v=>'$'+(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1000)+'k');
+ makeChart('c-fc-arr','line',{labels:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],datasets:[
+  {label:'Actual',data:[915482, 944555, 999780, 1062487, 1101396, null, null, null, null, null, null, null],borderColor:C.green,backgroundColor:C.green+'22',tension:0.3,fill:true,pointRadius:4},
+  {label:'Forecast',data:[null, null, null, null, 1101396, 1158095, 1217712, 1280398, 1346312, 1415619, 1488493, 1565119],borderColor:C.purple,backgroundColor:C.purple+'15',borderDash:[4,3],tension:0.3,fill:true,pointRadius:3}
+ ]},lineOpts(true,fmt));
+}
+window.addEventListener('DOMContentLoaded',()=>{document.getElementById('monthNav').style.display='none';renderOverview();});
+</script>
+</body></html>
